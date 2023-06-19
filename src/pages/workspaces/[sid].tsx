@@ -26,7 +26,7 @@ export default function UpdateWorkspace({
   const [callbackEvents, setCallbackEvents] = useState<
     Record<string, { description: string; eventId: string; enabled: boolean }>
   >(
-    currWorkspace.eventsFilter === ''
+    currWorkspace.eventsFilter
       ? callbackEventsData
       : Object.entries(callbackEventsData).reduce(
           (
@@ -84,12 +84,6 @@ export default function UpdateWorkspace({
       multiTaskEnabled,
     })
   }, [multiTaskEnabled])
-
-  // console.log(activities)
-
-  // useEffect(() => {
-  //   console.log(workspace)
-  // }, [workspace])
 
   function updateworkspace(
     event:
