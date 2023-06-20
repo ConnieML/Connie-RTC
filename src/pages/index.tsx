@@ -1,118 +1,179 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import React, { useState } from 'react';
+import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
+import { data } from '../data/data.js';
 
-const inter = Inter({ subsets: ['latin'] })
+type ModalProps = {
+  closeModal: () => void;
+  children: React.ReactNode;
+};
 
-export default function Home() {
+const Modal = ({ closeModal, children }: ModalProps) => {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/pages/index.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded shadow-lg">
+        {children}
+        <div className="mt-4 flex justify-end">
+          <button
+            className="bg-gray-200 text-red-600 py-2 px-4 rounded"
+            onClick={closeModal}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+          </button>
         </div>
       </div>
+    </div>
+  );
+};
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+const AdminEditUser =  ({ closeModal }: { closeModal: () => void }) => {
+  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
+  const handleUpdateUser = () => {
+    // Update user information in the database
+    closeModal();
+  };
+
+  const handleCancel = () => {
+    closeModal();
+  };
+
+  return (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Edit User</h2>
+      <label className="block mb-2">
+        User Name:
+        <input
+          className="border border-gray-400 rounded w-full p-2"
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
         />
+      </label>
+      <label className="block mb-2">
+        Role:
+        <input
+          className="border border-gray-400 rounded w-full p-2"
+          type="text"
+          value={userRole}
+          onChange={(e) => setUserRole(e.target.value)}
+        />
+      </label>
+      <label className="block mb-4">
+        Email Address:
+        <input
+          className="border border-gray-400 rounded w-full p-2"
+          type="email"
+          value={userEmail}
+          onChange={(e) => setUserEmail(e.target.value)}
+        />
+      </label>
+      <button
+        className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
+        onClick={handleUpdateUser}
+      >
+        Update User
+      </button>
+      <button
+        className="bg-gray-200 text-red-600 py-2 px-4 rounded"
+        onClick={handleCancel}
+      >
+        Cancel
+      </button>
+    </div>
+  );
+};
+
+const Users = () => {
+  const [displaySkills, setDisplaySkills] = useState<number | undefined>(undefined);
+  const [showModal, setShowModal] = useState(false);
+  const [currentTable, setCurrentTable] = useState(1);
+  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+
+  const handleMoreClick = (id: number) => {
+    setDisplaySkills(id);
+  };
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  return (
+    <div>
+      {showModal && (
+        <Modal closeModal={closeModal}>
+          {modalContent}
+        </Modal>
+      )}
+      <div className="w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto">
+        <div className="my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer">
+          <span>Name</span>
+          <span className="sm:text-left text-right">Email</span>
+          <span className="hidden md:grid">Skills</span>
+          <span className="hidden sm:grid">Status</span>
+        </div>
+        <ul>
+          {data
+            .filter((order) => order.table === currentTable)
+            .map((order, id) => (
+              <li
+                key={id}
+                className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer"
+              >
+                <div className="flex items-center">
+                  <div className="bg-purple-100 p-3 rounded-lg">
+                    <BsPersonFill className="text-purple-800" />
+                  </div>
+                  <div className="pl-4">
+                    <p>{order.name.first + ' ' + order.name.last}</p>
+                    <p style={{ color: 'gray', fontSize: '0.8em' }}>Role: {order.role}</p>
+                    <p style={{ color: 'gray', fontSize: '0.8em' }}>
+                      Level of Access: {order.levelOfAccess}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-gray-600 sm:text-left text-right">
+                  {order.name.first}@gmail.com
+                </p>
+                <div className="flex flex-wrap">
+                  {order.skills.split(', ').slice(0, displaySkills === order.id ? undefined : 3).map((skill, index) => (
+                    <span
+                      key={index}
+                      className="bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                  {order.skills.split(', ').length > 3 && (
+                    <span
+                      className="text-sm text-gray-700 cursor-pointer"
+                      onClick={() => handleMoreClick(order.id)}
+                    >
+                      ...More
+                    </span>
+                  )}
+                </div>
+                <div className="sm:flex hidden justify-between items-center">
+                  <span className="bg-purple-100 rounded-full px-3 py-1 text-sm font-semibold text-purple-800 mr-2 mb-2">
+                    {order.status}
+                  </span>
+                  <BsThreeDotsVertical
+                    onClick={() => {
+                      setModalContent(<AdminEditUser closeModal={closeModal} />);
+                      openModal();
+                    }}
+                  />
+                </div>
+              </li>
+            ))}
+        </ul>
       </div>
+    </div>
+  );
+};
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Users;
