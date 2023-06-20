@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "dotenv next dev",
-    "build": "dotenv next build",
-    "start": "dotenv next start",
-    "lint": "dotenv next lint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@types/node": "20.3.1",
