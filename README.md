@@ -1,6 +1,12 @@
 # Connie-RTC
 Phase 1 of the Connie CPaaS Prototype
 
+## Login Info
+
+Login with your Okta credentials (message Cameron if you have trouble logging in)
+
+Your user type is set inside of the Okta Admin (Message Cameron if you want your role changed for dev purposes)
+
 ## Local setup instructions
 1. Fork this repo
 2. Clone your forked repo to your local machine
