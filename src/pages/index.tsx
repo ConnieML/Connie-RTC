@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import { signIn, signOut, useSession } from "next-auth/react"
-import ClientSideAuth from './client-auth'
+import ClientSideAuth from '../components/client-auth'
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth'
 import OktaProvider from 'next-auth/providers/okta'
-import axios from 'axios'
 
 export const authOptions = {
   providers: [
@@ -14,8 +13,6 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, account }: any) {
         if (account) {
-            console.log(account)
-            console.log(token)
             token.accessToken = account.access_token;
             token.idToken = account.id_token;
             token.oktaId = account.providerAccountId;
@@ -29,12 +26,14 @@ export const authOptions = {
         if (dateNowInSeconds > tokenParsed.exp) {
              throw Error("expired token");
         }
+        token.userType = tokenParsed.userType;
 				return token;
     },
     async session({ session, token }: any) {
       session.accessToken = token.accessToken;
       session.idToken = token.idToken;
       session.oktaId = token.oktaId;
+      session.userType = token.userType;
       return session;
     }
   },
