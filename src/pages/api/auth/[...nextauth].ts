@@ -16,7 +16,6 @@ export const authOptions = {
             token.accessToken = account.access_token;
             token.idToken = account.id_token;
             token.oktaId = account.providerAccountId;
-            console.log(account.sid_token)
             
         }
 
@@ -30,6 +29,7 @@ export const authOptions = {
 				return token;
     },
     async session({ session, token }: any) {
+      session.userType = token.userType
       session.accessToken = token.accessToken;
       session.idToken = token.idToken;
       session.oktaId = token.oktaId;
