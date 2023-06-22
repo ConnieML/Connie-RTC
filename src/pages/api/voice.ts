@@ -14,7 +14,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     // Placing an outbound call from the Twilio client
     const dial = resp.dial(
       { callerId: process.env.TWILIO_CALLER_ID },
-      '+19132441797'
+      req.body.To
     );
   } else {
     resp.say('Thanks for calling!');
