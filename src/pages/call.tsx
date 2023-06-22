@@ -61,7 +61,7 @@ export default function CallPage() {
   const makeCall = async () => {
     const params = {
       // get the phone number to call from the DOM
-      To: '+19132441797',
+      To: number,
     };
 
     if (device) {
