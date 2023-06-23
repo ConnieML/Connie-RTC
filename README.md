@@ -10,7 +10,7 @@ Your user type is set inside of the Okta Admin (Message Cameron if you want your
 ## Local setup instructions
 1. Fork this repo
 2. Clone your forked repo to your local machine
-3. Install packages and dependencies: `yarn`
+3. Install packages and dependencies: `yarn --frozen-lockfile`
 4. Create a `.env` file in the root directory and add the following:
 ```zsh
 TWILIO_ACCOUNT_SID="Enter your twilio account sid here"
