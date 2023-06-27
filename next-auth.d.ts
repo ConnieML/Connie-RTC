@@ -7,6 +7,9 @@ declare module "next-auth" {
       id: string
       name: string
     }
+    idToken: string
+    oktaId: string
+    accessToken: string
     userType: string
   }
 }
