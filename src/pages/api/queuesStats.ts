@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Twilio } from 'twilio'
+import { twilioClient } from '@/lib/twilioClient'
 
 /* Dev notes:
 Resources: 
