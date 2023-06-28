@@ -29,6 +29,16 @@ export default async function handler(
     .statistics()
     .fetch()
     .then(workspace_statistics => workspace_statistics.realtime);
+  
+  const workers = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
+    .workers
+    .list()
+    .then(workers => workers.map(worker => {
+      return {
+        "friendly_name": worker.friendlyName,
+        "activity_name": worker.activityName,  
+      }
+    }));
 
   const {
     tasks_by_status: tasksByStatus,
@@ -63,14 +73,16 @@ export default async function handler(
   }
   )
 
-  // console.log(
-  //   `Active tasks: ${activeTasks},
-  //   Waiting tasks: ${waitingTasks},
-  //   longestTaskWaitingAge: ${longestTaskWaitingAge},
-  //   Available workers: ${availableWorkers},
-  //   Unavailable workers: ${unavailableWorkers},
-  //   Offline workers: ${offlineWorkers}`
-  // )
+  console.log(
+    `Active tasks: ${activeTasks},
+    Waiting tasks: ${waitingTasks},
+    longestTaskWaitingAge: ${longestTaskWaitingAge},
+    Available workers: ${availableWorkers},
+    Unavailable workers: ${unavailableWorkers},
+    Offline workers: ${offlineWorkers},
+    Workers: ${JSON.stringify(workers)}
+    `
+  )
 }
 
 /*
