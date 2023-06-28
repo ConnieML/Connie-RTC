@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { twilioClient } from '@/lib/twilioClient'
-import { stat } from 'fs';
 
 /* Dev notes:
 Resources: 
@@ -25,20 +24,11 @@ export default async function handler(
 
   const { WorkspaceSid: workspaceSid } = req.body
 
+  // Fetch high-level task and worker stats
   const realtimeWorkspaceStats = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
     .statistics()
     .fetch()
     .then(workspace_statistics => workspace_statistics.realtime);
-  
-  const workers = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
-    .workers
-    .list()
-    .then(workers => workers.map(worker => {
-      return {
-        "friendly_name": worker.friendlyName,
-        "activity_name": worker.activityName,  
-      }
-    }));
 
   const {
     tasks_by_status: tasksByStatus,
@@ -50,7 +40,19 @@ export default async function handler(
   const activeTasks = reserved + wrapping + assigned + pending
   const waitingTasks = reserved + pending
 
+  // Fetch workers stats
+  const workers = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
+    .workers
+    .list()
+    .then(workers => workers.map(worker => {
+      return {
+        "friendly_name": worker.friendlyName,
+        "activity_name": worker.activityName,
+      }
+    }));
+
   let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
+
   workerActivityStats.forEach((workerActivityStat: {
     friendly_name: string;
     workers: number;
@@ -73,16 +75,82 @@ export default async function handler(
   }
   )
 
-  console.log(
-    `Active tasks: ${activeTasks},
-    Waiting tasks: ${waitingTasks},
-    longestTaskWaitingAge: ${longestTaskWaitingAge},
-    Available workers: ${availableWorkers},
-    Unavailable workers: ${unavailableWorkers},
-    Offline workers: ${offlineWorkers},
-    Workers: ${JSON.stringify(workers)}
-    `
-  )
+  // Fetch task queues stats
+  const taskQueueIds = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
+    .taskQueues
+    .list()
+    .then(taskQueues => taskQueues.map(taskQueue => {
+      return {
+        "sid": taskQueue.sid,
+        "friendlyName": taskQueue.friendlyName,
+      }
+    }))
+
+  const taskQueues = await Promise.all(taskQueueIds.map(taskQueueId => {
+    return twilioClient.taskrouter.v1.workspaces(workspaceSid)
+      .taskQueues(taskQueueId.sid)
+      .realTimeStatistics()
+      .fetch()
+      .then(taskQueueStat => {
+        // TODO: write a shared function to not repeat the code below and above
+        const {
+          tasksByStatus,
+          longestTaskWaitingAge,
+          activityStatistics: workerActivityStats
+        } = taskQueueStat
+
+        let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
+
+        workerActivityStats.forEach((workerActivityStat: {
+          friendly_name: string;
+          workers: number;
+          sid: string;
+        }) => {
+          switch (workerActivityStat.friendly_name) {
+            case 'Available':
+              availableWorkers = workerActivityStat.workers
+              break;
+            case 'Unavailable':
+              unavailableWorkers = workerActivityStat.workers
+              break;
+            case 'Offline':
+              offlineWorkers = workerActivityStat.workers
+              break;
+            default:
+              console.log(`Unknown worker activity: ${workerActivityStat.friendly_name}`)
+              break;
+          }
+        }
+        )
+
+        const { reserved, wrapping, assigned, pending } = tasksByStatus // excluding completed and canceled
+        const activeTasks = reserved + wrapping + assigned + pending
+        const waitingTasks = reserved + pending
+
+        return {
+          "friendlyName": taskQueueId.friendlyName,
+          "activeTasks": activeTasks,
+          "waitingTasks": waitingTasks,
+          "longestTaskWaitingAge": longestTaskWaitingAge,
+          "Available workers": availableWorkers,
+          "Unavailable workers": unavailableWorkers,
+          "Offline workers": offlineWorkers,
+        }
+      })
+  }))
+
+  // console.log(
+  //   `
+  //   Active tasks: ${activeTasks},
+  //   Waiting tasks: ${waitingTasks},
+  //   longestTaskWaitingAge: ${longestTaskWaitingAge},
+  //   Available workers: ${availableWorkers},
+  //   Unavailable workers: ${unavailableWorkers},
+  //   Offline workers: ${offlineWorkers},
+  //   Workers: ${JSON.stringify(workers)},
+  //   Task queues: ${JSON.stringify(taskQueues)}
+  //   `
+  // )
 }
 
 /*
