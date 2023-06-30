@@ -132,73 +132,23 @@ export default async function handler(
           "activeTasks": activeTasks,
           "waitingTasks": waitingTasks,
           "longestTaskWaitingAge": longestTaskWaitingAge,
-          "Available workers": availableWorkers,
-          "Unavailable workers": unavailableWorkers,
-          "Offline workers": offlineWorkers,
+          "availableWorkers": availableWorkers,
+          "unavailableWorkers": unavailableWorkers,
+          "offlineWorkers": offlineWorkers,
         }
       })
   }))
 
-  // console.log(
-  //   `
-  //   Active tasks: ${activeTasks},
-  //   Waiting tasks: ${waitingTasks},
-  //   longestTaskWaitingAge: ${longestTaskWaitingAge},
-  //   Available workers: ${availableWorkers},
-  //   Unavailable workers: ${unavailableWorkers},
-  //   Offline workers: ${offlineWorkers},
-  //   Workers: ${JSON.stringify(workers)},
-  //   Task queues: ${JSON.stringify(taskQueues)}
-  //   `
-  // )
+  console.dir(
+    {
+      "activeTasks": activeTasks,
+      "waitingTasks": waitingTasks,
+      "longestTaskWaitingAge": longestTaskWaitingAge,
+      "availableWorkers": availableWorkers,
+      "unavailableWorkers": unavailableWorkers,
+      "offlineWorkers": offlineWorkers,
+      "workers": workers,
+      "taskQueues": taskQueues,
+    }
+  )
 }
-
-/*
-  realtime: {
-    workspace_sid: 'WS7768f3bd9ef5ba43054a9d59f8d01bfa',
-    longest_task_waiting_sid: 'WTdca798966016904948d05bf5c9e06a5d',
-    account_sid: 'AC2517201653c12113c60aa437ebdc4bb3',
-    total_workers: 2,
-    tasks_by_status: {
-      reserved: 0,
-      completed: 0,
-      wrapping: 0,
-      assigned: 0,
-      canceled: 0,
-      pending: 4
-    },
-    activity_statistics: [ [Object], [Object], [Object], [Object] ],
-    tasks_by_priority: { '0': 4 },
-    longest_task_waiting_age: 973,
-    total_tasks: 4
-  },
-
-event:  [Object: null prototype] {
-  TaskPriority: '0',
-  EventType: 'task.created',
-  WorkflowName: 'Default Fifo Workflow',
-  Timestamp: '1687959728',
-  TaskAge: '0',
-  TaskAssignmentStatus: 'pending',
-  TaskAttributes: '{}',
-  TaskVersion: '0',
-  TaskChannelUniqueName: 'voice',
-  WorkspaceName: 'Python Quickstart',
-  OperatingUnitSid: 'OUd526262c7013976328a61c7a6456b283',
-  TaskChannelSid: 'TC44bb88cd7e2f418406d9f2f7aa7605fe',
-  TaskQueueEnteredDate: '1687959728',
-  TaskDateCreated: '1687959728',
-  ResourceType: 'task',
-  TaskQueueName: 'Sample Queue',
-  WorkflowSid: 'WW13914047ce49330c010e2a879da6dc71',
-  AccountSid: 'AC2517201653c12113c60aa437ebdc4bb3',
-  Sid: 'EVe9d33482d7385787fb325b64d2b6f3e4',
-  TimestampMs: '1687959728350',
-  TaskQueueTargetExpression: '1==1',
-  WorkspaceSid: 'WS7768f3bd9ef5ba43054a9d59f8d01bfa',
-  TaskQueueSid: 'WQac96cdef21bd916af7e2f163026aae6b',
-  EventDescription: 'Task WT6ec923d096d908543ceb7eac220890dd created',
-  TaskSid: 'WT6ec923d096d908543ceb7eac220890dd',
-  ResourceSid: 'WT6ec923d096d908543ceb7eac220890dd'
-}
-*/
