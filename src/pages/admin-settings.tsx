@@ -1,66 +1,7 @@
 import React, { useState } from 'react';
-import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
+import { BsPersonFill, BsThreeDots, BsThreeDotsVertical } from 'react-icons/bs';
 import { data, taskQueuesData } from '../data/data';
-
-const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
-  const [userName, setUserName] = useState('');
-  const [userRole, setUserRole] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-
-  const handleUpdateUser = () => {
-    // Update user information in the database
-    setShowModal(false);
-  };
-
-  const handleCancel = () => {
-    setShowModal(false);
-  };
-
-  return (
-    <div>
-      <h2 className='text-2xl font-bold mb-4'>Create a New User</h2>
-      <label className='block mb-2'>
-        User Name:
-        <input
-          className='border border-gray-400 rounded w-full p-2'
-          type='text'
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        />
-      </label>
-      <label className='block mb-2'>
-        Role:
-        <input
-          className='border border-gray-400 rounded w-full p-2'
-          type='text'
-          value={userRole}
-          onChange={(e) => setUserRole(e.target.value)}
-        />
-      </label>
-      <label className='block mb-4'>
-        Email Address:
-        <input
-          className='border border-gray-400 rounded w-full p-2'
-          type='email'
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-        />
-      </label>
-      <button
-        className='bg-purple-600 text-white py-2 px-4 rounded mr-2'
-        onClick={handleUpdateUser}
-      >
-        Update User
-      </button>
-      <button
-        className='bg-gray-200 text-red-600 py-2 px-4 rounded'
-        onClick={handleCancel}
-      >
-        Cancel
-      </button>
-    </div>
-  );
-};
+import AdminEditUser from '../components/AdminEditUser';
 
 const AdminEditTask = ({ setShowModal }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
   const [taskName, setTaskName] = useState('');
@@ -146,14 +87,6 @@ const handleMoreClick = (id: number) => {
   <div className='flex justify-between mb-4'>
     <div>
       <button
-        className={`py-2 px-4 rounded ${
-          currentTable === 1 ? 'bg-purple-600 text-white' : 'bg-gray-200 text-purple-800'
-        }`}
-        onClick={() => setCurrentTable(1)}
-      >
-        Users
-      </button>
-      <button
         className={`py-2 px-4 rounded ml-2 ${
           currentTable === 3 ? 'bg-purple-600 text-white' : 'bg-gray-200 text-purple-800'
         }`}
@@ -233,11 +166,11 @@ const handleMoreClick = (id: number) => {
                             alt={user.name}
                             />
                         ))}
-                        <BsThreeDotsVertical
-                            onClick={() => {
-                            setModalContent(<AdminEditTask setShowModal={setShowModal} />);
+                        <BsThreeDots
+                          onClick={() => {
+                            setModalContent(<AdminEditUser setShowModal={setShowModal} />);
                             setShowModal(true);
-                            }}
+                          }}
                         />
                         </div>
                     </div>
@@ -299,11 +232,11 @@ const handleMoreClick = (id: number) => {
                       <span className='bg-purple-100 rounded-full px-3 py-1 text-sm font-semibold text-purple-800 mr-2 mb-2'>
                         {order.status}
                       </span>
-                      <BsThreeDotsVertical
-                      onClick={() => {
-                        setModalContent(<AdminEditUser setShowModal={setShowModal} />);
-                        setShowModal(true);
-                      }}
+                      <BsThreeDots
+                        onClick={() => {
+                          setModalContent(<AdminEditUser setShowModal={setShowModal} />);
+                          setShowModal(true);
+                        }}
                       />
                     </div>
                   </li>
