@@ -170,15 +170,14 @@ export default async function handler(
    taskQueuesDetails: taskQueuesDetails,
  }
 
-  // Grab the first Sync Service, assuming we're using the default one provided for new Twilio accounts
-  const syncServiceSid = await twilioClient.sync.v1.services.list()
-    .then(services => services[0].sid)
+  const syncServiceSid = await twilioClient.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID!).fetch()
+    .then(service => service.sid)
 
-  const syncMapsInstance = twilioClient.sync.v1.services(syncServiceSid).syncMaps
+  const syncMapsInstance = twilioClient.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID!).syncMaps
 
   const syncMaps = await syncMapsInstance.list()
 
-  // Grab the first Sync Map for a similar reason as above
+  // Grab the first Sync Map from the Sync Service, assuming we're using only one per account
   const syncMapSid = syncMaps.length !== 0 ? syncMaps[0].sid :
     await twilioClient.sync.v1.services(syncServiceSid).syncMaps
       .create({ uniqueName: 'queuesStats' }).then(syncMap => syncMap.sid)
