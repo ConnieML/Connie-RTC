@@ -1,45 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { twilioClient } from '@/lib/twilioClient'
-
-interface workersDetails {
-  [sid: string]: {
-    friendlyName: string;
-    activityName: string;
-  }
-}
-
-interface taskQueuesDetails {
-  [sid: string]: {
-    friendlyName: string;
-    activeTasks: number;
-    waitingTasks: number;
-    longestTaskWaitingAge: number;
-    availableWorkers: number;
-    unavailableWorkers: number;
-    offlineWorkers: number;
-  }
-}
-
-interface SyncMapData {
-  tasks: {
-    activeTasks: number;
-    waitingTasks: number;
-    longestTaskWaitingAge: number;
-  };
-  workers: {
-    availableWorkers: number;
-    unavailableWorkers: number;
-    offlineWorkers: number;
-    workersDetails: workersDetails;
-  };
-  taskQueuesDetails: taskQueuesDetails;
-}
-
-interface workerActivityStat {
-  friendly_name: string;
-  workers: number;
-  sid: string;
-}
+import { WorkersDetails, TaskQueuesDetails, SyncMapData, WorkerActivityStat } from '@/lib/syncInterfaces'
 
 /**
  * Callback Event URL for Twilio TaskRouter, called each time an Event takes place
@@ -90,7 +51,7 @@ export default async function handler(
     .workers
     .list()
     .then(workers => {
-      let workersDetails: workersDetails = {}
+      let workersDetails: WorkersDetails = {}
       workers.forEach(worker => {
         workersDetails[worker.sid] = {
           friendlyName: worker.friendlyName,
@@ -101,7 +62,7 @@ export default async function handler(
     });
 
   let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-  workerActivityStats.forEach((workerActivityStat: workerActivityStat) => {
+  workerActivityStats.forEach((workerActivityStat: WorkerActivityStat) => {
     switch (workerActivityStat.friendly_name) {
       case 'Available':
         availableWorkers = workerActivityStat.workers
@@ -135,7 +96,7 @@ export default async function handler(
       }
     }))
 
-  const taskQueuesDetails: taskQueuesDetails = {}
+  const taskQueuesDetails: TaskQueuesDetails = {}
   async function getTaskQueuesDetails(taskQueues: { sid: string; friendlyName: string; }[]) {
     for (const taskQueue of taskQueues) {
       await twilioClient.taskrouter.v1.workspaces(workspaceSid)
@@ -151,7 +112,7 @@ export default async function handler(
           } = taskQueueStat
 
           let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-          workerActivityStats.forEach((workerActivityStat: workerActivityStat) => {
+          workerActivityStats.forEach((workerActivityStat: WorkerActivityStat) => {
             switch (workerActivityStat.friendly_name) {
               case 'Available':
                 availableWorkers = workerActivityStat.workers
