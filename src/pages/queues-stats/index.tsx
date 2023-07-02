@@ -1,4 +1,15 @@
+import { SyncClient } from "twilio-sync"
+import { use, useEffect, useState } from "react"
+
 export default function QueuesStats() {
+    useEffect(() => {
+        fetch('/api/accessToken')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+    }, [])
+    
     return (
         <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
             <h1 className="text-3xl font-semibold">Dashboard</h1>
