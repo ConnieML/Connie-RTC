@@ -1,12 +1,48 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { twilioClient } from '@/lib/twilioClient'
 
+interface workersDetails {
+  [sid: string]: {
+    friendlyName: string;
+    activityName: string;
+  }
+}
+
+interface taskQueuesDetails {
+  [sid: string]: {
+    friendlyName: string;
+    activeTasks: number;
+    waitingTasks: number;
+    longestTaskWaitingAge: number;
+    availableWorkers: number;
+    unavailableWorkers: number;
+    offlineWorkers: number;
+  }
+}
+
 interface SyncMapData {
-  [key: string]: any
+  tasks: {
+    activeTasks: number;
+    waitingTasks: number;
+    longestTaskWaitingAge: number;
+  };
+  workers: {
+    availableWorkers: number;
+    unavailableWorkers: number;
+    offlineWorkers: number;
+    workersDetails: workersDetails;
+  };
+  taskQueuesDetails: taskQueuesDetails;
+}
+
+interface workerActivityStat {
+  friendly_name: string;
+  workers: number;
+  sid: string;
 }
 
 /**
- * Callback Event URL for Twilio TaskRouter, called each time an Event takes place (e.g. incoming call, new task, etc.)
+ * Callback Event URL for Twilio TaskRouter, called each time an Event takes place
  * @param req a Twilio Event object
  * @param res no content (per Twilio docs)
  */
@@ -54,12 +90,7 @@ export default async function handler(
     .workers
     .list()
     .then(workers => {
-      let workersDetails: {
-        [sid: string]: {
-          friendlyName: string;
-          activityName: string;
-        }
-      } = {}
+      let workersDetails: workersDetails = {}
       workers.forEach(worker => {
         workersDetails[worker.sid] = {
           friendlyName: worker.friendlyName,
@@ -70,11 +101,7 @@ export default async function handler(
     });
 
   let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-  workerActivityStats.forEach((workerActivityStat: {
-    friendly_name: string;
-    workers: number;
-    sid: string;
-  }) => {
+  workerActivityStats.forEach((workerActivityStat: workerActivityStat) => {
     switch (workerActivityStat.friendly_name) {
       case 'Available':
         availableWorkers = workerActivityStat.workers
@@ -108,18 +135,8 @@ export default async function handler(
       }
     }))
 
-  const taskQueuesDetails: {
-    [sid: string]: {
-      friendlyName: string;
-      activeTasks: number;
-      waitingTasks: number;
-      longestTaskWaitingAge: number;
-      availableWorkers: number;
-      unavailableWorkers: number;
-      offlineWorkers: number;
-    }
-  } = {}
-  async function getTaskQueuesDetails(taskQueues: any) {
+  const taskQueuesDetails: taskQueuesDetails = {}
+  async function getTaskQueuesDetails(taskQueues: { sid: string; friendlyName: string; }[]) {
     for (const taskQueue of taskQueues) {
       await twilioClient.taskrouter.v1.workspaces(workspaceSid)
         .taskQueues(taskQueue.sid)
@@ -134,11 +151,7 @@ export default async function handler(
           } = taskQueueStat
 
           let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-          workerActivityStats.forEach((workerActivityStat: {
-            friendly_name: string;
-            workers: number;
-            sid: string;
-          }) => {
+          workerActivityStats.forEach((workerActivityStat: workerActivityStat) => {
             switch (workerActivityStat.friendly_name) {
               case 'Available':
                 availableWorkers = workerActivityStat.workers
@@ -156,7 +169,7 @@ export default async function handler(
           }
           )
 
-          const { reserved, wrapping, assigned, pending } = tasksByStatus // excluding completed and canceled
+          const { reserved, wrapping, assigned, pending } = tasksByStatus
           const activeTasks = reserved + wrapping + assigned + pending
           const waitingTasks = reserved + pending
 
@@ -174,72 +187,67 @@ export default async function handler(
   }
   await getTaskQueuesDetails(taskQueues)
 
-  const syncMapData: SyncMapData =
-  {
-    tasks: {
-      activeTasks: activeTasks,
-      waitingTasks: waitingTasks,
-      longestTaskWaitingAge: longestTaskWaitingAge,
-    },
-    workers: {
-      availableWorkers: availableWorkers,
-      unavailableWorkers: unavailableWorkers,
-      offlineWorkers: offlineWorkers,
-      workersDetails: workersDetails,
-    },
-    taskQueuesDetails: taskQueuesDetails,
+  /*
+  =========================================
+  | Update Sync Map with the latest stats |
+  =========================================
+  */
+ 
+ const syncMapData: SyncMapData =
+ {
+   tasks: {
+     activeTasks: activeTasks,
+     waitingTasks: waitingTasks,
+     longestTaskWaitingAge: longestTaskWaitingAge,
+   },
+   workers: {
+     availableWorkers: availableWorkers,
+     unavailableWorkers: unavailableWorkers,
+     offlineWorkers: offlineWorkers,
+     workersDetails: workersDetails,
+   },
+   taskQueuesDetails: taskQueuesDetails,
+ }
+
+  // Grab the first Sync Service, assuming we're using the default one provided for new Twilio accounts
+  const syncServiceSid = await twilioClient.sync.v1.services.list()
+    .then(services => services[0].sid)
+
+  const syncMapsInstance = twilioClient.sync.v1.services(syncServiceSid).syncMaps
+
+  const syncMaps = await syncMapsInstance.list()
+
+  // Grab the first Sync Map for a similar reason as above
+  const syncMapSid = syncMaps.length !== 0 ? syncMaps[0].sid :
+    await twilioClient.sync.v1.services(syncServiceSid).syncMaps
+      .create({ uniqueName: 'queuesStats' }).then(syncMap => syncMap.sid)
+
+  const syncMapItems = await syncMapsInstance(syncMapSid).syncMapItems.list()
+
+  // Create Sync Map Items if they don't exist, otherwise update them
+  if (syncMapItems.length === 0) {
+    await Promise.all(Object.keys(syncMapData).map(key => {
+      return new Promise((resolve, reject) => {
+        const syncMapItem = twilioClient.sync.v1.services(syncServiceSid).syncMaps(syncMapSid).syncMapItems
+          .create({ key, data: syncMapData[key as keyof SyncMapData] }).then(sync_map_item => sync_map_item)
+        if (syncMapItem) {
+          resolve(syncMapItem)
+        } else {
+          reject()
+        }
+      })
+    }))
+  } else {
+    await Promise.all(Object.keys(syncMapData).map(key => {
+      return new Promise((resolve, reject) => {
+        const syncMapItem = twilioClient.sync.v1.services(syncServiceSid).syncMaps(syncMapSid).syncMapItems(key)
+          .update({ data: syncMapData[key as keyof SyncMapData] }).then(sync_map_item => sync_map_item)
+        if (syncMapItem) {
+          resolve(syncMapItem)
+        } else {
+          reject()
+        }
+      })
+    }))
   }
-
-  console.log(JSON.stringify(syncMapData, null, 2));
-
-  //   /*
-  //   =========================================
-  //   | Update Sync Map with the latest stats |
-  //   =========================================
-  //   */
-
-  //   // console.dir(syncMapData)
-
-  //   // Assuming we're using the default service that is automatically provided for each new Twilio account
-  //   const syncServiceSid = await twilioClient.sync.v1.services.list()
-  //     .then(services => services[0].sid)
-  //   // console.log("syncServiceSid: " + syncServiceSid)
-
-  //   const syncMapsInstance = twilioClient.sync.v1.services(syncServiceSid).syncMaps
-  //   // console.log("syncMapsInstance: " + syncMapsInstance)
-
-  //   const syncMaps = await syncMapsInstance.list()
-  //   // console.log("syncMaps: " + syncMaps)
-
-  //   // Assuming we're only using one Sync Map for all the stats per account
-  //   const syncMapSid = syncMaps.length !== 0 ? syncMaps[0].sid :
-  //     await twilioClient.sync.v1.services(syncServiceSid).syncMaps
-  //       .create({ uniqueName: 'queuesStats' }).then(syncMap => syncMap.sid)
-  //   console.log("syncMapSid: " + syncMapSid)
-
-  //   const syncMapItems = await syncMapsInstance(syncMapSid).syncMapItems.list()
-  //   // console.log("syncMapItems: " + syncMapItems)
-  //   // console.log("syncMapItems: " + syncMapItems.length)
-
-  //   // console.log(Object.keys(syncMapData).map(key => console.log(key)))
-
-  //   if (syncMapItems.length === 0) {
-  //     const promises = Object.keys(syncMapData).map(key => {
-  //       return new Promise((resolve, reject) => {
-  //         const syncMapItem = twilioClient.sync.v1.services(syncServiceSid).syncMaps(syncMapSid).syncMapItems
-  //           .create({ key, data: syncMapData[key] }, (error) => console.log(error)).then(sync_map_item => sync_map_item)
-  //         if (syncMapItem) {
-  //           resolve(syncMapItem)
-  //         } else {
-  //           reject()
-  //         }
-  //       })
-  //     })
-  //     await Promise.all(promises)
-  //   // } else {
-  //   //   Object.keys(syncMapData).forEach(key => {
-  //   //     twilioClient.sync.v1.services(syncServiceSid).syncMaps(syncMapSid).syncMapItems(key)
-  //   //       .update({ data: syncMapData[key] })
-  //   //   })
-  //   }
 }
