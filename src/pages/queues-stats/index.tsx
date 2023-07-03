@@ -1,6 +1,6 @@
 import { SyncClient } from "twilio-sync"
 import { useEffect, useState } from "react"
-import { WorkersDetails, TaskQueuesDetails, SyncMapData } from '@/lib/syncInterfaces'
+import { SyncMapData } from '@/lib/syncInterfaces'
 
 export default function QueuesStats() {
     const [syncClient, setSyncClient] = useState<SyncClient | null>(null)
@@ -18,7 +18,6 @@ export default function QueuesStats() {
         },
         taskQueuesDetails: {}
     })
-    const [syncMapSid, setSyncMapSid] = useState<string>('')
 
     useEffect(() => {
         async function initializeSyncClient() {
@@ -29,40 +28,34 @@ export default function QueuesStats() {
                 })
         }
         initializeSyncClient()
+    }, [])
 
-        async function getSyncMapSid() {
-            await fetch('/api/syncMaps')
-                .then(response => response.json())
-                .then(data => {
-                    setSyncMapSid(data.syncMaps[0].sid)
-                })
-        }
-        getSyncMapSid()
-
-        // if (syncMapSid) {
-        //     syncClient?.map(syncMapSid).then(function (map) {
-        //         map.on('itemAdded', function(item) {
-        //             // update the UI to reflect the new item
-        //             console.log('key', item.key);
-        //             console.log('JSON data', item.value);    
-        //         });
-                
-        //         // Note that there are two separate events for map item adds and map item updates:
-        //         map.on('itemUpdated', function(item) {
-        //             console.log('key', item.key);
-        //             console.log('JSON data', item.value);
-        //         });
-        //     });
-        // }
-
-        // return () => {
-        //     if (syncClient) {
-        //         syncClient.shutdown()
-        //     }
-        // }
-  
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [syncMapSid])
+    useEffect(() => {
+        syncClient?.map('queuesStats').then((map) => {
+            map.on("itemAdded", (event) => {
+                const { key, data } = event.item.descriptor;
+                setSyncMapData((prevState) => {
+                    return {
+                        ...prevState,
+                        [key]: data
+                    }
+                }
+                );
+            });
+        });
+        syncClient?.map('queuesStats').then((map) => {
+            map.on("itemUpdated", (event) => {
+                const { key, data } = event.item.descriptor;
+                setSyncMapData((prevState) => {
+                    return {
+                        ...prevState,
+                        [key]: data
+                    }
+                }
+                );
+            });
+        });
+    }, [syncClient])
 
     return (
         <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
