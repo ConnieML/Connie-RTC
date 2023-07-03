@@ -64,27 +64,41 @@ export default function QueuesStats() {
 
             <h2 className="mt-10 text-xl font-semibold">Tasks Overview</h2>
             <ul>
-                <li>Active Tasks</li>
-                <li>Waiting Tasks</li>
-                <li>Longest Wait</li>
+                <li>Active Tasks: {syncMapData.tasks.activeTasks}</li>
+                <li>Waiting Tasks: {syncMapData.tasks.waitingTasks}</li>
+                <li>Longest Wait: {(syncMapData.tasks.longestTaskWaitingAge / 60).toFixed(0)}m</li>
             </ul>
 
-            <h2 className="mt-10 text-xl font-semibold">Available Agents</h2>
+            <h2 className="mt-10 text-xl font-semibold">Agents Overview</h2>
             <ul>
-                <li>Available</li>
-                <li>Unavailable</li>
-                <li>Offline</li>
+                <li>Available: {syncMapData.workers.availableWorkers}</li>
+                <li>Unavailable: {syncMapData.workers.unavailableWorkers}</li>
+                <li>Offline: {syncMapData.workers.offlineWorkers}</li>
+            </ul>
+            <h3 className="mt-10 text-xl font-semibold">Agents</h3>
+            <ul>
+                {Object.keys(syncMapData.workers.workersDetails).map((workerSid) => {
+                    return (
+                        <li key={workerSid} className="ml-4 list-disc">
+                            {JSON.stringify(syncMapData.workers.workersDetails[workerSid])}
+                        </li>
+                    )
+                }
+                )}
             </ul>
 
             <h2 className="mt-10 text-xl font-semibold">Task Queues</h2>
-
-            {/* <button onClick={
-                () => {
-                    console.log(syncMapSid)
+            <ul>
+                {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
+                    return (
+                        <li key={taskQueueSid} className="ml-4 list-disc">
+                            {syncMapData.taskQueuesDetails[taskQueueSid].friendlyName}:{' '}
+                            {JSON.stringify(syncMapData.taskQueuesDetails[taskQueueSid])}
+                        </li>
+                    )
                 }
-            }>
-                Click me
-            </button> */}
+                )}
+            </ul>
         </div>
     )
 }
