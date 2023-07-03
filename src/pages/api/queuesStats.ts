@@ -20,6 +20,53 @@ export default async function handler(
 
   const { WorkspaceSid: workspaceSid } = req.body
 
+  function calcStats(
+    tasksByStatus: {
+      reserved: number
+      wrapping: number
+      assigned: number
+      pending: number
+    },
+    workerActivityStats: WorkerActivityStat[]
+  ): [
+      activeTasks: number,
+      waitingTasks: number,
+      availableWorkers: number,
+      unavailableWorkers: number,
+      offlineWorkers: number,
+    ] {
+    const { reserved, wrapping, assigned, pending } = tasksByStatus
+    const activeTasks = reserved + wrapping + assigned + pending // excluding `completed` and `canceled`
+    const waitingTasks = reserved + pending
+
+    let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
+    workerActivityStats.forEach((workerActivityStat: WorkerActivityStat) => {
+      switch (workerActivityStat.friendly_name) {
+        case 'Available':
+          availableWorkers = workerActivityStat.workers
+          break;
+        case 'Unavailable':
+          unavailableWorkers = workerActivityStat.workers
+          break;
+        case 'Offline':
+          offlineWorkers = workerActivityStat.workers
+          break;
+        default:
+          console.log(`Unknown worker activity: ${workerActivityStat.friendly_name}`)
+          break;
+      }
+    }
+    )
+
+    return [
+      activeTasks,
+      waitingTasks,
+      availableWorkers,
+      unavailableWorkers,
+      offlineWorkers,
+    ]
+  }
+
   /*
   ============================================
   | Fetch high-level Tasks and Workers stats |
@@ -37,9 +84,8 @@ export default async function handler(
     activity_statistics: workerActivityStats
   } = realtimeWorkspaceStats
 
-  const { reserved, wrapping, assigned, pending } = tasksByStatus // excluding completed and canceled
-  const activeTasks = reserved + wrapping + assigned + pending
-  const waitingTasks = reserved + pending
+  const [activeTasks, waitingTasks, availableWorkers, unavailableWorkers, offlineWorkers] =
+    calcStats(tasksByStatus, workerActivityStats)
 
   /*
   ================================
@@ -60,25 +106,6 @@ export default async function handler(
       })
       return workersDetails
     });
-
-  let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-  workerActivityStats.forEach((workerActivityStat: WorkerActivityStat) => {
-    switch (workerActivityStat.friendly_name) {
-      case 'Available':
-        availableWorkers = workerActivityStat.workers
-        break;
-      case 'Unavailable':
-        unavailableWorkers = workerActivityStat.workers
-        break;
-      case 'Offline':
-        offlineWorkers = workerActivityStat.workers
-        break;
-      default:
-        console.log(`Unknown worker activity: ${workerActivityStat.friendly_name}`)
-        break;
-    }
-  }
-  )
 
   /*
   ====================================
@@ -104,35 +131,14 @@ export default async function handler(
         .realTimeStatistics()
         .fetch()
         .then(taskQueueStat => {
-          // TODO: write a shared function to not repeat the code below and above
           const {
             tasksByStatus,
             longestTaskWaitingAge,
             activityStatistics: workerActivityStats
           } = taskQueueStat
 
-          let [availableWorkers, unavailableWorkers, offlineWorkers] = [0, 0, 0]
-          workerActivityStats.forEach((workerActivityStat: WorkerActivityStat) => {
-            switch (workerActivityStat.friendly_name) {
-              case 'Available':
-                availableWorkers = workerActivityStat.workers
-                break;
-              case 'Unavailable':
-                unavailableWorkers = workerActivityStat.workers
-                break;
-              case 'Offline':
-                offlineWorkers = workerActivityStat.workers
-                break;
-              default:
-                console.log(`Unknown worker activity: ${workerActivityStat.friendly_name}`)
-                break;
-            }
-          }
-          )
-
-          const { reserved, wrapping, assigned, pending } = tasksByStatus
-          const activeTasks = reserved + wrapping + assigned + pending
-          const waitingTasks = reserved + pending
+          const [activeTasks, waitingTasks, availableWorkers, unavailableWorkers, offlineWorkers] =
+            calcStats(tasksByStatus, workerActivityStats)
 
           taskQueuesDetails[taskQueue.sid] = {
             friendlyName: taskQueue.friendlyName,
@@ -153,22 +159,22 @@ export default async function handler(
   | Update Sync Map with the latest stats |
   =========================================
   */
- 
- const syncMapData: SyncMapData =
- {
-   tasks: {
-     activeTasks: activeTasks,
-     waitingTasks: waitingTasks,
-     longestTaskWaitingAge: longestTaskWaitingAge,
-   },
-   workers: {
-     availableWorkers: availableWorkers,
-     unavailableWorkers: unavailableWorkers,
-     offlineWorkers: offlineWorkers,
-     workersDetails: workersDetails,
-   },
-   taskQueuesDetails: taskQueuesDetails,
- }
+
+  const syncMapData: SyncMapData =
+  {
+    tasks: {
+      activeTasks: activeTasks,
+      waitingTasks: waitingTasks,
+      longestTaskWaitingAge: longestTaskWaitingAge,
+    },
+    workers: {
+      availableWorkers: availableWorkers,
+      unavailableWorkers: unavailableWorkers,
+      offlineWorkers: offlineWorkers,
+      workersDetails: workersDetails,
+    },
+    taskQueuesDetails: taskQueuesDetails,
+  }
 
   const syncServiceSid = await twilioClient.sync.v1.services(process.env.TWILIO_SYNC_SERVICE_SID!).fetch()
     .then(service => service.sid)
