@@ -9,6 +9,7 @@ export default function QueuesStats({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [syncClient, setSyncClient] = useState<SyncClient | null>(null)
   const [syncMapData, setSyncMapData] = useState<SyncMapData>(initialSyncMapData)
+  const [longestTaskWaitingAge, setLongestTaskWaitingAge] = useState(0)
 
   useEffect(() => {
     async function initializeSyncClient() {
@@ -46,6 +47,21 @@ export default function QueuesStats({
     })
   }, [syncClient])
 
+  // Simulate the longest task waiting time increasing since we don't want to call the API every second
+  useEffect(() => {
+    if (syncMapData.tasks.waitingTasks > 0) {
+      setLongestTaskWaitingAge(syncMapData.tasks.longestTaskWaitingAge);
+
+      const interval = setInterval(() => {
+        setLongestTaskWaitingAge((prevAge) => prevAge + 1);
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [syncMapData.tasks.longestTaskWaitingAge, syncMapData.tasks.waitingTasks]);
+
   return (
     <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
       <h1 className="text-3xl font-semibold">Dashboard</h1>
@@ -55,7 +71,7 @@ export default function QueuesStats({
       <ul>
         <li>Active Tasks: {syncMapData.tasks.activeTasks}</li>
         <li>Waiting Tasks: {syncMapData.tasks.waitingTasks}</li>
-        <li>Longest Wait: {(syncMapData.tasks.longestTaskWaitingAge / 60).toFixed(0)}m</li>
+        <li>Longest Wait: {longestTaskWaitingAge}s</li>
       </ul>
 
       <h2 className="mt-10 text-xl font-semibold">Agents Overview</h2>
@@ -64,7 +80,8 @@ export default function QueuesStats({
         <li>Unavailable: {syncMapData.workers.unavailableWorkers}</li>
         <li>Offline: {syncMapData.workers.offlineWorkers}</li>
       </ul>
-      <h3 className="mt-10 text-xl font-semibold">Agents</h3>
+
+      <h3 className="mt-5 text-lg font-semibold">Agents</h3>
       <ul>
         {Object.keys(syncMapData.workers.workersDetails).map((workerSid) => {
           return (
