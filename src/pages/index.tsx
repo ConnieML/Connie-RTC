@@ -1,6 +1,5 @@
-import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import { signIn, signOut, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import ClientSideAuth from '../components/client-auth'
 import UserRegister from '../components/create-user'
 

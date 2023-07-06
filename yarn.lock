@@ -107,10 +107,10 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@next/env@13.4.5":
-  "integrity" "sha512-SG/gKH6eij4vwQy87b/3mbpQ1X3x2vUdnpwq6/qL2IQWjtq58EY/UuNAp9CoEZoC9sI4L9AD1r+73Z9r4d3uug=="
-  "resolved" "https://registry.npmjs.org/@next/env/-/env-13.4.5.tgz"
-  "version" "13.4.5"
+"@next/env@13.4.7":
+  "integrity" "sha512-ZlbiFulnwiFsW9UV1ku1OvX/oyIPLtMk9p/nnvDSwI0s7vSoZdRtxXNsaO+ZXrLv/pMbXVGq4lL8TbY9iuGmVw=="
+  "resolved" "https://registry.npmjs.org/@next/env/-/env-13.4.7.tgz"
+  "version" "13.4.7"
 
 "@next/eslint-plugin-next@13.4.5":
   "integrity" "sha512-/xD/kyJhXmBZq+0xGKOdjL22c9/4i3mBAXaU9aOGEHTXqqFeOz8scJbScWF13aMqigeoFCsDqngIB2MIatcn4g=="
@@ -119,10 +119,10 @@
   dependencies:
     "glob" "7.1.7"
 
-"@next/swc-darwin-x64@13.4.5":
-  "integrity" "sha512-NQdqal/VKAqlJTuzhjZmNtdo8QSqwmfO7b2xJSAengTEVxQvsH76oGEzQeIv8Ci4NP6DysAFtFrJq++TmIxcUA=="
-  "resolved" "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-13.4.5.tgz"
-  "version" "13.4.5"
+"@next/swc-darwin-x64@13.4.7":
+  "integrity" "sha512-gO2bw+2Ymmga+QYujjvDz9955xvYGrWofmxTq7m70b9pDPvl7aDFABJOZ2a8SRCuSNB5mXU8eTOmVVwyp/nAew=="
+  "resolved" "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-13.4.7.tgz"
+  "version" "13.4.7"
 
 "@nodelib/fs.scandir@2.1.5":
   "integrity" "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
@@ -1742,6 +1742,11 @@
   "resolved" "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   "version" "1.4.0"
 
+"net@^1.0.2":
+  "integrity" "sha512-kbhcj2SVVR4caaVnGLJKmlk2+f+oLkjqdKeQlmUtz6nGzOpbcobwVIeSURNgraV/v3tlmGIX82OcPCl0K6RbHQ=="
+  "resolved" "https://registry.npmjs.org/net/-/net-1.0.2.tgz"
+  "version" "1.0.2"
+
 "next-auth@^4.22.1":
   "integrity" "sha512-NTR3f6W7/AWXKw8GSsgSyQcDW6jkslZLH8AiZa5PQ09w1kR8uHtR9rez/E9gAq/o17+p0JYHE8QjF3RoniiObA=="
   "resolved" "https://registry.npmjs.org/next-auth/-/next-auth-4.22.1.tgz"
@@ -1757,12 +1762,12 @@
     "preact-render-to-string" "^5.1.19"
     "uuid" "^8.3.2"
 
-"next@^12.2.5 || ^13", "next@^13.4.5":
-  "integrity" "sha512-pfNsRLVM9e5Y1/z02VakJRfD6hMQkr24FaN2xc9GbcZDBxoOgiNAViSg5cXwlWCoMhtm4U315D7XYhgOr96Q3Q=="
-  "resolved" "https://registry.npmjs.org/next/-/next-13.4.5.tgz"
-  "version" "13.4.5"
+"next@^12.2.5 || ^13", "next@^13.4.7":
+  "integrity" "sha512-M8z3k9VmG51SRT6v5uDKdJXcAqLzP3C+vaKfLIAM0Mhx1um1G7MDnO63+m52qPdZfrTFzMZNzfsgvm3ghuVHIQ=="
+  "resolved" "https://registry.npmjs.org/next/-/next-13.4.7.tgz"
+  "version" "13.4.7"
   dependencies:
-    "@next/env" "13.4.5"
+    "@next/env" "13.4.7"
     "@swc/helpers" "0.5.1"
     "busboy" "1.6.0"
     "caniuse-lite" "^1.0.30001406"
@@ -1771,15 +1776,15 @@
     "watchpack" "2.4.0"
     "zod" "3.21.4"
   optionalDependencies:
-    "@next/swc-darwin-arm64" "13.4.5"
-    "@next/swc-darwin-x64" "13.4.5"
-    "@next/swc-linux-arm64-gnu" "13.4.5"
-    "@next/swc-linux-arm64-musl" "13.4.5"
-    "@next/swc-linux-x64-gnu" "13.4.5"
-    "@next/swc-linux-x64-musl" "13.4.5"
-    "@next/swc-win32-arm64-msvc" "13.4.5"
-    "@next/swc-win32-ia32-msvc" "13.4.5"
-    "@next/swc-win32-x64-msvc" "13.4.5"
+    "@next/swc-darwin-arm64" "13.4.7"
+    "@next/swc-darwin-x64" "13.4.7"
+    "@next/swc-linux-arm64-gnu" "13.4.7"
+    "@next/swc-linux-arm64-musl" "13.4.7"
+    "@next/swc-linux-x64-gnu" "13.4.7"
+    "@next/swc-linux-x64-musl" "13.4.7"
+    "@next/swc-win32-arm64-msvc" "13.4.7"
+    "@next/swc-win32-ia32-msvc" "13.4.7"
+    "@next/swc-win32-x64-msvc" "13.4.7"
 
 "node-releases@^2.0.12":
   "integrity" "sha512-QzsYKWhXTWx8h1kIvqfnC++o0pEmpRQA/aenALsL2F4pqNVr7YzcdMlDij5WBnwftRbJCNJL/O7zdKaxKPHqgQ=="
@@ -2525,10 +2530,10 @@
   dependencies:
     "tslib" "^1.8.1"
 
-"twilio@^4.12.0":
-  "integrity" "sha512-h04AQTL6Kcvvmj2ZmdQUNPmXvjaAHf123d6/v+XUBKQ66oifRklnGOTrBLF6jbWAKTfeDrL0KEH2MnAC6zhkZg=="
-  "resolved" "https://registry.npmjs.org/twilio/-/twilio-4.12.0.tgz"
-  "version" "4.12.0"
+"twilio@^4.13.0":
+  "integrity" "sha512-fecPGy2lXnULwle4iXcCH3rP5z4fgkirzp+rRIXsFi45+y3qjkY5DBZSzmYr5T4vUOzZ2djmODZJ2jpRfgIBSw=="
+  "resolved" "https://registry.npmjs.org/twilio/-/twilio-4.13.0.tgz"
+  "version" "4.13.0"
   dependencies:
     "axios" "^0.26.1"
     "dayjs" "^1.8.29"
