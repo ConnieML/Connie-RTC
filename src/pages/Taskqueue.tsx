@@ -18,12 +18,13 @@ const Taskqueue = () => {
   const handleCreateTaskQueue = async () => {
     try {
       const selectedUserValues = selectedUsers.map(user => user.valueOf);
-      const response = await axios.post('/api/taskQueueHandler', {
+      const response = await axios.post('/api/tasksQueues', {
         friendlyName: taskQueueName,
         selectedUsers: selectedUserValues,
       });
       if (response.status === 200) {
         console.log('Task queue created');
+        alert('Task Queue Successfully Created'); // Display success alert
       } else {
         console.error('Error creating task queue');
       }
@@ -31,6 +32,7 @@ const Taskqueue = () => {
       console.error('Error:', error);
     }
   };
+
 
 
   return (
