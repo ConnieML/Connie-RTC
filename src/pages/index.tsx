@@ -1,7 +1,6 @@
 import { Inter } from 'next/font/google'
 import { useSession } from "next-auth/react"
-import ClientSideAuth from '../components/client-auth'
-import UserRegister from '../components/create-user'
+import AdminSettings from './admin-settings'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -12,11 +11,10 @@ export default function Home() {
   return (
 
     <main
-
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <ClientSideAuth/>
-      <UserRegister/>
 
+      <AdminSettings/>
+      
     </main>
   )}
