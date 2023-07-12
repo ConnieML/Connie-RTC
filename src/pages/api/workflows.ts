@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Twilio } from 'twilio'
+import { twilioClient } from '@/lib/twilioClient'
 import {
   WorkflowInstance,
   WorkflowListInstanceCreateOptions,
@@ -16,39 +16,34 @@ export default async function handler(
     workflowSid: string
   }
 
-  const client = new Twilio(
-    process.env.TWILIO_ACCOUNT_SID,
-    process.env.TWILIO_AUTH_TOKEN
-  )
-
   if (method === 'GET') {
     if (workflowSid) {
-      const workflow: WorkflowInstance = await client.taskrouter.v1
+      const workflow: WorkflowInstance = await twilioClient.taskrouter.v1
         .workspaces(workspaceSid)
         .workflows(workflowSid)
         .fetch()
       res.status(200).json({ workflow })
       return
     }
-    const Workflows: WorkflowInstance[] = await client.taskrouter.v1
+    const Workflows: WorkflowInstance[] = await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows.list()
     res.status(200).json({ Workflows })
   } else if (method === 'POST') {
     const workflow: WorkflowListInstanceCreateOptions = JSON.parse(req.body)
-    await client.taskrouter.v1
+    await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows.create(workflow)
     res.status(200).json({ workflow })
   } else if (method === 'PUT') {
     const workflow: WorkflowContextUpdateOptions = JSON.parse(req.body)
-    await client.taskrouter.v1
+    await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows(workflowSid)
       .update(workflow)
     res.status(200).json({ workflow })
   } else if (method === 'DELETE') {
-    await client.taskrouter.v1
+    await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)
       .workflows(workflowSid)
       .remove()
