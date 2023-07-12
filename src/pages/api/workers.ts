@@ -38,19 +38,19 @@ export default async function handler(
     const worker: WorkerListInstanceCreateOptions = JSON.parse(req.body)
     await client.taskrouter.v1
       .workspaces(workspaceSid)
-      .activities.create(worker)
+      .workers.create(worker)
     res.status(200).json({ worker })
   } else if (method === 'PUT') {
     const worker: WorkerContextUpdateOptions = JSON.parse(req.body)
     await client.taskrouter.v1
       .workspaces(workspaceSid)
-      .activities(workerSid)
+      .workers(workerSid)
       .update(worker)
     res.status(200).json({ worker })
   } else if (method === 'DELETE') {
     await client.taskrouter.v1
       .workspaces(workspaceSid)
-      .activities(workerSid)
+      .workers(workerSid)
       .remove()
     res.status(200).json({ workerSid })
   }
