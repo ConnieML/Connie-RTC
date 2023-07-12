@@ -16,9 +16,6 @@ Your user type is set inside of the Okta Admin (Message Cameron if you want your
 TWILIO_ACCOUNT_SID="Enter your twilio account sid here"
 TWILIO_AUTH_TOKEN="Enter your twilio auth token here"
 
-NEXT_PUBLIC_TWILIO_ACCOUNT_SID="Enter your twilio account sid here"
-NEXT_PUBLIC_TWILIO_AUTH_TOKEN="Enter your twilio auth token here"
-
 NEXT_PUBLIC_URL="http://localhost:3000"
 NEXTAUTH_URL="http://localhost:3000"
 
@@ -29,6 +26,5 @@ OKTA_OAUTH2_ISSUER=""
 OKTA_OAUTH2_CLIENT_ID=""
 OKTA_OAUTH2_CLIENT_SECRET=""
 SECRET=""
-NEXT_PUBLIC_TOKEN=""
 ```
 5. Start the development server: `npm run dev`
