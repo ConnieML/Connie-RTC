@@ -1,3 +1,4 @@
+// These params can be changed based on what we want our table to look like! Just a base to keep the table inputs standard
 export interface PutParams {
     TableName: string;
     Item: {
