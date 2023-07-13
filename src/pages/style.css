@@ -1,0 +1,347 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.desktop {
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .desktop .div-2 {
+    background-color: #ffffff;
+    border: 1px none;
+    height: 1024px;
+    overflow: hidden;
+    position: relative;
+    width: 1440px;
+  }
+  
+  .desktop .overlap {
+    background-color: #ffffff;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-color: var(--neutral-300);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-style: solid;
+    border-right-width: 1px;
+    height: 1024px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 125px;
+  }
+  
+  .desktop .media-icon-filled {
+    height: 40px !important;
+    left: 42px !important;
+    position: absolute !important;
+    top: 66px !important;
+    width: 40px !important;
+  }
+  
+  .desktop .frame-16 {
+    left: 125px !important;
+    position: absolute !important;
+    top: 0 !important;
+  }
+  
+  .desktop .variant-search-instance {
+    height: 20px !important;
+    min-width: 20px !important;
+    position: relative !important;
+  }
+  
+  .desktop .overlap-2 {
+    background-color: #fafafc;
+    height: 908px;
+    left: 125px;
+    position: absolute;
+    top: 116px;
+    width: 1315px;
+  }
+  
+  .desktop .overlap-3 {
+    height: 604px;
+    left: 0;
+    position: absolute;
+    top: 304px;
+    width: 873px;
+  }
+  
+  .desktop .rectangle-2 {
+    border-color: #e5e5e5;
+    border-top-style: solid;
+    border-top-width: 1px;
+    height: 549px;
+    left: 0;
+    position: absolute;
+    top: 55px;
+    width: 873px;
+  }
+  
+  .desktop .tab-instance {
+    left: 49px !important;
+    position: absolute !important;
+    top: 0 !important;
+  }
+  
+  .desktop .phone-incoming {
+    height: 20px !important;
+    margin-left: -11px !important;
+    min-width: 20px !important;
+    position: relative !important;
+  }
+  
+  .desktop .media-icon-filled-wrapper {
+    margin-right: -11px !important;
+  }
+  
+  .desktop .h-1 {
+    color: #d4d4d4;
+    font-family: var(--heading-h4-medium-desktop-font-family);
+    font-size: var(--heading-h4-medium-desktop-font-size);
+    font-style: var(--heading-h4-medium-desktop-font-style);
+    font-weight: var(--heading-h4-medium-desktop-font-weight);
+    left: 391px;
+    letter-spacing: var(--heading-h4-medium-desktop-letter-spacing);
+    line-height: var(--heading-h4-medium-desktop-line-height);
+    position: absolute;
+    top: 257px;
+    white-space: nowrap;
+  }
+  
+  .desktop .overlap-4 {
+    background-color: #ffffff;
+    border-color: var(--neutral-300);
+    border-left-style: solid;
+    border-left-width: 1px;
+    height: 908px;
+    left: 873px;
+    position: absolute;
+    top: 0;
+    width: 442px;
+  }
+  
+  .desktop .frame-2 {
+    align-items: flex-start;
+    display: flex;
+    gap: 30px;
+    left: 83px;
+    position: absolute;
+    top: 259px;
+    width: fit-content;
+  }
+  
+  .desktop .keypad-row {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .frame-4 {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .element-2 {
+    color: #000000;
+    font-family: var(--heading-h2-semibold-desktop-font-family);
+    font-size: var(--heading-h2-semibold-desktop-font-size);
+    font-style: var(--heading-h2-semibold-desktop-font-style);
+    font-weight: var(--heading-h2-semibold-desktop-font-weight);
+    letter-spacing: var(--heading-h2-semibold-desktop-letter-spacing);
+    line-height: var(--heading-h2-semibold-desktop-line-height);
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .desktop .ABC-2 {
+    color: var(--neutral-400);
+    font-family: var(--heading-h4-medium-desktop-font-family);
+    font-size: var(--heading-h4-medium-desktop-font-size);
+    font-style: var(--heading-h4-medium-desktop-font-style);
+    font-weight: var(--heading-h4-medium-desktop-font-weight);
+    letter-spacing: var(--heading-h4-medium-desktop-letter-spacing);
+    line-height: var(--heading-h4-medium-desktop-line-height);
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .desktop .frame-1000001065 {
+    justify-content: center !important;
+  }
+  
+  .desktop .solar-phone-bold {
+    height: 75px;
+    left: 177px;
+    position: absolute;
+    top: 730px;
+    width: 78px;
+  }
+  
+  .desktop .frame-5 {
+    align-items: flex-start;
+    display: flex;
+    gap: 29px;
+    left: 49px;
+    position: absolute;
+    top: 214px;
+    width: fit-content;
+  }
+  
+  .desktop .input-box-wrapper {
+    align-items: flex-start;
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: var(--neutral-200);
+    border-radius: 10px;
+    display: flex;
+    gap: 10px;
+    padding: 10px, 12px, 10px, 12px;
+    position: relative;
+    width: 650px;
+    height: 40px;
+  }
+
+  .desktop .input-field {
+      width: 626px;
+      height: 20px;
+      gap: 16px;
+  }
+  
+  .desktop .left-icon-wrapper {
+    border-radius: 10px !important;
+    width: 650px !important;
+  }
+  
+  .desktop .variant-search-wrapper {
+    background-color: #ffffff !important;
+  }
+  
+  .desktop .frame-6 {
+    align-items: center;
+    display: flex;
+    gap: 37px;
+    justify-content: center;
+    left: 49px;
+    position: absolute;
+    top: 111px;
+    width: fit-content;
+  }
+  
+  .desktop .avatar-style-xxlarge-with-initials-wrapper {
+    align-items: center;
+    display: flex;
+    gap: 44px;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .avatar-style-xxlarge-with-initials-instance {
+    background-color: var(--neutral-300) !important;
+  }
+  
+  .desktop .avatar-style-xxlarge-2 {
+    min-width: 64px !important;
+    position: relative !important;
+    width: unset !important;
+  }
+  
+  .desktop .avatar-style-xxlarge-3 {
+    width: 64px !important;
+  }
+  
+  .desktop .frame-7 {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .text-wrapper-3 {
+    color: #000000;
+    font-family: var(--heading-h4-font-family);
+    font-size: var(--heading-h4-font-size);
+    font-style: var(--heading-h4-font-style);
+    font-weight: var(--heading-h4-font-weight);
+    letter-spacing: var(--heading-h4-letter-spacing);
+    line-height: var(--heading-h4-line-height);
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .desktop .text-wrapper-4 {
+    color: var(--neutral-400);
+    font-family: var(--paragraph-medium-medium-font-family);
+    font-size: var(--paragraph-medium-medium-font-size);
+    font-style: var(--paragraph-medium-medium-font-style);
+    font-weight: var(--paragraph-medium-medium-font-weight);
+    letter-spacing: var(--paragraph-medium-medium-letter-spacing);
+    line-height: var(--paragraph-medium-medium-line-height);
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .desktop .badge-master-small {
+    align-items: center;
+    background-color: var(--neutral-100);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: center;
+    padding: 0px 8px;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .container-2 {
+    align-items: center;
+    display: flex;
+    gap: 2px;
+    justify-content: center;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .desktop .text-wrapper-5 {
+    color: var(--neutral-700);
+    font-family: var(--paragraph-xsmall-medium-font-family);
+    font-size: var(--paragraph-xsmall-medium-font-size);
+    font-style: var(--paragraph-xsmall-medium-font-style);
+    font-weight: var(--paragraph-xsmall-medium-font-weight);
+    letter-spacing: var(--paragraph-xsmall-medium-letter-spacing);
+    line-height: var(--paragraph-xsmall-medium-line-height);
+    margin-top: -1px;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+    width: fit-content;
+  }
+  
+  .desktop .cheveron-down {
+    height: 10px !important;
+    min-width: 10px !important;
+    position: relative !important;
+  }
+  

@@ -5,7 +5,6 @@ const twilio_number = process.env.TWILIO_CALLER_ID;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const resp = new VoiceResponse();
-
   if (req.body.To === twilio_number) {
     // Receiving an incoming call to our Twilio number
     const dial = resp.dial();
