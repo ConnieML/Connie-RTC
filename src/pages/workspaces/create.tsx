@@ -53,7 +53,7 @@ export default function CreateWorkspace() {
   }
 
   return (
-    <>
+    <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
       <div className="mb-12 leading-6">
         <h1 className="text-3xl font-bold text-gray-900">Create Workspace</h1>
 
@@ -294,7 +294,7 @@ export default function CreateWorkspace() {
               console.error(data.error)
               return
             }
-            router.push('/')
+            router.push('/workspaces')
           }}
         >
           Save
@@ -302,11 +302,11 @@ export default function CreateWorkspace() {
         <button
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/workspaces')}
         >
           Cancel
         </button>
       </div>
-    </>
+    </div>
   )
 }

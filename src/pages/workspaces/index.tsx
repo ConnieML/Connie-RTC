@@ -9,7 +9,7 @@ export default function Workspaces({
   const router = useRouter()
 
   return (
-    <>
+    <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
       <div className="mb-12 sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-3xl font-bold leading-6 text-gray-900">
@@ -103,7 +103,7 @@ export default function Workspaces({
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
