@@ -42,6 +42,7 @@ OKTA_OAUTH2_ISSUER=""
 OKTA_OAUTH2_CLIENT_ID=""
 OKTA_OAUTH2_CLIENT_SECRET=""
 SECRET=""
+
 ```
 5. Start the development server: `npm run dev`
 6. Run `ngrok http 3000` to expose your local server to the internet
