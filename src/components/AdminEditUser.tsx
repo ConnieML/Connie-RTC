@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-// My workspace sid for now
-const workspaceSid = "WSef13753652555120195288885123b5cf"
+const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
+const createUserOktaUrl = process.env.NEXT_PUBLIC_OKTA_CREATE_USER_URL as string
 
 const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const [firstName, setFirstName] = useState('');
@@ -41,7 +41,7 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
       }
 
       // Okta create user call - use twilio sid as employee number for later authentication
-      await axios.post('https://trial-2094636.okta.com/api/v1/users?activate=true', 
+      await axios.post(createUserOktaUrl, 
       {
           "profile": {
               "firstName": `${firstName}`,
