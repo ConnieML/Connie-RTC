@@ -29,6 +29,20 @@ TWILIO_API_SECRET="Enter your twilio api secret here"
 
 # Found at https://www.twilio.com/console/sync/services
 TWILIO_SYNC_SERVICE_SID="Enter your twilio sync service sid here"
+
+NEXT_PUBLIC_URL="http://localhost:3000"
+NEXTAUTH_URL="http://localhost:3000"
+
+NEXT_PUBLIC_WORKSPACE_SID="Your workspace sid"
+NEXT_PUBLIC_OKTA_CREATE_USER_URL='https://trial-2094636.okta.com/api/v1/users?activate=true'
+
+# Slack message Cameron For the following:
+NEXT_PUBLIC_TOKEN=""
+OKTA_OAUTH2_ISSUER=""
+OKTA_OAUTH2_CLIENT_ID=""
+OKTA_OAUTH2_CLIENT_SECRET=""
+SECRET=""
+
 ```
 5. Start the development server: `npm run dev`
 6. Run `ngrok http 3000` to expose your local server to the internet

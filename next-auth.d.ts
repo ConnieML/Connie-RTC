@@ -7,9 +7,13 @@ declare module "next-auth" {
       id: string
       name: string
     }
+    idToken: string
+    oktaId: string
+    accessToken: string
     userType: string
   }
 }
+
 
 // Read more at: https://next-auth.js.org/getting-started/typescript#module-augmentation
 
