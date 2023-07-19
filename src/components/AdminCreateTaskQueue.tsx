@@ -1,14 +1,30 @@
 import React, { useState } from 'react';
-const AdminEditTask = ({
+
+const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
+
+
+const AdminCreateTaskQueue = ({
   setShowModal,
 }: {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [taskName, setTaskName] = useState('');
-  const [assignedUsers, setAssignedUsers] = useState('');
+  const [taskQueueName, setTaskQueueName] = useState('');
+  const [targetWorkers, setTargetWorkers] = useState('');
 
-  const handleUpdateTask = () => {
-    // Update task information in the database
+  async function handleCreateTask(){
+    const createResponse = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
+      method: 'POST',
+      body: JSON.stringify({
+        "friendlyName": `${taskQueueName}`,
+        "targetWorkers": `${targetWorkers}`,
+      })
+    })
+
+    if (createResponse.status !== 200){
+      alert("Error creating task queue")
+      return
+    }
+
     setShowModal(false);
   };
 
@@ -24,24 +40,24 @@ const AdminEditTask = ({
         <input
           className="border border-gray-400 rounded w-full p-2"
           type="text"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)}
+          value={taskQueueName}
+          onChange={(e) => setTaskQueueName(e.target.value)}
         />
       </label>
       <label className="block mb-4">
-        Assigned Users:
+        Taget Workers:
         <input
           className="border border-gray-400 rounded w-full p-2"
           type="text"
-          value={assignedUsers}
-          onChange={(e) => setAssignedUsers(e.target.value)}
+          value={targetWorkers}
+          onChange={(e) => setTargetWorkers(e.target.value)}
         />
       </label>
       <button
         className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
-        onClick={handleUpdateTask}
+        onClick={handleCreateTask}
       >
-        Update Task
+        Create Task
       </button>
       <button
         className="bg-gray-200 text-red-600 py-2 px-4 rounded"
@@ -53,4 +69,4 @@ const AdminEditTask = ({
   );
 };
 
-export default AdminEditTask;
+export default AdminCreateTaskQueue;

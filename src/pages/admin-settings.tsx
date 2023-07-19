@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AdminEditTask from '../components/AdminEditTask';
+import AdminCreateTaskQueue from '../components/AdminCreateTaskQueue';
 import AdminEditUser from '../components/AdminEditUser';
 import { FaChevronDown } from 'react-icons/fa';
 import UsersTable from '../components/UserTable';
@@ -62,7 +62,7 @@ const AdminSettings = () => {
             <button
               className="bg-purple-600 text-white py-2 px-4 rounded mb-4"
               onClick={() => {
-                setModalContent(<AdminEditTask setShowModal={setShowModal} />);
+                setModalContent(<AdminCreateTaskQueue setShowModal={setShowModal} />);
                 setShowModal(true);
               }}
             >

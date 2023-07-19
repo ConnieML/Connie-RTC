@@ -34,12 +34,7 @@ export default async function handler(
       .taskQueues.list();
     res.status(200).json({ taskQueues });
   } else if (method === 'POST') {
-    const { friendlyName, ...otherParams } =
-      req.body as TaskQueueListInstanceCreateOptions;
-    const taskQueue: TaskQueueListInstanceCreateOptions = {
-      friendlyName,
-      ...otherParams,
-    };
+    const taskQueue: TaskQueueListInstanceCreateOptions = JSON.parse(req.body)
     console.log('HI');
     await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)

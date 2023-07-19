@@ -1,14 +1,50 @@
-import React, { useState } from 'react';
-import { taskQueuesData } from '../data/data';
+import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaChevronDown } from 'react-icons/fa';
-import AdminEditTask from './AdminEditTask';
+import AdminModifyTaskQueue from './AdminModifyTaskQueue';
 import Modal from './Modal';
+
+const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
+
+interface IProps{
+  sid: number,
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+}
 
 const TaskQueuesTable = () => {
   const [showSortOptions, setShowSortOptions] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [showModal, setShowModal] = useState(false);
+  const [taskQueuesData, setTaskQueuesData] = useState([]);
+
+  // for right now just grab task queues
+  async function getTaskQueues (){
+    const taskQueuesRequest = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
+      method: 'GET',
+    })
+    const taskQueuesResponse = await taskQueuesRequest.json()
+    setTaskQueuesData(taskQueuesResponse.taskQueues)
+  }
+
+  const handleModifyTask = (taskQueueSid: number) => {
+    var props:IProps = {
+      sid: taskQueueSid,
+      setShowModal: setShowModal,
+    }
+    
+    setModalContent(
+      <AdminModifyTaskQueue {...props} />
+    );
+    setShowModal(true);
+  }
+
+  useEffect(() =>  {
+    getTaskQueues()
+
+    return
+  }, []);
+
+
 
   return (
     <>
@@ -77,39 +113,29 @@ const TaskQueuesTable = () => {
       <div className="w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto">
         <div className="my-3 p-2 grid grid-cols-3 items-center justify-between cursor-pointer">
           <span>Task Name/SID</span>
-          <span className="text-center">Assigned Users</span>
+          <span className="text-center">Target Workers Clause</span>
           <span></span>
         </div>
         <ul>
-          {taskQueuesData.map((task, id) => (
+          {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number, targetWorkers: string}) => (
             <li
-              key={id}
+              key={taskQueue.friendlyName}
               className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 items-center justify-between cursor-pointer"
             >
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p>{task.taskName}</p>
+                  <p>{taskQueue.friendlyName}</p>
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
-                    SID: {task.sid}
+                    SID: {taskQueue.sid}
                   </p>
                 </div>
                 <div className="flex justify-center text-center">
-                  {task.assignedUsers.map((user, index) => (
-                    <img
-                      key={index}
-                      className="w-8 h-8 rounded-full ml-2"
-                      src={user.imageUrl}
-                      alt={user.name}
-                    />
-                  ))}
+                  <p>{taskQueue.targetWorkers}</p>
                 </div>
                 <div className="flex justify-end">
                   <BsThreeDots
                     onClick={() => {
-                      setModalContent(
-                        <AdminEditTask setShowModal={setShowModal} />
-                      );
-                      setShowModal(true);
+                      handleModifyTask(taskQueue.sid)
                     }}
                   />
                 </div>
