@@ -97,7 +97,7 @@ export default function UpdateWorkspace({
   }
 
   return (
-    <>
+    <div className="px-4 mx-auto mt-32 max-w-7xl sm:px-6 lg:px-8">
       <h1 className="mb-12 text-3xl font-bold leading-6 text-gray-900">
         Workspace Settings
       </h1>
@@ -470,7 +470,7 @@ export default function UpdateWorkspace({
               console.error(data.error)
               return
             }
-            router.push('/')
+            router.push('/workspaces')
           }}
         >
           Save
@@ -478,7 +478,7 @@ export default function UpdateWorkspace({
         <button
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
-          onClick={() => router.push('/')}
+          onClick={() => router.push('/workspaces')}
         >
           Cancel
         </button>
@@ -490,14 +490,14 @@ export default function UpdateWorkspace({
             fetch(`/api/workspaces?sid=${currWorkspace.sid}`, {
               method: 'DELETE',
             }).then(() => {
-              router.push('/')
+              router.push('/workspaces')
             })
           }}
         >
           Delete this Workspace
         </button>
       </div>
-    </>
+    </div>
   )
 }
 
