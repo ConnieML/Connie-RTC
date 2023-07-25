@@ -17,14 +17,48 @@ const TaskQueuesTable = () => {
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [showModal, setShowModal] = useState(false);
   const [taskQueuesData, setTaskQueuesData] = useState([]);
+  const [assignedUsers, setAssignedUsers] = useState([[""]]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // for right now just grab task queues
+  async function getAssignedUsers(taskQueues: [{friendlyName: string}]) {
+
+    const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
+      method:'GET'
+    })
+    const workersResponse = await getWorkers.json()
+    const workersList = workersResponse.workers
+
+    var allAssignedUsers = []
+
+    for(let i=0; i < taskQueues.length; i++){
+
+      var curAssignedUsers = []
+    
+      for(let j=0; j < workersList.length; j++){
+        const attributes = JSON.parse(workersList[j].attributes)
+        if(attributes.hasOwnProperty("taskQueues")){
+          if(attributes.taskQueues.includes(taskQueues[i].friendlyName)){
+            curAssignedUsers.push(workersList[j].friendlyName)
+          }
+        }
+      }
+      if (curAssignedUsers.length === 0){
+        curAssignedUsers.push("No Workers Assigned")
+      }
+      allAssignedUsers.push(curAssignedUsers)
+    }
+    setAssignedUsers(allAssignedUsers)
+    setIsLoaded(true)
+  }
+
   async function getTaskQueues (){
     const taskQueuesRequest = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
       method: 'GET',
     })
     const taskQueuesResponse = await taskQueuesRequest.json()
     setTaskQueuesData(taskQueuesResponse.taskQueues)
+
+    getAssignedUsers(taskQueuesResponse.taskQueues)
   }
 
   const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string) => {
@@ -114,11 +148,11 @@ const TaskQueuesTable = () => {
       <div className="w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto">
         <div className="my-3 p-2 grid grid-cols-3 items-center justify-between cursor-pointer">
           <span>Task Name/SID</span>
-          <span className="text-center">Target Workers Clause</span>
+          <span className="text-center">Current Assigned Workers</span>
           <span></span>
         </div>
         <ul>
-          {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number, targetWorkers: string}) => (
+          {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number, targetWorkers: string}, index) => (
             <li
               key={taskQueue.friendlyName}
               className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 items-center justify-between cursor-pointer"
@@ -131,7 +165,9 @@ const TaskQueuesTable = () => {
                   </p>
                 </div>
                 <div className="flex justify-center text-center">
-                  <p>{taskQueue.targetWorkers}</p>
+                  {isLoaded && 
+                    <p>{assignedUsers[index].join(", ")}</p>
+                  }
                 </div>
                 <div className="flex justify-end">
                   <BsThreeDots

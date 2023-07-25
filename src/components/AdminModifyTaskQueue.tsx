@@ -15,7 +15,6 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
   
   async function handleModifyTaskQueue() {
 
-    // retrieve all workers
     const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
       method:'GET'
     })
@@ -24,59 +23,33 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
 
     var parsedWorkersToAdd = workersToAdd.split(', ')
 
-    // find a match for workers and workers to add
     for(let i= 0; i < parsedWorkersToAdd.length; i++){
       for(let j = 0; j < workersList.length; j++){
         if(parsedWorkersToAdd[i] === workersList[j].friendlyName){
-
-          // if no attributes are on worker profile we can easily put the new task queue on it
-          if(JSON.stringify(workersList[j].attributes) === `"{}"`){
-            addWorkerToQueueNoAttributes(workersList[j].sid)
-          }
-          // otherwise we have to copy over their attributes and add on the task queue name in the taskQueues attribute
-          else{
-          
-            addWorkerToQueueWithAttributes(workersList[j].sid, workersList[j].attributes)
-          }
+          addWorkerToQueue(workersList[j].sid, workersList[j].attributes)
           break
         }
       }
     }
 
-
     setShowModal(false);
   };
 
-  async function addWorkerToQueueWithAttributes(sid: string, prevAttributes: {taskQueues: string}) {
+  async function addWorkerToQueue(sid: string, prevAttributes: string) {
 
-    // this value is undefined for some reason - https://www.twilio.com/docs/taskrouter/api/worker
-    // 
-    var taskQueues = prevAttributes["taskQueues"]
-    console.log(taskQueues)
+    var attributes = JSON.parse(prevAttributes)
 
-    
-    
-
-    // 
-    /*const editWorkerRequest = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${sid}`,{
-      method: 'PUT',
-      body: JSON.stringify({
-        'attributes': `${attributes}`,
-      })
-    })
-    if(editWorkerRequest.status !== 200) {
-      alert("Error changing worker info")
-      return
-    }*/
-  }
-
-  // this works perfect
-  async function addWorkerToQueueNoAttributes(sid: string){
-
-    var taskQueues = [taskQueueName]
-    
-    var attributes: any = {}
-    attributes.taskQueues = taskQueues
+    if(attributes.hasOwnProperty("taskQueues")){
+      
+      if(attributes.taskQueues.includes(taskQueueName)){
+        console.log("worker already belongs to this task Queue")
+        return
+      }
+      attributes.taskQueues.push(taskQueueName)
+    }
+    else{
+      attributes.taskQueues = [taskQueueName]
+    }
 
     attributes = JSON.stringify(attributes)
 
@@ -97,6 +70,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
   };
 
   async function handleDeleteTaskQueue(taskQueueSid: number){
+    
     const deleteQueueRequest = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}&taskQueueSid=${taskQueueSid}`,{
       method: 'DELETE',
     })
@@ -104,6 +78,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
       alert("Cannot delete Task Queue")
       return
     }
+
     setShowModal(false)
   }
 
