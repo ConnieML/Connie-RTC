@@ -9,14 +9,14 @@ const AdminCreateTaskQueue = ({
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [taskQueueName, setTaskQueueName] = useState('');
-  const [targetWorkers, setTargetWorkers] = useState('');
+  const [workersToAdd, setWorkersToAdd] = useState('');
 
   async function handleCreateTask(){
     const createResponse = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
       method: 'POST',
       body: JSON.stringify({
         "friendlyName": `${taskQueueName}`,
-        "targetWorkers": `${targetWorkers}`,
+        "targetWorkers": `taskQueues HAS "${taskQueueName}"`,
       })
     })
 
@@ -45,12 +45,13 @@ const AdminCreateTaskQueue = ({
         />
       </label>
       <label className="block mb-4">
-        Taget Workers:
+        Add Workers (Names separated by commas)        
         <input
           className="border border-gray-400 rounded w-full p-2"
           type="text"
-          value={targetWorkers}
-          onChange={(e) => setTargetWorkers(e.target.value)}
+          value={workersToAdd}
+          placeholder={"John Doe, Jane Smith, etc."}
+          onChange={(e) => setWorkersToAdd(e.target.value)}
         />
       </label>
       <button

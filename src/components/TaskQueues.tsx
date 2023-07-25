@@ -8,6 +8,7 @@ const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
 interface IProps{
   sid: number,
+  taskQueueName: string
   setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -26,9 +27,10 @@ const TaskQueuesTable = () => {
     setTaskQueuesData(taskQueuesResponse.taskQueues)
   }
 
-  const handleModifyTask = (taskQueueSid: number) => {
+  const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string) => {
     var props:IProps = {
       sid: taskQueueSid,
+      taskQueueName: taskQueueName,
       setShowModal: setShowModal,
     }
     
@@ -38,13 +40,12 @@ const TaskQueuesTable = () => {
     setShowModal(true);
   }
 
+
   useEffect(() =>  {
     getTaskQueues()
 
     return
   }, []);
-
-
 
   return (
     <>
@@ -135,9 +136,11 @@ const TaskQueuesTable = () => {
                 <div className="flex justify-end">
                   <BsThreeDots
                     onClick={() => {
-                      handleModifyTask(taskQueue.sid)
+                      handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName)
                     }}
-                  />
+                  >
+                    Edit
+                  </BsThreeDots>
                 </div>
               </div>
             </li>
