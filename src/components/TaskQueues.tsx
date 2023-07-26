@@ -25,7 +25,6 @@ const TaskQueuesTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [taskQueuesData, setTaskQueuesData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([[""]]);
-  const [isLoaded, setIsLoaded] = useState(false);
 
   async function getAssignedUsers(taskQueues: [{friendlyName: string}]) {
 
@@ -55,7 +54,6 @@ const TaskQueuesTable = () => {
       allAssignedUsers.push(curAssignedUsers)
     }
     setAssignedUsers(allAssignedUsers)
-    setIsLoaded(true)
   }
 
   const handleDataChanges = () => {
@@ -111,15 +109,10 @@ const TaskQueuesTable = () => {
           <div className="bg-white p-4 rounded-lg">{modalContent}</div>
         </Modal>
       )}
-      <div className="flex justify-end mb-4">
-        <button
-          className="bg-purple-600 text-white py-2 px-4 rounded mb-4"
-          onClick={() => {
-            handleCreateTaskQueue()
-          }}>
-            Create New Task Queue
-            </button>
+      <div className="flex mb-4 justify-end">
+
         <div className="relative">
+
           
           <button
             className="border border-gray-400 rounded px-4 mr-2 relative"
@@ -141,6 +134,7 @@ const TaskQueuesTable = () => {
               Sort
               <FaChevronDown />
             </div>
+            
             <div
               className={`absolute top-full left-0 bg-white border border-gray-400 rounded-lg p-2 ${
                 showSortOptions ? '' : 'hidden'
@@ -154,6 +148,7 @@ const TaskQueuesTable = () => {
               </button>
             </div>
           </button>
+          
         </div>
 
         <div className="relative">
@@ -175,13 +170,25 @@ const TaskQueuesTable = () => {
             🔍
           </span>
         </div>
+        
       </div>
+      
 
       <div className="w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto">
         <div className="my-3 p-2 grid grid-cols-3 items-center justify-between cursor-pointer">
           <span>Task Name/SID</span>
           <span className="text-center">Current Assigned Workers</span>
-          <span></span>
+          <button
+          className="bg-purple-600 text-white py-2 px-2 rounded"
+          onClick={() => {
+            handleCreateTaskQueue()
+          }}
+          style={{
+            }
+
+          }>
+            Create New Task Queue
+            </button>
         </div>
         <ul>
           {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number, targetWorkers: string}, index) => (
@@ -197,8 +204,8 @@ const TaskQueuesTable = () => {
                   </p>
                 </div>
                 <div className="flex justify-center text-center">
-                  {isLoaded && 
-                    <p>{assignedUsers[index]}</p>
+                  {index < assignedUsers.length &&
+                    <p>{assignedUsers[index].join(', ')}</p>
                   }
                 </div>
                 <div className="flex justify-end">

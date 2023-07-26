@@ -53,6 +53,9 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
     if(flag === true){
       alert("Error adding 1 or more workers provided")
     }
+    else{
+      alert("All workers added successfully")
+    }
 
     setShowModal(false);
   };
