@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import VoiceResponse from 'twilio/lib/twiml/VoiceResponse';
 
-const twilio_number = process.env.TWILIO_CALLER_ID;
+const twilio_number = process.env.TWILIO_PHONE_NUMBER;
+
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const resp = new VoiceResponse();
@@ -9,6 +10,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     // Receiving an incoming call to our Twilio number
     const dial = resp.dial();
     dial.client('coolbeans');
+    //resp.enqueue({waitUrl: 'wait-music.xml'}, 'support');
   } else if (req.body.To) {
     // Placing an outbound call from the Twilio client
     const dial = resp.dial(

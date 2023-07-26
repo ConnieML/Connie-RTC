@@ -54,6 +54,7 @@ export default function CallPage() {
   }, [deviceLoaded]);
 
   const makeCall = async (event: KeyboardEvent | MouseEvent) => {
+    console.log(number);
     if ((event instanceof KeyboardEvent && event.key === 'Enter') || event instanceof MouseEvent) {
       const params = {
       // get the phone number to call from the DOM
@@ -72,6 +73,7 @@ export default function CallPage() {
   function endCall() {
     if(device){
       device.current.disconnectAll();
+      setInCall(false);
       console.log('You hung up!');
     }
   }
@@ -89,17 +91,20 @@ export default function CallPage() {
   }
 
   const acceptCall = () => {
+    console.log('accepting call');
     setIncomingCall(false);
+    setInCall(true);
     call?.accept();
+
   };
 
   const handleIncomingCall = (call:Call) => {
     setIncomingCall(true);
     setCall(call);
-
-    call.on('cancel', () => alert('CANCEL'));
-    call.on('disconnect', () => alert('DISCONNECT'));
-    call.on('reject', () => alert('REJECT'));
+    console.log('call incoming!!!');
+    // call.on('cancel', () => alert('CANCEL'));
+    // call.on('disconnect', () => alert('DISCONNECT'));
+    // call.on('reject', () => alert('REJECT'));
   };
 
   if (!deviceLoaded) {
@@ -161,7 +166,15 @@ export default function CallPage() {
         </div>
 
         <div className='rectangle-12'>
-
+          {incomingCall ? 
+            <div>
+              <>
+              You have a call!
+              <button onClick={acceptCall}>Accept</button>
+              <button>Decline</button>
+              </>
+            </div> 
+          : <div>No incoming calls</div>}
         </div>
 
         {!inCall ? 
