@@ -4,11 +4,13 @@ interface IProps{
   sid: number,
   taskQueueName: string,
   setShowModal: Dispatch<SetStateAction<boolean>>;
+  handleDataChange: () => any;
+
 }
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
-const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
+const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChange}: IProps)=> {
   
   const [workersToAdd, setWorkersToAdd] = useState('');
 
@@ -22,6 +24,8 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
     const workersList = workersResponse.workers
 
     var parsedWorkersToAdd = workersToAdd.split(', ')
+    var flag = false
+
 
     for(let i= 0; i < parsedWorkersToAdd.length; i++){
       for(let j = 0; j < workersList.length; j++){
@@ -29,7 +33,16 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
           addWorkerToQueue(workersList[j].sid, workersList[j].attributes)
           break
         }
+        if(j === workersList.length-1 ){
+          flag = true
+        }
       }
+    }
+
+    handleDataChange()
+
+    if(flag === true){
+      alert("Error adding 1 or more workers provided")
     }
 
     setShowModal(false);
@@ -80,6 +93,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal}: IProps)=> {
     }
 
     setShowModal(false)
+    handleDataChange()
   }
 
   return (

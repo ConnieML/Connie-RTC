@@ -1,15 +1,22 @@
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { BsThreeDots } from 'react-icons/bs';
 import { FaChevronDown } from 'react-icons/fa';
+import AdminCreateTaskQueue from './AdminCreateTaskQueue';
 import AdminModifyTaskQueue from './AdminModifyTaskQueue';
 import Modal from './Modal';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
-interface IProps{
+interface ModifyTaskProps{
   sid: number,
   taskQueueName: string
   setShowModal: Dispatch<SetStateAction<boolean>>;
+  handleDataChange: () => any;
+}
+
+interface CreateTaskProps{
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  handleDataChange: () => any;
 }
 
 const TaskQueuesTable = () => {
@@ -51,6 +58,10 @@ const TaskQueuesTable = () => {
     setIsLoaded(true)
   }
 
+  const handleDataChanges = () => {
+    getTaskQueues()
+  }
+
   async function getTaskQueues (){
     const taskQueuesRequest = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
       method: 'GET',
@@ -62,15 +73,27 @@ const TaskQueuesTable = () => {
   }
 
   const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string) => {
-    var props:IProps = {
+    var props:ModifyTaskProps = {
       sid: taskQueueSid,
       taskQueueName: taskQueueName,
       setShowModal: setShowModal,
+      handleDataChange: handleDataChanges
     }
     
     setModalContent(
       <AdminModifyTaskQueue {...props} />
     );
+    setShowModal(true);
+  }
+  
+  const handleCreateTaskQueue = () => {
+
+    var props:CreateTaskProps={
+      setShowModal: setShowModal,
+      handleDataChange: handleDataChanges
+    }
+
+    setModalContent(<AdminCreateTaskQueue {...props} />);
     setShowModal(true);
   }
 
@@ -89,7 +112,15 @@ const TaskQueuesTable = () => {
         </Modal>
       )}
       <div className="flex justify-end mb-4">
+        <button
+          className="bg-purple-600 text-white py-2 px-4 rounded mb-4"
+          onClick={() => {
+            handleCreateTaskQueue()
+          }}>
+            Create New Task Queue
+            </button>
         <div className="relative">
+          
           <button
             className="border border-gray-400 rounded px-4 mr-2 relative"
             onClick={() => setShowSortOptions(!showSortOptions)}
@@ -124,6 +155,7 @@ const TaskQueuesTable = () => {
             </div>
           </button>
         </div>
+
         <div className="relative">
           <input
             type="text"
@@ -166,7 +198,7 @@ const TaskQueuesTable = () => {
                 </div>
                 <div className="flex justify-center text-center">
                   {isLoaded && 
-                    <p>{assignedUsers[index].join(", ")}</p>
+                    <p>{assignedUsers[index]}</p>
                   }
                 </div>
                 <div className="flex justify-end">

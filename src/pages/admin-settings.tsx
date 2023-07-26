@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import AdminCreateTaskQueue from '../components/AdminCreateTaskQueue';
 import AdminEditUser from '../components/AdminEditUser';
 import { FaChevronDown } from 'react-icons/fa';
@@ -6,11 +6,15 @@ import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
 
+
+
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTable, setCurrentTable] = useState(1);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+  const [newTable, setNewTable] = useState(false);
   const [showSortOptions, setShowSortOptions] = useState(false);
+
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -58,20 +62,10 @@ const AdminSettings = () => {
               Invite User
             </button>
           )}
-          {currentTable === 3 && (
-            <button
-              className="bg-purple-600 text-white py-2 px-4 rounded mb-4"
-              onClick={() => {
-                setModalContent(<AdminCreateTaskQueue setShowModal={setShowModal} />);
-                setShowModal(true);
-              }}
-            >
-              Create New Task Queue
-            </button>
-          )}
+
         </div>
 
-        {currentTable === 1 ? <UsersTable /> : <TaskQueuesTable />}
+        {currentTable === 1 ? <UsersTable /> : <TaskQueuesTable/>}
       </div>
     </div>
   );

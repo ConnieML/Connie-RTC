@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
+interface IProps{
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  handleDataChange: () => any;
+}
 
-const AdminCreateTaskQueue = ({
-  setShowModal,
-}: {
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
   const [taskQueueName, setTaskQueueName] = useState('');
   const [workersToAdd, setWorkersToAdd] = useState('');
 
@@ -25,8 +25,67 @@ const AdminCreateTaskQueue = ({
       return
     }
 
+    var flag = false
+    
+    if(workersToAdd.length > 0){
+      const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
+        method:'GET'
+      })
+      const workersResponse = await getWorkers.json()
+      const workersList = workersResponse.workers
+      var parsedWorkersToAdd = workersToAdd.split(', ')
+
+    for(let i= 0; i < parsedWorkersToAdd.length; i++){
+      for(let j = 0; j < workersList.length; j++){
+        if(parsedWorkersToAdd[i] === workersList[j].friendlyName){
+          addWorkerToQueue(workersList[j].sid, workersList[j].attributes)
+          break
+        }
+        if(j === workersList.length-1 ){
+          flag = true
+        }
+      }
+    }
+    }
+
+    handleDataChange()
+
+    if(flag === true){
+      alert("Error adding 1 or more workers provided")
+    }
+
     setShowModal(false);
   };
+
+  async function addWorkerToQueue(sid: string, prevAttributes: string) {
+
+    var attributes = JSON.parse(prevAttributes)
+
+    if(attributes.hasOwnProperty("taskQueues")){
+      
+      if(attributes.taskQueues.includes(taskQueueName)){
+        console.log("worker already belongs to this task Queue")
+        return
+      }
+      attributes.taskQueues.push(taskQueueName)
+    }
+    else{
+      attributes.taskQueues = [taskQueueName]
+    }
+
+    attributes = JSON.stringify(attributes)
+
+    const editWorkerRequest = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${sid}`,{
+      method: 'PUT',
+      body: JSON.stringify({
+        'attributes': `${attributes}`,
+      })
+    })
+    if(editWorkerRequest.status !== 200) {
+      alert("Error changing worker info")
+      return
+    }
+  }
 
   const handleCancel = () => {
     setShowModal(false);
