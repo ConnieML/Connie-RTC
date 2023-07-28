@@ -4,6 +4,9 @@ import { FaChevronDown } from 'react-icons/fa';
 import AdminCreateTaskQueue from './AdminCreateTaskQueue';
 import AdminModifyTaskQueue from './AdminModifyTaskQueue';
 import Modal from './Modal';
+import Select from '@mui/material/Select';
+import { MenuItem, FormControl } from '@mui/base';
+import { InputLabel, NativeSelect } from '@mui/material';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
@@ -12,6 +15,7 @@ interface ModifyTaskProps{
   taskQueueName: string
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
+  editType: string;
 }
 
 interface CreateTaskProps{
@@ -25,6 +29,7 @@ const TaskQueuesTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [taskQueuesData, setTaskQueuesData] = useState([]);
   const [assignedUsers, setAssignedUsers] = useState([[""]]);
+  const [editType, setEditType] = useState("none")
 
   async function getAssignedUsers(taskQueues: [{friendlyName: string}]) {
 
@@ -68,14 +73,16 @@ const TaskQueuesTable = () => {
     setTaskQueuesData(taskQueuesResponse.taskQueues)
 
     getAssignedUsers(taskQueuesResponse.taskQueues)
+
   }
 
-  const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string) => {
+  const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string, editType: string) => {
     var props:ModifyTaskProps = {
       sid: taskQueueSid,
       taskQueueName: taskQueueName,
       setShowModal: setShowModal,
-      handleDataChange: handleDataChanges
+      handleDataChange: handleDataChanges,
+      editType: editType
     }
     
     setModalContent(
@@ -99,6 +106,7 @@ const TaskQueuesTable = () => {
   useEffect(() =>  {
     getTaskQueues()
 
+
     return
   }, []);
 
@@ -112,8 +120,6 @@ const TaskQueuesTable = () => {
       <div className="flex mb-4 justify-end">
 
         <div className="relative">
-
-          
           <button
             className="border border-gray-400 rounded px-4 mr-2 relative"
             onClick={() => setShowSortOptions(!showSortOptions)}
@@ -172,20 +178,20 @@ const TaskQueuesTable = () => {
         </div>
         
       </div>
-      
 
       <div className="w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto">
         <div className="my-3 p-2 grid grid-cols-3 items-center justify-between cursor-pointer">
           <span>Task Name/SID</span>
           <span className="text-center">Current Assigned Workers</span>
           <button
-          className="bg-purple-600 text-white py-2 px-2 rounded"
+          className="bg-purple-600 text-white py-2 px-3 rounded"
           onClick={() => {
             handleCreateTaskQueue()
           }}
           style={{
+            width: "fit-content",
+            marginLeft: "28%",
             }
-
           }>
             Create New Task Queue
             </button>
@@ -209,13 +215,27 @@ const TaskQueuesTable = () => {
                   }
                 </div>
                 <div className="flex justify-end">
-                  <BsThreeDots
-                    onClick={() => {
-                      handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName)
-                    }}
-                  >
-                    Edit
-                  </BsThreeDots>
+
+
+
+                    <NativeSelect
+                      value={editType}
+                      style={{
+                        width:"20px",
+                        appearance: "none",
+                      }}
+                      onChange={(e)=>{
+                        console.log(e.target.value)
+                        handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName, e.target.value)
+                      }}
+                    >
+                      <option value={"none"}></option>
+                      <option value={"Add Workers"}>Add Workers</option>
+                      <option value={"Remove Workers"}>Remove Workers</option>
+                      <option value={"Delete"}>Delete</option>
+
+                    </NativeSelect>
+
                 </div>
               </div>
             </li>

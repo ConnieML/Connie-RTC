@@ -25,7 +25,7 @@ const AdminSettings = () => {
       )}
       <div className="flex justify-between p-4">
         <h2>Admin Dashboard</h2>
-        <h2>Welcome Back, Nhi</h2>
+        <h2>Welcome Back, Cameron</h2>
       </div>
       <div className="p-4">
         <div className="flex justify-between mb-4">

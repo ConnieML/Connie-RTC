@@ -1,22 +1,30 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
+import { FaChevronDown } from 'react-icons/fa';
 
 interface IProps{
   sid: number,
   taskQueueName: string,
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
+  editType: string;
 
 }
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
-const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChange}: IProps)=> {
+const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChange, editType}: IProps)=> {
   
   const [workersToAdd, setWorkersToAdd] = useState('');
   const [workersToRemove, setWorkersToRemove] = useState('');
-
+  const [showEditOptions, setShowEditOptions] = useState(false);
+  const [editOptionsValue, setEditOptionsValue] = useState('Add Workers');
   
   async function handleModifyTaskQueue() {
+
+    if(editType === "Delete"){
+      handleDeleteTaskQueue(sid)
+      return
+    }
 
     const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
       method:'GET'
@@ -68,6 +76,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
     var errMsg = ''
 
+    // Create alert based on booleans and check flags
     if(toAdd){
       if(addFlag === 0){
         errMsg = errMsg.concat(`All specified workers added successfully\n`)
@@ -93,14 +102,20 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
   async function addWorkerToQueue(sid: string, prevAttributes: string) {
     var attributes = JSON.parse(prevAttributes)
+
+    // Check if the worker has a taskQueues attributes
     if(attributes.hasOwnProperty("taskQueues")){
       if(attributes.taskQueues.includes(taskQueueName)){
         console.log("worker already belongs to this task Queue")
-        return
+        return -1
       }
+
+      // Worker has task queues and doesnt belong to this one
       attributes.taskQueues.push(taskQueueName)
     }
     else{
+
+      // Create task queues attribute and set it to current queue
       attributes.taskQueues = [taskQueueName]
     }
     attributes = JSON.stringify(attributes)
@@ -119,12 +134,16 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
   async function removeWorkerFromQueue(sid: string, prevAttributes: string) {
     var attributes = JSON.parse(prevAttributes)
+
+    // Similar logic as adding to queue
     if(attributes.hasOwnProperty("taskQueues")){
       if(!attributes.taskQueues.includes(taskQueueName)){
         console.log("Remove worker from queue error - Worker not assigned to this queue")
         return -1
       }
       var newTaskQueues = []
+
+      // make new array with all but the queue to be removed
       for(let i=0; i < attributes.taskQueues.length; i++){
         if (attributes.taskQueues[i] !== taskQueueName){
           newTaskQueues.push(attributes.taskQueues[i])
@@ -151,6 +170,8 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   }
 
   const handleCancel = () => {
+    setWorkersToAdd('')
+    setWorkersToRemove('')
     setShowModal(false);
   };
 
@@ -170,53 +191,46 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Edit Queue</h2>
-      <label className="block mb-4">
-        Add Workers (Names separated by commas)        
-        <input
-          className="border border-gray-400 rounded w-full p-2"
-          type="text"
-          value={workersToAdd}
-          placeholder={"John Doe, Jane Smith, etc."}
-          onChange={(e) => setWorkersToAdd(e.target.value)}
-        />
-      </label>
-      <label className="block mb-4">
-        Remove Workers (Names separated by commas)        
-        <input
-          className="border border-gray-400 rounded w-full p-2"
-          type="text"
-          value={workersToRemove}
-          placeholder={"John Doe, Jane Smith, etc."}
-          onChange={(e) => setWorkersToRemove(e.target.value)}
-        />
-      </label>
-      <button
-        className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
-        onClick={handleModifyTaskQueue}
-      >
-        Confirm Changes
-      </button>
-      <button
-        className="bg-gray-200 text-red-600 py-2 px-4 rounded"
-        onClick={handleCancel}
-      >
-        Cancel
-      </button>
-      <button
-        className="bg-purple-600 text-white py-2 px-4 rounded mb-4justify-end"
-        onClick={() => {
-          handleDeleteTaskQueue(sid)
-        }}
-        style={
-        {
-          marginLeft:70,
-          backgroundColor: "red",
-          justifySelf: "right",
-        }
-        }
-       >
-          Delete
+      <h2 className="text-2xl font-bold mb-4">Edit {taskQueueName}</h2>
+
+      { editType === "Add Workers" &&
+        <label className="block mb-4">
+          {editOptionsValue} (Names separated by commas)        
+          <input
+            className="border border-gray-400 rounded w-full p-2"
+            type="text"
+            value={workersToAdd}
+            placeholder={"John Doe, Jane Smith, etc."}
+            onChange={(e) => setWorkersToAdd(e.target.value)}
+          />
+        </label>
+      }
+      { editType === "Remove Workers" && 
+        <label className="block mb-4">
+          Remove Workers (Names separated by commas)        
+          <input
+            className="border border-gray-400 rounded w-full p-2"
+            type="text"
+            value={workersToRemove}
+            placeholder={"John Doe, Jane Smith, etc."}
+            onChange={(e) => setWorkersToRemove(e.target.value)}
+          />
+        </label>
+      }
+      { editType === "Delete" && 
+        <h3 className="mb-4">Are you sure you want to delete {taskQueueName}?</h3>
+      }
+        <button
+          className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
+          onClick={handleModifyTaskQueue}
+        >
+          Confirm Changes
+        </button>
+        <button
+          className="bg-gray-200 text-red-600 py-2 px-4 rounded"
+          onClick={handleCancel}
+        >
+          Cancel
         </button>
     </div>
   );
