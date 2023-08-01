@@ -1,10 +1,20 @@
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { Inter } from 'next/font/google'
+import { useSession } from "next-auth/react"
+import AdminSettings from './admin-settings'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const router = useRouter()
 
-  useEffect(() => {
-    router.push('/workspaces')
-  })
-}
+  const { data: session, status } = useSession()
+
+  return (
+
+    <main
+      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
+    >
+
+      <AdminSettings/>
+      
+    </main>
+  )}
