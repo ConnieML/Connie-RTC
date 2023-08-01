@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { data } from '../data/data';
+import { Data } from '../data/data';
 import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
 import AdminEditUser from './AdminEditUser';
 import Modal from './Modal';
@@ -13,6 +13,13 @@ const UsersTable = (props: {workers: WorkerInstance[] | null}) => {
   const [showModal, setShowModal] = useState(false);
     
   const { workers } = props;
+  const data: Data[] = workers?.map((worker) => {
+    return {
+      id: worker.sid,
+      name: worker.friendlyName,
+      table: 1
+    }
+  }) || [];
 
   const handleMoreClick = (id: number) => {
     if (displaySkills === id) {
@@ -37,9 +44,9 @@ const UsersTable = (props: {workers: WorkerInstance[] | null}) => {
           <span className="hidden sm:grid">Status</span>
         </div>
         <ul>
-          {workers?.map((worker) => (
+          {data?.map((worker) => (
             <li
-              key={worker.sid}
+              key={worker.id}
               className="grid items-center justify-between grid-cols-2 p-2 my-3 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 md:grid-cols-4 sm:grid-cols-3"
             >
               <div className="flex items-center">
@@ -47,9 +54,9 @@ const UsersTable = (props: {workers: WorkerInstance[] | null}) => {
                   <BsPersonFill className="text-purple-800" />
                 </div>
                 <div className="pl-4">
-                  {worker.friendlyName}
+                  {worker.name}
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
-                    {worker.sid}
+                    {worker.id}
                   </p>
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
                     Role:
