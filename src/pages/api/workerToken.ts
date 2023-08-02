@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import AccessToken, { VoiceGrant } from 'twilio/lib/jwt/AccessToken';
+import AccessToken, {
+  TaskRouterGrant,
+  VoiceGrant,
+} from 'twilio/lib/jwt/AccessToken';
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
 const application_sid = process.env.TWILIO_TWIML_APP_SID;
@@ -17,17 +20,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     identity: client,
   });
 
-  // Create a Voice grant and add it to the token
-  const voice_grant = new VoiceGrant({
-    outgoingApplicationSid: application_sid,
-    incomingAllow: true,
+  const taskRouterGrant = new TaskRouterGrant({
+    workerSid: 'WKe2c27ece00f527bd82b116809b487de9',
+    workspaceSid: process.env.TWILIO_TASKROUTER_WORKSPACE_SID,
+    role: 'worker',
   });
-  token.addGrant(voice_grant);
+
+  token.addGrant(taskRouterGrant);
+  token.identity = client;
 
   // Return token info as JSON
-  const tokenResponse = {
-    identity: client,
-    token: token.toJwt(),
-  };
-  res.json(tokenResponse);
+
+  console.log('NEW');
+  res.json(token.toJwt());
 }
