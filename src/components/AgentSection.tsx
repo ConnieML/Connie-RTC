@@ -2,27 +2,69 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
+import { Activity } from '@/lib/taskrouterInterfaces';
+import { Worker } from 'twilio-taskrouter';
 
-export default function AgentSection({ number, setNumber, acceptCall }) {
+export default function AgentSection({
+  agentActivity,
+  agentActivities,
+  number,
+  worker,
+  makeCall,
+  setActivityName,
+  setNumber,
+  acceptCall,
+}: {
+  agentActivity: string;
+  agentActivities: Activity[];
+  number: string;
+  worker: Worker | null;
+  makeCall: () => void;
+  setActivityName: (name: string) => void;
+  setNumber: (num: string) => void;
+  acceptCall: () => void;
+}) {
   return (
     <article className="h-full flex flex-col p-10 gap-y-10">
       <div className="flex flex-row gap-x-10">
         <div className="flex flex-col">
-          <div className="font-bold text-3xl">Agent Name</div>
+          <div className="font-bold text-3xl">Welcome {worker?.name}</div>
           <div className="text-base text-[#A3A3A3]">Agent ID</div>
         </div>
         <Box sx={{ minWidth: 240 }}>
           <FormControl>
-            <InputLabel id="demo-simple-select-label">Age</InputLabel>
             <Select
               id="demo-simple-select"
-              value={10}
-              onChange={() => console.log('HI')}
+              value={agentActivity}
+              onChange={(e) => {
+                async function updateActivity() {
+                  // Update on backend
+                  const newActivity = agentActivities.find(
+                    (activity) => activity.friendlyName === e.target.value
+                  );
+                  await fetch(
+                    `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker?.sid}`,
+                    {
+                      method: 'PUT',
+                      body: JSON.stringify({
+                        activitySid: newActivity?.sid,
+                      }),
+                    }
+                  )
+                    .then(async (data) => {
+                      setActivityName(e.target.value);
+                    })
+                    .catch((e) => alert('Failed to update activity name'));
+                }
+                updateActivity();
+              }}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {agentActivities.map((activity, idx) => (
+                <MenuItem key={idx} value={activity.friendlyName}>
+                  {activity.friendlyName}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
@@ -39,7 +81,7 @@ export default function AgentSection({ number, setNumber, acceptCall }) {
         />
         <button
           className="w-10 h-10 bg-[#6366f1] flex justify-center items-center rounded-[10px]"
-          onClick={() => acceptCall()}
+          onClick={() => makeCall()}
         >
           <svg
             width="16"

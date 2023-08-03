@@ -30,7 +30,6 @@ export default async function handler(
       .tasks.list();
     res.status(200).json({ Tasks });
   } else if (method === 'POST') {
-    console.log('KEKW');
     const task: TaskListInstanceCreateOptions = JSON.parse(req.body);
     await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)

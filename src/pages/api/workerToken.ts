@@ -31,6 +31,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   // Return token info as JSON
 
-  console.log('NEW');
   res.json(token.toJwt());
 }
