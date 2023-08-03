@@ -126,12 +126,12 @@ export default function useCalls({ session }: { session: Session | null }) {
     initializeCalls();
   }, [initialized, session]);
 
-  const makeCall = async () => {
+  const makeCall = async (number: string) => {
     if (!device.current) return;
 
     const params = {
       // get the phone number to call from the DOM
-      To: '19132441797',
+      To: number,
     };
 
     const call = await device.current.connect({ params });

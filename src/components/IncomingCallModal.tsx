@@ -1,6 +1,12 @@
 import Modal from './Modal';
 
-export default function IncomingCallModal({ acceptCall, endCall }) {
+export default function IncomingCallModal({
+  acceptCall,
+  endCall,
+}: {
+  acceptCall: () => void;
+  endCall: () => void;
+}) {
   return (
     <Modal>
       <section className="flex flex-col items-center justify-between p-8 gap-y-12">

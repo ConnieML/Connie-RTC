@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
+
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -14,16 +14,14 @@ export default function AgentSection({
   makeCall,
   setActivityName,
   setNumber,
-  acceptCall,
 }: {
   agentActivity: string;
   agentActivities: Activity[];
   number: string;
   worker: Worker | null;
-  makeCall: () => void;
+  makeCall: (number: string) => void;
   setActivityName: (name: string) => void;
   setNumber: (num: string) => void;
-  acceptCall: () => void;
 }) {
   return (
     <article className="h-full flex flex-col p-10 gap-y-10">
@@ -81,7 +79,7 @@ export default function AgentSection({
         />
         <button
           className="w-10 h-10 bg-[#6366f1] flex justify-center items-center rounded-[10px]"
-          onClick={() => makeCall()}
+          onClick={() => makeCall(number)}
         >
           <svg
             width="16"
