@@ -46,8 +46,6 @@ export default function CallPage() {
     return <React.Fragment>Loading...</React.Fragment>;
   }
 
-  console.log(session);
-  console.log('NEW');
   return (
     <main className="flex flex-col w-screen h-screen box-border">
       <Navbar />

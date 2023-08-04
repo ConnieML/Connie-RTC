@@ -136,6 +136,25 @@ export default function useCalls({ session }: { session: Session | null }) {
 
     const call = await device.current.connect({ params });
 
+    // Turn agent activity status to unavailable to prevent agent from receiving incoming calls
+    const unavailableActivity = agentActivities?.find(
+      (activity) => activity.friendlyName === 'Unavailable'
+    );
+
+    await fetch(
+      `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          activitySid: unavailableActivity?.sid,
+        }),
+      }
+    )
+      .then(async (data) => {
+        setActivityName(unavailableActivity?.friendlyName ?? activityName);
+      })
+      .catch((e) => alert('Failed to update activity name'));
+
     setInCall(true);
     call.on('disconnect', () => {
       console.log('you disconnected');
