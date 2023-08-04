@@ -56,9 +56,6 @@ const UsersTable = (props: {workers: WorkerInstance[] | null}) => {
                 <div className="pl-4">
                   {worker.name}
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
-                    {worker.id}
-                  </p>
-                  <p style={{ color: 'gray', fontSize: '0.8em' }}>
                     Role:
                   </p>
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
@@ -66,9 +63,14 @@ const UsersTable = (props: {workers: WorkerInstance[] | null}) => {
                   </p>
                 </div>
               </div>
+              <div>
               <p className="text-right text-gray-600 sm:text-left">
                 johndoe@email.com
               </p>
+              <p style={{ color: 'gray', fontSize: '0.8em' }}>
+                {worker.id}
+              </p>
+              </div>
               {/* <div className="flex flex-wrap">
                 {order.skills
                   .split(', ')
