@@ -5,10 +5,12 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Activity } from '@/lib/taskrouterInterfaces';
 import { Worker } from 'twilio-taskrouter';
+import { formatPhoneNumber } from '@/lib/utils';
 
 export default function AgentSection({
   agentActivity,
   agentActivities,
+  inCall,
   number,
   worker,
   makeCall,
@@ -17,6 +19,7 @@ export default function AgentSection({
 }: {
   agentActivity: string;
   agentActivities: Activity[];
+  inCall: boolean;
   number: string;
   worker: Worker | null;
   makeCall: (number: string) => void;
@@ -24,7 +27,7 @@ export default function AgentSection({
   setNumber: (num: string) => void;
 }) {
   return (
-    <article className="h-full flex flex-col p-10 gap-y-10">
+    <article className="h-full flex flex-col gap-y-10">
       <div className="flex flex-row gap-x-10">
         <div className="flex flex-col">
           <div className="font-bold text-3xl">Welcome {worker?.name}</div>
@@ -72,7 +75,7 @@ export default function AgentSection({
           type="text"
           className="w-[500px] h-10 rounded-[10px]"
           placeholder="Type phone number"
-          value={number}
+          value={formatPhoneNumber(number)}
           onChange={(e) => {
             setNumber(e.target.value);
           }}

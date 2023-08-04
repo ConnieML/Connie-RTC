@@ -2,10 +2,10 @@ import Modal from './Modal';
 
 export default function IncomingCallModal({
   acceptCall,
-  endCall,
+  rejectCall,
 }: {
   acceptCall: () => void;
-  endCall: () => void;
+  rejectCall: () => void;
 }) {
   return (
     <Modal>
@@ -25,8 +25,8 @@ export default function IncomingCallModal({
             Accept Call
           </button>
           <button
-            className="w-[120px] h-12 border-2 border-black rounded-[10px] hover:bg-black hover:text-white"
-            onClick={() => endCall()}
+            className="w-[120px] h-12 rounded-[10px] hover:bg-black hover:text-white"
+            onClick={() => rejectCall()}
           >
             Reject Call
           </button>

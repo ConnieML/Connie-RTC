@@ -144,10 +144,17 @@ export default function useCalls({ session }: { session: Session | null }) {
     });
   };
 
+  function rejectCall() {
+    if (!device.current) return;
+    call.current?.reject();
+    setIncomingCall(false);
+  }
+
   function endCall() {
     if (!device.current) return;
 
     device.current.disconnectAll();
+    setIncomingCall(false);
     setInCall(false);
   }
 
@@ -162,12 +169,14 @@ export default function useCalls({ session }: { session: Session | null }) {
     activityName,
     agentActivities,
     initialized,
+    inCall,
     incomingCall,
     worker: worker.current,
     makeCall,
     setActivityName,
     acceptCall,
     endCall,
+    rejectCall,
   };
 }
 
