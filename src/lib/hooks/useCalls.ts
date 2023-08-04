@@ -11,6 +11,7 @@ export default function useCalls({ session }: { session: Session | null }) {
   const taskSid = useRef<string | null>(null);
   const call = useRef<Call | null>(null);
 
+  const [number, setNumber] = useState('');
   const [incomingCall, setIncomingCall] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [activityName, setActivityName] = useState<string>('Available');
@@ -27,30 +28,19 @@ export default function useCalls({ session }: { session: Session | null }) {
           worker.current!.sid
         }`
       );
-      console.log(reservation.task.sid);
+
       taskSid.current = reservation.task.sid;
       console.log(`Task attributes are: ${reservation.task.attributes}`);
 
       reservation.on('accepted', (acceptedReservation: Reservation) => {
-        // setTaskId(acceptedReservation.task.sid);
         console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
       });
 
-      // reservation
-      //   .accept()
-      //   .then((acceptedReservation) => {
-      //     console.log(`Reservation status is ${acceptedReservation.status}`);
-      //   })
-      //   .catch((err) => {
-      //     console.log(`Error: ${err}`);
-      //   });
-    });
-    worker.current.on('reservation.canceled', function (reservation) {
-      console.log(reservation.task.attributes); // {foo: 'bar', baz: 'bang' }
-      console.log(reservation.task.priority); // 1
-      console.log(reservation.task.age); // 300
-      console.log(reservation.task.sid); // WTxxx
-      console.log(reservation.sid); // WRxxx
+      reservation.on('canceled', (acceptedReservation: Reservation) => {
+        console.log(`Reservation ${acceptedReservation.sid} was canceled.`);
+        setIncomingCall(false);
+        call.current?.disconnect();
+      });
     });
   };
 
@@ -64,32 +54,31 @@ export default function useCalls({ session }: { session: Session | null }) {
       console.log('Twilio.Device Error: ' + error.message);
     });
 
-    device.current.on('incoming', (incomingCall) => {
+    device.current.on('incoming', (incomingCall: Call) => {
       setIncomingCall(true);
+
       call.current = incomingCall;
-      // call.on('cancel', () => alert('CANCEL'));
+
+      incomingCall.on('cancel', () => {
+        setIncomingCall(false);
+      });
+
+      incomingCall.on('reject', () => {
+        setIncomingCall(false);
+      });
 
       incomingCall.on('disconnect', () => {
-        // TODO: Add logic to only allow if accepted
-        fetch(
-          `/api/tasks?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${taskSid.current}`,
-          {
-            method: 'PUT',
-            body: JSON.stringify({ assignmentStatus: 'completed' }),
-          }
-        );
+        if (inCall) {
+          fetch(
+            `/api/tasks?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${taskSid.current}`,
+            {
+              method: 'PUT',
+              body: JSON.stringify({ assignmentStatus: 'completed' }),
+            }
+          );
+        }
+        setInCall(false);
       });
-      // call.on('reject', () => alert('REJECT'));
-    });
-
-    device.current.on('registering', (device) => {
-      // Do something
-      console.log('HI this ran');
-    });
-
-    device.current.on('unregistered', (device) => {
-      // Do something
-      console.log('HI this ran 2');
     });
   };
 
@@ -191,8 +180,10 @@ export default function useCalls({ session }: { session: Session | null }) {
     inCall,
     incomingCall,
     worker: worker.current,
+    number,
     makeCall,
     setActivityName,
+    setNumber,
     acceptCall,
     endCall,
     rejectCall,

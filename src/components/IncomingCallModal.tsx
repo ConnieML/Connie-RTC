@@ -1,9 +1,12 @@
+import { formatPhoneNumber } from '@/lib/utils';
 import Modal from './Modal';
 
 export default function IncomingCallModal({
+  number,
   acceptCall,
   rejectCall,
 }: {
+  number: string;
   acceptCall: () => void;
   rejectCall: () => void;
 }) {
@@ -14,7 +17,9 @@ export default function IncomingCallModal({
           <div className="text-xl font-medium text-[#6B7280]">
             Incoming Call
           </div>
-          <div className="text-4xl font-semibold">111-111-1111</div>
+          <div className="text-4xl font-semibold">
+            {formatPhoneNumber(number)}
+          </div>
         </article>
 
         <article className="flex flex-row gap-x-10">

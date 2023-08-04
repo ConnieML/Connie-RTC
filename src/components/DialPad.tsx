@@ -27,6 +27,7 @@ export default function DialPad({
           <div className="px-8">
             <input
               value={formatPhoneNumber(number)}
+              disabled={inCall}
               placeholder="Type phone number"
               className="border-0 text-center text-4xl w-full"
               onChange={(e) => setNumber(e.target.value)}

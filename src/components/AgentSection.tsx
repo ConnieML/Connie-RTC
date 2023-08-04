@@ -75,6 +75,7 @@ export default function AgentSection({
           type="text"
           className="w-[500px] h-10 rounded-[10px]"
           placeholder="Type phone number"
+          disabled={inCall}
           value={formatPhoneNumber(number)}
           onChange={(e) => {
             setNumber(e.target.value);

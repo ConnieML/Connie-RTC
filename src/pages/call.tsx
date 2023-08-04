@@ -20,18 +20,16 @@ export default function CallPage() {
     inCall,
     incomingCall,
     worker,
+    number,
     makeCall,
     setActivityName,
+    setNumber,
     acceptCall,
     endCall,
     rejectCall,
   } = useCalls({
     session,
   });
-
-  // Fetch agent data here
-
-  const [number, setNumber] = useState('');
 
   useEffect(() => {
     if (status !== 'loading') {
@@ -73,7 +71,11 @@ export default function CallPage() {
         </div>
       </section>
       {incomingCall && (
-        <IncomingCallModal acceptCall={acceptCall} rejectCall={rejectCall} />
+        <IncomingCallModal
+          number={number}
+          acceptCall={acceptCall}
+          rejectCall={rejectCall}
+        />
       )}
     </main>
   );
