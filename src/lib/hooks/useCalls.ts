@@ -54,7 +54,6 @@ export default function useCalls({ session }: { session: Session | null }) {
             .catch((e) => alert('Failed to update activity name'));
         } catch (e) {
           console.log(e);
-          alert('FFFFF');
         }
       });
 
@@ -180,7 +179,9 @@ export default function useCalls({ session }: { session: Session | null }) {
       To: number,
     };
 
-    const call = await device.current.connect({ params });
+    const newCall = await device.current.connect({ params });
+
+    call.current = newCall;
 
     // Turn agent activity status to reserved to prevent agent from receiving incoming calls
     const reservedActivity = agentActivities.current?.find(
@@ -202,7 +203,9 @@ export default function useCalls({ session }: { session: Session | null }) {
       .catch((e) => alert('Failed to update activity name'));
 
     setInCall(true);
-    call.on('disconnect', () => {
+
+    // Check if I should use this
+    newCall.on('disconnect', () => {
       console.log('you disconnected');
       setInCall(false);
       setIncomingCall(false);

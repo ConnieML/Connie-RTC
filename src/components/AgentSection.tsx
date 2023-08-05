@@ -38,6 +38,7 @@ export default function AgentSection({
             <Select
               id="demo-simple-select"
               value={agentActivity}
+              disabled={inCall}
               onChange={(e) => {
                 async function updateActivity() {
                   // Update on backend
