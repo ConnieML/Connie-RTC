@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import Navbar from '@/components/Navbar';
 import AgentSection from '@/components/AgentSection';
@@ -11,6 +11,7 @@ import DialPad from '@/components/DialPad';
 
 export default function CallPage() {
   const { data: session, status } = useSession();
+
   const router = useRouter();
 
   const {
@@ -28,7 +29,9 @@ export default function CallPage() {
     endCall,
     rejectCall,
   } = useCalls({
-    session,
+    email: session?.user.email,
+    workerSid: session?.employeeNumber,
+    friendlyName: session?.user.name ?? '',
   });
 
   useEffect(() => {

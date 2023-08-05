@@ -31,10 +31,10 @@ export default async function handler(
     res.status(200).json({ workers });
   } else if (method === 'POST') {
     const worker: WorkerListInstanceCreateOptions = JSON.parse(req.body);
-    await twilioClient.taskrouter.v1
+    const newWorker: WorkerInstance = await twilioClient.taskrouter.v1
       .workspaces(workspaceSid)
       .workers.create(worker);
-    res.status(200).json({ worker });
+    res.status(200).json({ worker: newWorker });
   } else if (method === 'PUT') {
     const worker: WorkerContextUpdateOptions = JSON.parse(req.body);
     await twilioClient.taskrouter.v1

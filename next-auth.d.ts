@@ -12,6 +12,7 @@ declare module 'next-auth' {
     oktaId: string;
     accessToken: string;
     userType: string;
+    employeeNumber: string;
   }
 }
 

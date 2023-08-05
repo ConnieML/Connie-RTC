@@ -41,6 +41,9 @@ const AdminEditUser = ({
     );
     const retrieveData = await retreiveResponse.json();
 
+    const createData = await createResponse.json();
+    console.log(createData);
+    console.log('BRUH');
     var workerSid = '';
 
     // Find newly created worker

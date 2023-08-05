@@ -1,10 +1,19 @@
 import { Call, Device } from '@twilio/voice-sdk';
-import { Session } from 'next-auth';
+
 import { useEffect, useRef, useState } from 'react';
 import { Reservation, Worker } from 'twilio-taskrouter';
 import { Activity } from '../taskrouterInterfaces';
+import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 
-export default function useCalls({ session }: { session: Session | null }) {
+export default function useCalls({
+  email,
+  workerSid,
+  friendlyName,
+}: {
+  email: string | undefined;
+  workerSid: string | undefined;
+  friendlyName: string;
+}) {
   const [initialized, setInitialized] = useState(false);
   const device = useRef<Device | null>(null);
   const worker = useRef<Worker | null>(null);
@@ -99,6 +108,7 @@ export default function useCalls({ session }: { session: Session | null }) {
 
   const initializeDeviceListeners = () => {
     if (!device.current) return;
+    console.log('ANNOYED');
     device.current.on('registered', function () {
       console.log('Twilio.Device Ready to make and receive calls!');
     });
@@ -139,37 +149,41 @@ export default function useCalls({ session }: { session: Session | null }) {
   };
 
   useEffect(() => {
-    async function initializeCalls() {
-      if (session && !initialized) {
+    if (email && !initialized) {
+      const initializeCalls = async () => {
         await Promise.all([
-          await initializeDevice(session.user.email).then((newDevice) => {
+          await initializeDevice(email).then((newDevice) => {
             device.current = newDevice;
             initializeDeviceListeners();
           }),
-          await initializeWorker(session.user.email).then(async (newWorker) => {
-            worker.current = newWorker;
-            initializeWorkerListeners();
 
-            await fetch(
-              `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${newWorker.sid}`
-            ).then(async (data) => {
-              const worker = await data.json();
-              setActivityName(worker.worker.activityName);
-            });
-          }),
+          await initializeWorker(workerSid, email, friendlyName).then(
+            async (newWorker) => {
+              worker.current = newWorker!;
+              initializeWorkerListeners();
+
+              await fetch(
+                `/api/workers/?workspaceSid=${
+                  process.env.NEXT_PUBLIC_WORKSPACE_SID
+                }&workerSid=${newWorker!.sid}`
+              ).then(async (data) => {
+                const worker = await data.json();
+                setActivityName(worker.worker.activityName);
+              });
+            }
+          ),
           await fetch(
             `/api/activities/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`
           ).then(async (data) => {
             const activities = await data.json();
             agentActivities.current = activities.activities;
           }),
-        ]),
-          setInitialized(true);
-      }
-    }
+        ]).then(() => setInitialized(true));
+      };
 
-    initializeCalls();
-  }, [initialized, session]);
+      initializeCalls();
+    }
+  }, [initialized, email]);
 
   const makeCall = async (number: string) => {
     if (!device.current) return;
@@ -268,16 +282,31 @@ async function initializeDevice(client: string) {
   return device;
 }
 
-const initializeWorker = async (client: string) => {
-  const rawToken = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/workerToken?client=${client}`
-  );
+const initializeWorker = async (
+  workerSid: string | undefined,
+  email: string,
+  friendlyName: string
+) => {
+  try {
+    if (!workerSid) {
+      throw `The user ${friendlyName} with email ${email} does not have an employeeNumber in Okta`;
+    }
+    const tokenResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/workerToken?email=${email}&workerSid=${workerSid}`
+    );
 
-  const token = await rawToken.json();
+    if (tokenResponse.status !== 200) {
+      throw `Failed to generate valid token for ${friendlyName} with email ${email}`;
+    }
 
-  const worker = new Worker(token);
-  await timeout(1000);
-  return worker;
+    const token = await tokenResponse.json();
+
+    const worker = new Worker(token);
+    await timeout(1000);
+    return worker;
+  } catch (e) {
+    console.error(e);
+  }
 };
 
 function timeout(ms: number) {
