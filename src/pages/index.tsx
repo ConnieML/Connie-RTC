@@ -10,14 +10,6 @@ import React from 'react';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
-  const { data: session, status } = useSession();
-
-  const [age, setAge] = React.useState('');
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
-
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}

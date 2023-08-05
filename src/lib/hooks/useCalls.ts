@@ -10,14 +10,12 @@ export default function useCalls({ session }: { session: Session | null }) {
   const worker = useRef<Worker | null>(null);
   const taskSid = useRef<string | null>(null);
   const call = useRef<Call | null>(null);
+  const agentActivities = useRef<Activity[] | null>(null);
 
   const [number, setNumber] = useState('');
   const [incomingCall, setIncomingCall] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [activityName, setActivityName] = useState<string>('Available');
-  const [agentActivities, setAgentActivities] = useState<Activity[] | null>(
-    null
-  );
 
   const initializeWorkerListeners = () => {
     if (!worker.current) return;
@@ -32,8 +30,32 @@ export default function useCalls({ session }: { session: Session | null }) {
       taskSid.current = reservation.task.sid;
       console.log(`Task attributes are: ${reservation.task.attributes}`);
 
-      reservation.on('accepted', (acceptedReservation: Reservation) => {
+      reservation.on('accepted', async (acceptedReservation: Reservation) => {
         console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
+
+        try {
+          // Turn agent activity status to reserved to prevent agent from receiving incoming calls
+          const reservedActivity = agentActivities.current?.find(
+            (activity) => activity.friendlyName === 'Reserved'
+          );
+
+          await fetch(
+            `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
+            {
+              method: 'PUT',
+              body: JSON.stringify({
+                activitySid: reservedActivity?.sid,
+              }),
+            }
+          )
+            .then(async (data) => {
+              setActivityName(reservedActivity?.friendlyName ?? activityName);
+            })
+            .catch((e) => alert('Failed to update activity name'));
+        } catch (e) {
+          console.log(e);
+          alert('FFFFF');
+        }
       });
 
       reservation.on('canceled', (acceptedReservation: Reservation) => {
@@ -41,6 +63,38 @@ export default function useCalls({ session }: { session: Session | null }) {
         setIncomingCall(false);
         call.current?.disconnect();
       });
+    });
+    /**
+     * This section handles any errors during the websocket connection
+     */
+    worker.current.on('disconnected', (reservation: Reservation) => {
+      console.log(
+        `Reservation ${reservation.sid} has been created for ${
+          worker.current!.sid
+        }`
+      );
+
+      alert('You have been disconnected. Please refresh the page to reconnect');
+    });
+
+    worker.current.on('error', (reservation: Reservation) => {
+      console.log(
+        `Reservation ${reservation.sid} has been created for ${
+          worker.current!.sid
+        }`
+      );
+
+      alert('You have been disconnected. Please refresh the page to reconnect');
+    });
+
+    worker.current.on('tokenExpired', (reservation: Reservation) => {
+      console.log(
+        `Reservation ${reservation.sid} has been created for ${
+          worker.current!.sid
+        }`
+      );
+
+      alert('You have been disconnected. Please refresh the page to reconnect');
     });
   };
 
@@ -56,6 +110,7 @@ export default function useCalls({ session }: { session: Session | null }) {
 
     device.current.on('incoming', (incomingCall: Call) => {
       setIncomingCall(true);
+      setNumber(incomingCall.parameters.From);
 
       call.current = incomingCall;
 
@@ -65,10 +120,11 @@ export default function useCalls({ session }: { session: Session | null }) {
 
       incomingCall.on('reject', () => {
         setIncomingCall(false);
+        setNumber('');
       });
 
       incomingCall.on('disconnect', () => {
-        if (inCall) {
+        if (taskSid.current) {
           fetch(
             `/api/tasks?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${taskSid.current}`,
             {
@@ -78,6 +134,7 @@ export default function useCalls({ session }: { session: Session | null }) {
           );
         }
         setInCall(false);
+        setNumber('');
       });
     });
   };
@@ -105,7 +162,7 @@ export default function useCalls({ session }: { session: Session | null }) {
             `/api/activities/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`
           ).then(async (data) => {
             const activities = await data.json();
-            setAgentActivities(activities.activities);
+            agentActivities.current = activities.activities;
           }),
         ]),
           setInitialized(true);
@@ -125,9 +182,9 @@ export default function useCalls({ session }: { session: Session | null }) {
 
     const call = await device.current.connect({ params });
 
-    // Turn agent activity status to unavailable to prevent agent from receiving incoming calls
-    const unavailableActivity = agentActivities?.find(
-      (activity) => activity.friendlyName === 'Unavailable'
+    // Turn agent activity status to reserved to prevent agent from receiving incoming calls
+    const reservedActivity = agentActivities.current?.find(
+      (activity) => activity.friendlyName === 'Reserved'
     );
 
     await fetch(
@@ -135,12 +192,12 @@ export default function useCalls({ session }: { session: Session | null }) {
       {
         method: 'PUT',
         body: JSON.stringify({
-          activitySid: unavailableActivity?.sid,
+          activitySid: reservedActivity?.sid,
         }),
       }
     )
       .then(async (data) => {
-        setActivityName(unavailableActivity?.friendlyName ?? activityName);
+        setActivityName(reservedActivity?.friendlyName ?? activityName);
       })
       .catch((e) => alert('Failed to update activity name'));
 
@@ -159,15 +216,17 @@ export default function useCalls({ session }: { session: Session | null }) {
   }
 
   function endCall() {
-    if (!device.current) return;
+    if (!call.current) return;
 
-    device.current.disconnectAll();
+    call.current.disconnect();
     setIncomingCall(false);
     setInCall(false);
+    setNumber('');
   }
 
-  const acceptCall = () => {
+  const acceptCall = async () => {
     if (call.current === null) return;
+
     setIncomingCall(false);
     setInCall(true);
     call.current.accept();
@@ -175,7 +234,7 @@ export default function useCalls({ session }: { session: Session | null }) {
 
   return {
     activityName,
-    agentActivities,
+    agentActivities: agentActivities.current,
     initialized,
     inCall,
     incomingCall,

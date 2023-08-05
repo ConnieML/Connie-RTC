@@ -57,6 +57,21 @@ export default function AgentSection({
                       setActivityName(e.target.value);
                     })
                     .catch((e) => alert('Failed to update activity name'));
+
+                  // Clear all tasks if set to available. This is done just in case there are any tasks stuck in "Wrapping Up"
+                  if (newActivity?.friendlyName === 'Available') {
+                    worker?.reservations.forEach(async (reservation) => {
+                      await fetch(
+                        `/api/tasks/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${reservation.task.sid}`,
+                        {
+                          method: 'PUT',
+                          body: JSON.stringify({
+                            assignmentStatus: 'completed',
+                          }),
+                        }
+                      );
+                    });
+                  }
                 }
                 updateActivity();
               }}
