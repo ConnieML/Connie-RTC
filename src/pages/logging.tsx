@@ -1,8 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
 
+interface CallData {
+  startTime: string;
+  duration: number; // Add the duration property to CallData
+}
+
 export default function Line() {
-  const canvasEl = useRef<HTMLCanvasElement>(null);
+  const callChartDataRef = useRef<HTMLCanvasElement>(null); // Ref for call data chart
+  const avgDurationChartDataRef = useRef<HTMLCanvasElement>(null); // Ref for average duration chart
 
   const colors = {
     purple: {
@@ -17,12 +23,15 @@ export default function Line() {
     },
   };
 
-  const [callData, setCallData] = useState([]);
+  const [callData, setCallData] = useState<CallData[]>([]);
+  const [callDurations, setCallDurations] = useState<number[]>([]); // State to hold call durations
+  const [averageDurations, setAverageDurations] = useState<number[]>([]); // State to hold average durations
+  const [filterBy, setFilterBy] = useState<'day' | 'week' | 'month'>('day');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/endpoint-url'); 
+        const response = await fetch('/api/endpoint-url');
         const data = await response.json();
         setCallData(data);
       } catch (error) {
@@ -33,46 +42,104 @@ export default function Line() {
     fetchData();
   }, []);
 
-  // ...
-
-  const transformData = (data: any[]) => {
-    const callsByHour = new Array(24).fill(0); // Initialize an array to hold the count of calls for each hour
-
-    // Loop through the data and increment the count for the corresponding hour
-    data.forEach((call: any) => {
-      const startTime = new Date(call.startTime);
-      const hour = startTime.getHours();
-      callsByHour[hour]++;
-    });
-
-    return callsByHour;
+  const transformData = (data: CallData[]): number[] => {
+    let callsByInterval: number[] = [];
+    if (filterBy === 'day') {
+      callsByInterval = new Array(24).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const hour = startTime.getHours();
+        callsByInterval[hour]++;
+      });
+    } else if (filterBy === 'week') {
+      callsByInterval = new Array(7).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const dayOfWeek = startTime.getDay();
+        callsByInterval[dayOfWeek]++;
+      });
+    } else if (filterBy === 'month') {
+      callsByInterval = new Array(31).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const dayOfMonth = startTime.getDate();
+        callsByInterval[dayOfMonth - 1]++;
+      });
+    }
+    return callsByInterval;
   };
 
-// ...
+  const transformDurationData = (data: CallData[]): number[] => {
+    let durationsByInterval: number[] = [];
+    if (filterBy === 'day') {
+      durationsByInterval = new Array(24).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const hour = startTime.getHours();
+        durationsByInterval[hour] += call.duration;
+      });
+    } else if (filterBy === 'week') {
+      durationsByInterval = new Array(7).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const dayOfWeek = startTime.getDay();
+        durationsByInterval[dayOfWeek] += call.duration;
+      });
+    } else if (filterBy === 'month') {
+      durationsByInterval = new Array(31).fill(0);
+      data.forEach((call: CallData) => {
+        const startTime = new Date(call.startTime);
+        const dayOfMonth = startTime.getDate();
+        durationsByInterval[dayOfMonth - 1] += call.duration;
+      });
+    }
+    return durationsByInterval;
+  };
 
+  const calculateAverageDurations = (callData: CallData[], durationsByInterval: number[]): number[] => {
+    const callCounts = transformData(callData);
+    return durationsByInterval.map((totalDuration, index) =>
+      callCounts[index] > 0 ? totalDuration / callCounts[index] : 0
+    );
+  };
 
-  const transformedData = transformData(callData);
+  const transformedData: number[] = transformData(callData);
+  const transformedDurations: number[] = transformDurationData(callData);
+  const avgDurationsByInterval: number[] = calculateAverageDurations(callData, transformedDurations);
 
   useEffect(() => {
-    if (canvasEl.current === null) return;
-    const ctx = canvasEl.current.getContext('2d') as CanvasRenderingContext2D;
+    if (callChartDataRef.current === null) return;
+    const ctx = callChartDataRef.current.getContext('2d') as CanvasRenderingContext2D;
 
-    const gradient = ctx.createLinearGradient(0, 16, 0, 600);
-    gradient.addColorStop(0, colors.purple.half);
-    gradient.addColorStop(0.65, colors.purple.quarter);
-    gradient.addColorStop(1, colors.purple.zero);
+    let labels: string[] = [];
+    let data: number[] = [];
+    let yAxesMax = 0;
 
-    const data = {
-      labels: [
+    if (filterBy === 'day') {
+      yAxesMax = 2500; // Maximum value on y-axes for 'day' filter
+      labels = [
         '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00',
         '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
         '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
-      ],
+      ];
+      data = transformedData;
+    } else if (filterBy === 'week') {
+      yAxesMax = 7500; // Maximum value on y-axes for 'week' filter
+      labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      data = transformedData;
+    } else if (filterBy === 'month') {
+      yAxesMax = 10000; // Maximum value on y-axes for 'month' filter
+      labels = Array.from({ length: transformedData.length }, (_, i) => i + 1).map(String);
+      data = transformedData;
+    }
+
+    const chartData = {
+      labels,
       datasets: [
         {
-          label: 'Number of Calls',
-          data: transformedData,
-          backgroundColor: colors.purple.default,
+          label: 'Average Call Duration',
+          data,
+          backgroundColor: colors.purple.default, // Change this value to match the backgroundColor of the first chart
           borderColor: colors.indigo.default,
           pointStyle: 'circle',
           pointRadius: 10,
@@ -80,10 +147,11 @@ export default function Line() {
         },
       ],
     };
+    
 
     const config: ChartConfiguration = {
       type: 'line',
-      data,
+      data: chartData,
       options: {
         responsive: true,
         plugins: {
@@ -91,8 +159,8 @@ export default function Line() {
             display: true,
             text: 'Number of Calls',
             font: {
-              size: 20
-            }
+              size: 20,
+            },
           },
           legend: {
             display: false,
@@ -106,7 +174,99 @@ export default function Line() {
             },
           },
           y: {
+            ticks: {
+              color: 'white',
+              stepSize: yAxesMax / 5, // Divide the y-axes range into 5 equal steps
+              callback: (value) => (typeof value === 'number' ? (value === 0 ? '0' : `${value / 1000}k`) : value),
+            },
+            max: yAxesMax,
+            grid: {
+              color: () => '#969696',
+            },
+          },
+        },
+      },
+    };
+
+    const myLineChart = new Chart(ctx, config);
+
+    return function cleanup() {
+      myLineChart.destroy();
+    };
+  }, [filterBy, transformedData]);
+
+  useEffect(() => {
+    if (avgDurationChartDataRef.current === null) return;
+    const ctx = avgDurationChartDataRef.current.getContext('2d') as CanvasRenderingContext2D;
+
+    let labels: string[] = [];
+    let data: number[] = [];
+    let yAxesMax = 0;
+
+    if (filterBy === 'day') {
+      yAxesMax = 2000; // You can adjust this value based on your data
+      labels = [
+        '00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00',
+        '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00',
+        '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00',
+      ];
+      data = avgDurationsByInterval;
+    } else if (filterBy === 'week') {
+      yAxesMax = 5000; // You can adjust this value based on your data
+      labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      data = avgDurationsByInterval;
+    } else if (filterBy === 'month') {
+      yAxesMax = 10000; // You can adjust this value based on your data
+      labels = Array.from({ length: avgDurationsByInterval.length }, (_, i) => i + 1).map(String);
+      data = avgDurationsByInterval;
+    }
+
+    const chartData = {
+      labels,
+      datasets: [
+        {
+          label: 'Average Call Duration',
+          data,
+          backgroundColor: colors.purple.half,
+          borderColor: colors.indigo.default,
+          pointStyle: 'circle',
+          pointRadius: 10,
+          pointHoverRadius: 15,
+        },
+      ],
+    };
+
+    const config: ChartConfiguration = {
+      type: 'line',
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Average Call Duration',
+            font: {
+              size: 20,
+            },
+          },
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          x: {
             ticks: { color: 'white' },
+            grid: {
+              color: () => '#969696',
+            },
+          },
+          y: {
+            ticks: {
+              color: 'white',
+              stepSize: yAxesMax / 5, // Divide the y-axes range into 5 equal steps
+              callback: (value) => (typeof value === 'number' ? `${value}s` : value),
+            },
+            max: yAxesMax,
             grid: {
               color: () => '#969696',
             },
@@ -121,11 +281,32 @@ export default function Line() {
     return function cleanup() {
       myLineChart.destroy();
     };
-  });
+  }, [filterBy, avgDurationsByInterval]);
 
   return (
     <article>
-      <canvas ref={canvasEl} className="w-[54vw]" />
+      <div>
+      <div>
+        <span style={{ marginLeft: '3rem'}}>Filter By:</span>{' '}
+        <select
+          value={filterBy}
+          onChange={(e) => setFilterBy(e.target.value as 'day' | 'week' | 'month')}
+          style={{
+            borderRadius: '0.25rem', // Add rounded edges
+            backgroundColor: '#f3f4f6', // Change the background color
+            padding: '0.5rem', // Add some padding
+          }}
+        >
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+      </div>
+      <div style={{ display: 'flex', maxWidth: '100vw' }}>
+        <canvas ref={callChartDataRef} className="w-[27vw]" />
+        <canvas ref={avgDurationChartDataRef} className="w-[27vw]" />
+      </div>
+      </div>
     </article>
   );
 }
