@@ -90,8 +90,6 @@ const TaskQueuesTable = () => {
     const workersResponse = await getWorkers.json()
     const workersList = workersResponse.workers
 
-    console.log(assignedWorkers)
-
     var props:ModifyTaskProps = {
       sid: taskQueueSid,
       taskQueueName: taskQueueName,
@@ -242,7 +240,6 @@ const TaskQueuesTable = () => {
                         appearance: "none",
                       }}
                       onChange={(e)=>{
-                        console.log(e.target.value)
                         handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName, e.target.value, assignedUsers[index])
                       }}
                     >
