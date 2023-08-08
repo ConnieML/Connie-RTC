@@ -85,7 +85,7 @@ export default function QueuesStats({
                 <div className='flex gap-5'>
                     <div className='flex box-border rounded h-[230px] w-[135px] border-[2px] mt-5 justify-center flex-col items-center'>
                         <div className='w-12 h-12 rounded-full bg-white border-[2px] border-gray-300 flex items-center justify-center mt-[-30%]'>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-[#22C55E]">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-[#22C55E]">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0118 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3l1.5 1.5 3-3.75" />
                                 </svg>
                         </div>
@@ -96,8 +96,8 @@ export default function QueuesStats({
                     </div>
                     <div className='flex box-border rounded h-[230px] w-[135px] border-[2px] mt-5 justify-center flex-col items-center'>
                         <div className='w-12 h-12 rounded-full bg-white border-[2px] border-gray-300 flex items-center justify-center mt-[-30%]'>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-[#F59E0B]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-[#F59E0B]">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"></path>
                         </svg>
                         </div>
                         <p className='text-center font-inter text-24 font-medium leading-32 tracking-tight mb-[15%] mt-[10%]'>Waiting Tasks</p>
@@ -107,8 +107,8 @@ export default function QueuesStats({
                     </div>
                     <div className='flex box-border rounded h-[230px] w-[135px] border-[2px] mt-5 justify-center flex-col items-center'>
                         <div className='w-12 h-12 rounded-full bg-white border-[2px] border-gray-300 flex items-center justify-center mt-[-30%]'>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 text-[#EF4444]">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6 text-[#EF4444]">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         </div>
                         <p className='text-center font-inter text-24 font-medium leading-32 tracking-tight mb-[15%] mt-[10%]'>Longest Wait</p>
@@ -118,59 +118,53 @@ export default function QueuesStats({
                     </div>
                 </div>
                 <h4 className="font-inter text-[18px] font-semibold leading-32 tracking-tight text-left mt-8 mb-5">Task Queues</h4>
-                <div className='table'>
-                    <div className='table-header-group'>
-                        <div className='table-row'>
-                            <div className='table-cell text-left text-[15px] font-inter'>
-                                <div className='flex'>
-                                    QUEUES 
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="gray" className="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
-                                    </svg>
-                                </div>
-                            </div>
-                            <div className='table-cell text-left text-[15px] font-inter'>ACTIVE</div>
-                            <div className='table-cell text-left text-[15px] font-inter'>WAITING</div>
-                            <div className='table-cell text-left text-[15px] font-inter'>LONGEST</div>
-                            <div className='table-cell text-left text-[15px] font-inter'>AGENT STATUS</div>
-                        </div>
-                    </div>
-                    <div className='table-row-group'>
-                        <div className='table-row h-[50px]'>
-                            <div className='table-cell'>Sample Queue</div>
-                            <div className='table-cell'>
-                            {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
+                        <table className="table-fixed w-[100%] ml-[-7%]">
+  <thead>
+    <tr>
+      <th>Queues</th>
+      <th>Active</th>
+      <th>Waiting</th>
+      <th>Longest</th>
+      <th className="w-[20%] h-[50px]">Agent Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                               return (
-                                <div key={taskQueueSid} className="ml-2">
+                                <div key={taskQueueSid} className="ml-20">
+                                  {syncMapData.taskQueuesDetails[taskQueueSid].friendlyName}
+                                </div>
+                              )
+                            }
+                            )}</td>
+      <td>{Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
+                              return (
+                                <div key={taskQueueSid} className="ml-20">
                                   {syncMapData.taskQueuesDetails[taskQueueSid].activeTasks}
                                 </div>
                               )
                             }
-                            )}
-                            </div>
-                            <div className='table-cell'>
-                            {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
+                            )}</td>
+      <td>{Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                               return (
-                                <div key={taskQueueSid} className="ml-2">
+                                <div key={taskQueueSid} className="ml-20">
                                   {syncMapData.taskQueuesDetails[taskQueueSid].waitingTasks}
                                 </div>
                               )
                             }
-                            )}
-                            </div>
-                            <div className='table-cell'>
-                            {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
+                            )}</td>
+      <td>{Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                               return (
-                                <div key={taskQueueSid} className="ml-2">
-                                  {syncMapData.taskQueuesDetails[taskQueueSid].longestTaskWaitingAge}s
+                                <div key={taskQueueSid} className="ml-20">
+                                  {syncMapData.taskQueuesDetails[taskQueueSid].longestTaskWaitingAge} s
                                 </div>
                               )
                             }
-                            )}
-                            </div>
-                            <div className='flex gap-4'>
-                                <div className="w-[85px] h-[20px] bg-[#DCFCE7] rounded-full mb-[-40%] mt-[-10px] flex items-center justify-center">
-                                    <p className="font-inter text-[12px] font-bold text-[#22C55E]">
+                            )}</td>                    
+      <td><div className='flex gap-4'>
+                                <div className="w-[85px] h-[20px] bg-[#DCFCE7] rounded-full mb-[-40%] mt-[-10px] flex items-center justify-center ml-12">
+                                    <p className="font-inter text-[12px] font-bold text-[#22C55E] w-[80px]">
                                     {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                                       return (
                                         <div key={taskQueueSid} className="ml-2">
@@ -182,7 +176,7 @@ export default function QueuesStats({
                                     </p>
                                 </div>
                                 <div className="w-[85px] h-[20px] bg-[#FEF2F2] rounded-full mb-[-40%] mt-[-10px] flex items-center justify-center">
-                                    <p className="font-inter text-[12px] font-bold text-[#B91C1C]">
+                                    <p className="font-inter text-[12px] font-bold text-[#B91C1C] w-[90px]">
                                     {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                                       return (
                                         <div key={taskQueueSid} className="ml-2">
@@ -193,8 +187,8 @@ export default function QueuesStats({
                                     )}
                                     </p>
                                 </div>
-                                <div className="w-[85px] h-[20px] bg-[#FAFAFA] rounded-full mb-[-40%] mt-[-10px] flex items-center justify-center">
-                                    <p className="font-inter text-[12px] font-bold text-[#404040]">
+                                <div className="w-[85px] h-[20px] bg-[#FAFAFA] rounded-full mb-[-40%] mt-[-10px] flex items-center justify-center border-3">
+                                    <p className="font-inter text-[12px] font-bold text-[#404040] w-[80px]">
                                     {Object.keys(syncMapData.taskQueuesDetails).map((taskQueueSid) => {
                                       return (
                                         <div key={taskQueueSid} className="ml-2">
@@ -205,11 +199,12 @@ export default function QueuesStats({
                                     )}
                                     </p>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                            </div></td>
+    </tr>
+  </tbody>
+</table>
+
                 </div>
-          </div>
     </>
   )
 }
