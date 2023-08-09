@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminCreateUser from '../components/AdminCreateUser';
+import AdminUserModal from '../components/AdminUserModal';
 import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
@@ -19,7 +19,8 @@ const AdminSettings = () => {
           return {
             id: user.id,
             sid: user.profile.employeeNumber,
-            name: user.profile.firstName + ' ' + user.profile.lastName,
+            firstName: user.profile.firstName,
+            lastName: user.profile.lastName,
             email: user.profile.login,
             role: user.profile.userType,
             status: user.status
@@ -70,7 +71,7 @@ const AdminSettings = () => {
             <button
               className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
               onClick={() => {
-                setModalContent(<AdminCreateUser setShowModal={setShowModal} />);
+                setModalContent(<AdminUserModal setShowModal={setShowModal} />);
                 setShowModal(true);
               }}
             >

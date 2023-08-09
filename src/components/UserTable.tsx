@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
-import AdminCreateUser from './AdminCreateUser';
+import AdminUserModal from './AdminUserModal';
 import Modal from './Modal';
 
 const UsersTable = ({users}: {users: any[]}) => {
@@ -43,7 +43,7 @@ const UsersTable = ({users}: {users: any[]}) => {
                   <BsPersonFill className="text-purple-800" />
                 </div>
                 <div className="pl-4">
-                  {user.name}
+                  {user.firstName + ' ' + user.lastName} 
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
                     Role: {user.role}
                   </p>
@@ -94,7 +94,7 @@ const UsersTable = ({users}: {users: any[]}) => {
                 <BsThreeDotsVertical
                   onClick={() => {
                     setModalContent(
-                      <AdminCreateUser setShowModal={setShowModal} />
+                      <AdminUserModal setShowModal={setShowModal} user={user} />
                     );
                     setShowModal(true);
                   }}
