@@ -34,7 +34,8 @@ NEXT_PUBLIC_URL="http://localhost:3000"
 NEXTAUTH_URL="http://localhost:3000"
 
 NEXT_PUBLIC_WORKSPACE_SID="Your workspace sid"
-NEXT_PUBLIC_OKTA_CREATE_USER_URL='https://trial-2094636.okta.com/api/v1/users?activate=true'
+
+NEXT_PUBLIC_OKTA_URL='https://trial-2094636.okta.com'
 
 # Slack message Cameron For the following:
 NEXT_PUBLIC_TOKEN=""
