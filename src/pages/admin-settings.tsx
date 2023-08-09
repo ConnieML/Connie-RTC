@@ -1,31 +1,33 @@
-import React, { useState, Dispatch, SetStateAction, useEffect, use } from 'react';
-import AdminCreateTaskQueue from '../components/AdminCreateTaskQueue';
+import React, { useState, useEffect } from 'react';
 import AdminEditUser from '../components/AdminEditUser';
-import { FaChevronDown } from 'react-icons/fa';
 import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
-import { GetServerSideProps } from 'next';
-import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
-
-const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTable, setCurrentTable] = useState(1);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
-  const [newTable, setNewTable] = useState(false);
-  const [showSortOptions, setShowSortOptions] = useState(false);
-  const [workers, setWorkers] = useState<WorkerInstance[] | null>(null);
+  const [users, setUsers] = useState<any[]>([]);
 
-  // Grab all workers from the workers api
   useEffect(() => {
-    const getWorkers = async () => {
-      const res = await fetch('/api/workers?workspaceSid=' + workspaceSid);
+    const getOktaUsers = async () => {
+      const res = await fetch('/api/okta-users');
       const data = await res.json();
-      setWorkers(data.workers);
-    };
-    getWorkers();
+      setUsers(data.oktaUsers
+        .map((user: any) => {
+          return {
+            id: user.id,
+            sid: user.profile.employeeNumber,
+            name: user.profile.firstName + ' ' + user.profile.lastName,
+            email: user.profile.login,
+            role: user.profile.userType,
+            status: user.status
+          }
+        })
+      );
+    }
+    getOktaUsers();
   }
   , []);
 
@@ -78,7 +80,7 @@ const AdminSettings = () => {
 
         </div>
 
-        {currentTable === 1 ? <UsersTable workers={workers} /> : <TaskQueuesTable/>}
+        {currentTable === 1 ? <UsersTable users={users} /> : <TaskQueuesTable/>}
       </div>
     </div>
   );
