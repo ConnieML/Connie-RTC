@@ -1,15 +1,36 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import Select from 'react-select';
+
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
+
+interface Options{
+  value: number,
+  label: string
+}
+
+interface Worker{
+  friendlyName: string,
+  attributes: string,
+  sid: string
+}
 
 interface IProps{
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
+  workerList: Worker[];
+
 }
 
-const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
+const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IProps) => {
   const [taskQueueName, setTaskQueueName] = useState('');
-  const [workersToAdd, setWorkersToAdd] = useState('');
+  const [multiSelectOptions, setMultiSelectOptions] = useState<Options[]>([])
+  const [selectedOptions, setSelectedOptions] = useState<Options[]>([])
+
+  const handleChange = (options:any)=>{
+    setSelectedOptions(options)
+  }
+  
 
   async function handleCreateTask(){
     const createResponse = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
@@ -26,26 +47,17 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
     }
 
     var flag = false
-    
-    if(workersToAdd.length > 0){
-      const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
-        method:'GET'
-      })
-      const workersResponse = await getWorkers.json()
-      const workersList = workersResponse.workers
-      var parsedWorkersToAdd = workersToAdd.split(', ')
 
-    for(let i= 0; i < parsedWorkersToAdd.length; i++){
-      for(let j = 0; j < workersList.length; j++){
-        if(parsedWorkersToAdd[i] === workersList[j].friendlyName){
-          addWorkerToQueue(workersList[j].sid, workersList[j].attributes)
+    for(let i= 0; i < selectedOptions.length; i++){
+      for(let j = 0; j < workerList.length; j++){
+        if(selectedOptions[i].label === workerList[j].friendlyName){
+          addWorkerToQueue(workerList[j].sid, workerList[j].attributes)
           break
         }
-        if(j === workersList.length-1 ){
+        if(j === workerList.length-1 ){
           flag = true
         }
       }
-    }
     }
 
     handleDataChange()
@@ -94,6 +106,23 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
     setShowModal(false);
   };
 
+  const createMultiSelectOptions = () => {
+    var arr: Options[] = []
+
+    for(let i=0; i < workerList.length; i++){
+      var newOption: Options = {value: i, label: workerList[i].friendlyName}
+      arr.push(newOption)
+    }
+
+    setMultiSelectOptions(arr)
+  }
+
+  useEffect(() =>  {
+    createMultiSelectOptions()
+    console.log(multiSelectOptions)
+    return
+  }, []);
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Create a New Task</h2>
@@ -106,16 +135,22 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange}: IProps) => {
           onChange={(e) => setTaskQueueName(e.target.value)}
         />
       </label>
-      <label className="block mb-4">
-        Add Workers (Names separated by commas)        
-        <input
-          className="border border-gray-400 rounded w-full p-2"
-          type="text"
-          value={workersToAdd}
-          placeholder={"John Doe, Jane Smith, etc."}
-          onChange={(e) => setWorkersToAdd(e.target.value)}
-        />
-      </label>
+      <label  className="mb-4">
+        Select Workers to Add:
+      <form className='mb-4'
+          onSubmit={() => {
+            handleCreateTask()
+          }}>
+            <Select
+              isMulti
+              value={selectedOptions}
+              onChange={handleChange}
+              closeMenuOnSelect={false}
+              options={multiSelectOptions}
+              noOptionsMessage={() => null}
+            />
+          </form>
+          </label>
       <button
         className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
         onClick={handleCreateTask}

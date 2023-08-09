@@ -232,7 +232,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
       { editType !== "Delete" &&
         <label className="block mb-4">
-          {editType} (Names separated by commas)
+          {editType}
 
           <form
           onSubmit={() => {

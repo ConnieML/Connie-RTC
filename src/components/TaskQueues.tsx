@@ -28,6 +28,7 @@ interface ModifyTaskProps{
 interface CreateTaskProps{
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
+  workerList: Worker[],
 }
 
 const TaskQueuesTable = () => {
@@ -106,11 +107,17 @@ const TaskQueuesTable = () => {
     setShowModal(true);
   }
   
-  const handleCreateTaskQueue = () => {
+  async function handleCreateTaskQueue(){
+    const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
+      method:'GET'
+    })
+    const workersResponse = await getWorkers.json()
+    const workersList = workersResponse.workers
 
     var props:CreateTaskProps={
       setShowModal: setShowModal,
-      handleDataChange: handleDataChanges
+      handleDataChange: handleDataChanges,
+      workerList: workersList,
     }
 
     setModalContent(<AdminCreateTaskQueue {...props} />);
