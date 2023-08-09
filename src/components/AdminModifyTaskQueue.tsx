@@ -143,14 +143,15 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
 
   async function removeWorkerFromQueue(sid: string, prevAttributes: string) {
     let attributes = JSON.parse(prevAttributes)
-
     // Similar logic as adding to queue
+    let newTaskQueues = []
+
     if(attributes.hasOwnProperty("taskQueues")){
       if(!attributes.taskQueues.includes(taskQueueName)){
         console.log("Remove worker from queue error - Worker not assigned to this queue")
         return -1
       }
-      var newTaskQueues = []
+      
 
       // make new array with all but the queue to be removed
       for(let i=0; i < attributes.taskQueues.length; i++){

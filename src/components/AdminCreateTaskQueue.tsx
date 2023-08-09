@@ -33,6 +33,7 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
   
 
   async function handleCreateTask(){
+    console.log(taskQueueName)
     const createResponse = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
       method: 'POST',
       body: JSON.stringify({
@@ -46,7 +47,7 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
       return
     }
 
-    var flag = false
+    let flag = false
 
     for(let i= 0; i < selectedOptions.length; i++){
       for(let j = 0; j < workerList.length; j++){
@@ -74,7 +75,7 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
 
   async function addWorkerToQueue(sid: string, prevAttributes: string) {
 
-    var attributes = JSON.parse(prevAttributes)
+    let attributes = JSON.parse(prevAttributes)
 
     if(attributes.hasOwnProperty("taskQueues")){
       
@@ -107,10 +108,10 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
   };
 
   const createMultiSelectOptions = () => {
-    var arr: Options[] = []
+    let arr: Options[] = []
 
     for(let i=0; i < workerList.length; i++){
-      var newOption: Options = {value: i, label: workerList[i].friendlyName}
+      let newOption: Options = {value: i, label: workerList[i].friendlyName}
       arr.push(newOption)
     }
 
@@ -119,7 +120,6 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
 
   useEffect(() =>  {
     createMultiSelectOptions()
-    console.log(multiSelectOptions)
     return
   }, []);
 
