@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
-import AdminEditUser from './AdminEditUser';
+import AdminCreateUser from './AdminCreateUser';
 import Modal from './Modal';
 
 const UsersTable = ({users}: {users: any[]}) => {
@@ -33,7 +33,7 @@ const UsersTable = ({users}: {users: any[]}) => {
           <span className="hidden sm:grid">Status</span>
         </div>
         <ul>
-          {users && users.map((user) => (
+          {users.map((user) => (
             <li
               key={user.id}
               className="grid items-center justify-between grid-cols-2 p-2 my-3 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 md:grid-cols-4 sm:grid-cols-3"
@@ -94,7 +94,7 @@ const UsersTable = ({users}: {users: any[]}) => {
                 <BsThreeDotsVertical
                   onClick={() => {
                     setModalContent(
-                      <AdminEditUser setShowModal={setShowModal} />
+                      <AdminCreateUser setShowModal={setShowModal} />
                     );
                     setShowModal(true);
                   }}

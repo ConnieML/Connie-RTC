@@ -4,7 +4,7 @@ import axios from 'axios';
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 const createUserOktaUrl = process.env.NEXT_PUBLIC_OKTA_CREATE_USER_URL as string
 
-const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const AdminCreateUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>> }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [userRole, setUserRole] = useState('');
@@ -82,11 +82,11 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
   
     return (
       <div>
-        <h2 className='text-2xl font-bold mb-4'>Create a New User</h2>
+        <h2 className='mb-4 text-2xl font-bold'>Create a New User</h2>
         <label className='block mb-2'>
           First Name:
           <input
-            className='border border-gray-400 rounded w-full p-2'
+            className='w-full p-2 border border-gray-400 rounded'
             type='text'
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
@@ -95,7 +95,7 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
         <label className='block mb-2'>
           Last Name:
           <input
-            className='border border-gray-400 rounded w-full p-2'
+            className='w-full p-2 border border-gray-400 rounded'
             type='text'
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
@@ -104,7 +104,7 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
         <label className='block mb-2'>
           Role:
           <input
-            className='border border-gray-400 rounded w-full p-2'
+            className='w-full p-2 border border-gray-400 rounded'
             type='text'
             value={userRole}
             onChange={(e) => setUserRole(e.target.value)}
@@ -113,20 +113,20 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
         <label className='block mb-4'>
           Email Address:
           <input
-            className='border border-gray-400 rounded w-full p-2'
+            className='w-full p-2 border border-gray-400 rounded'
             type='email'
             value={userEmail}
             onChange={(e) => setUserEmail(e.target.value)}
           />
         </label>
         <button
-          className='bg-purple-600 text-white py-2 px-4 rounded mr-2'
+          className='px-4 py-2 mr-2 text-white bg-purple-600 rounded'
           onClick={handleUpdateUser}
         >
           Update User
         </button>
         <button
-          className='bg-gray-200 text-red-600 py-2 px-4 rounded'
+          className='px-4 py-2 text-red-600 bg-gray-200 rounded'
           onClick={handleCancel}
         >
           Cancel
@@ -135,4 +135,4 @@ const AdminEditUser = ({ setShowModal }: { setShowModal: React.Dispatch<React.Se
     );
   };
 
-  export default AdminEditUser;
+  export default AdminCreateUser;

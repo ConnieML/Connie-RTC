@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import AdminEditUser from '../components/AdminEditUser';
+import AdminCreateUser from '../components/AdminCreateUser';
 import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
@@ -70,7 +70,7 @@ const AdminSettings = () => {
             <button
               className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
               onClick={() => {
-                setModalContent(<AdminEditUser setShowModal={setShowModal} />);
+                setModalContent(<AdminCreateUser setShowModal={setShowModal} />);
                 setShowModal(true);
               }}
             >
