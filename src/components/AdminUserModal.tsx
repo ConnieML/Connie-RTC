@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 const oktaUrl = process.env.NEXT_PUBLIC_OKTA_URL as string
@@ -16,6 +17,7 @@ const AdminUserModal = ({ setShowModal, user, setUsers, users }: {
     role: user ? user.role : '',
     email: user ? user.email : '',
   });
+  const router = useRouter();
 
   async function handleCreateUser(){
     
@@ -26,7 +28,6 @@ const AdminUserModal = ({ setShowModal, user, setUsers, users }: {
             "friendlyName" : `${userForm.firstName} ${userForm.lastName}`,
         }),
     })
-    console.log(createResponse)
     if (createResponse.status === 500){
       alert("Error creating new user inside of Twilio")
       return
@@ -49,7 +50,7 @@ const AdminUserModal = ({ setShowModal, user, setUsers, users }: {
     }
 
     // Okta create user call - use twilio sid as employee number for later authentication
-    await axios.post(oktaUrl + "/api/v1/users", 
+    await axios.post(oktaUrl + "/api/v1/users?activate=true",
     {
         "profile": {
             "firstName": `${userForm.firstName}`,
@@ -70,16 +71,7 @@ const AdminUserModal = ({ setShowModal, user, setUsers, users }: {
     )
     .then(() => {
         alert("User successfully created")
-        setUsers([...users, {
-            id: workerSid, // temp for the frontend
-            firstName: userForm.firstName,
-            lastName: userForm.lastName,
-            role: userForm.role,
-            email: userForm.email,
-            sid: workerSid,
-            status: "PROVISIONED",
-        }]
-        )
+        router.reload()       
         return
     })
     .catch(() => {
@@ -92,7 +84,53 @@ const AdminUserModal = ({ setShowModal, user, setUsers, users }: {
     setShowModal(false);
   };
 
-  async function handleEditUser(){
+  async function handleEditUser() {
+    // Update user inside of Twilio
+    const updateResponse = await fetch(`/api/workers?workspaceSid=${workspaceSid}&workerSid=${user.sid}`,{
+      method: 'PUT',
+      body: JSON.stringify({
+          "friendlyName" : `${userForm.firstName} ${userForm.lastName}`,
+      }),
+    })
+    if (updateResponse.status === 500){
+      alert("Error updating user inside of Twilio")
+      return
+    }
+
+    // Update user inside of Okta
+    await axios.post(`/api/okta-users`,
+    {
+      "id": user.id,
+      "firstName": userForm.firstName,
+      "lastName": userForm.lastName,
+      "email": userForm.email,
+      "login": userForm.email,
+      "userType": userForm.role,
+    })
+    .then(() => {
+        alert("User successfully updated")
+        setUsers(users.map((u) => {
+          if (u.id === user.id) {
+              return {
+                id: u.id,
+                sid: u.sid,
+                firstName: userForm.firstName,
+                lastName: userForm.lastName,
+                email: userForm.email,
+                role: userForm.role,
+                status: u.status
+              }
+          }
+          return u
+        }))
+        return
+    })
+    .catch(() => {
+      alert("Error updating user inside of Okta")
+      return
+    })
+
+    setShowModal(false);
   }
 
   async function deleteTwilioUser(sid: string) {
