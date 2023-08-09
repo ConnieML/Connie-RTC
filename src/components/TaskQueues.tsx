@@ -10,17 +10,25 @@ import { InputLabel, NativeSelect } from '@mui/material';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
+interface Worker{
+  friendlyName: string,
+  attributes: string,
+  sid: string
+}
 interface ModifyTaskProps{
   sid: number,
   taskQueueName: string
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
   editType: string;
+  workerList: Worker[],
+  assignedWorkers: string[]
 }
 
 interface CreateTaskProps{
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
+  workerList: Worker[],
 }
 
 const TaskQueuesTable = () => {
@@ -76,13 +84,21 @@ const TaskQueuesTable = () => {
 
   }
 
-  const handleModifyTaskQueue = (taskQueueSid: number, taskQueueName: string, editType: string) => {
+  async function handleModifyTaskQueue (taskQueueSid: number, taskQueueName: string, editType: string, assignedWorkers: string[]){
+    const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
+      method:'GET'
+    })
+    const workersResponse = await getWorkers.json()
+    const workersList = workersResponse.workers
+
     var props:ModifyTaskProps = {
       sid: taskQueueSid,
       taskQueueName: taskQueueName,
       setShowModal: setShowModal,
       handleDataChange: handleDataChanges,
-      editType: editType
+      editType: editType,
+      workerList: workersList,
+      assignedWorkers: assignedWorkers
     }
     
     setModalContent(
@@ -91,11 +107,17 @@ const TaskQueuesTable = () => {
     setShowModal(true);
   }
   
-  const handleCreateTaskQueue = () => {
+  async function handleCreateTaskQueue(){
+    const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
+      method:'GET'
+    })
+    const workersResponse = await getWorkers.json()
+    const workersList = workersResponse.workers
 
     var props:CreateTaskProps={
       setShowModal: setShowModal,
-      handleDataChange: handleDataChanges
+      handleDataChange: handleDataChanges,
+      workerList: workersList,
     }
 
     setModalContent(<AdminCreateTaskQueue {...props} />);
@@ -197,7 +219,7 @@ const TaskQueuesTable = () => {
             </button>
         </div>
         <ul>
-          {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number, targetWorkers: string}, index) => (
+          {taskQueuesData.map((taskQueue:{friendlyName: string, sid: number}, index) => (
             <li
               key={taskQueue.friendlyName}
               className="bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 items-center justify-between cursor-pointer"
@@ -225,8 +247,7 @@ const TaskQueuesTable = () => {
                         appearance: "none",
                       }}
                       onChange={(e)=>{
-                        console.log(e.target.value)
-                        handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName, e.target.value)
+                        handleModifyTaskQueue(taskQueue.sid, taskQueue.friendlyName, e.target.value, assignedUsers[index])
                       }}
                     >
                       <option value={"none"}></option>
