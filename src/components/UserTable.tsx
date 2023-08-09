@@ -3,7 +3,7 @@ import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
 import AdminUserModal from './AdminUserModal';
 import Modal from './Modal';
 
-const UsersTable = ({users}: {users: any[]}) => {
+const UsersTable = ({users, setUsers}: {users: any[]; setUsers: React.Dispatch<React.SetStateAction<any[]>>}) => {
   // const [displaySkills, setDisplaySkills] = useState<number | undefined>(
   //   undefined
   // );
@@ -94,7 +94,7 @@ const UsersTable = ({users}: {users: any[]}) => {
                 <BsThreeDotsVertical
                   onClick={() => {
                     setModalContent(
-                      <AdminUserModal setShowModal={setShowModal} user={user} />
+                      <AdminUserModal setShowModal={setShowModal} user={user} setUsers={setUsers} users={users} />
                     );
                     setShowModal(true);
                   }}

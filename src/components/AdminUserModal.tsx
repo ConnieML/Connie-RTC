@@ -2,9 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
-const createUserOktaUrl = process.env.NEXT_PUBLIC_OKTA_CREATE_USER_URL as string
+const oktaUrl = process.env.NEXT_PUBLIC_OKTA_URL as string
 
-const AdminUserModal = ({ setShowModal, user }: { setShowModal: React.Dispatch<React.SetStateAction<boolean>>; user?: any }) => {
+const AdminUserModal = ({ setShowModal, user, setUsers, users }: { 
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>; 
+  user?: any;
+  setUsers: React.Dispatch<React.SetStateAction<any[]>>;
+  users: any[];
+}) => {
   const [userForm, setUserForm] = useState<any>({
     firstName: user ? user.firstName : '',
     lastName: user ? user.lastName : '',
@@ -21,6 +26,7 @@ const AdminUserModal = ({ setShowModal, user }: { setShowModal: React.Dispatch<R
             "friendlyName" : `${userForm.firstName} ${userForm.lastName}`,
         }),
     })
+    console.log(createResponse)
     if (createResponse.status === 500){
       alert("Error creating new user inside of Twilio")
       return
@@ -43,7 +49,7 @@ const AdminUserModal = ({ setShowModal, user }: { setShowModal: React.Dispatch<R
     }
 
     // Okta create user call - use twilio sid as employee number for later authentication
-    await axios.post(createUserOktaUrl, 
+    await axios.post(oktaUrl + "/api/v1/users", 
     {
         "profile": {
             "firstName": `${userForm.firstName}`,
@@ -62,6 +68,20 @@ const AdminUserModal = ({ setShowModal, user }: { setShowModal: React.Dispatch<R
         }
     }
     )
+    .then(() => {
+        alert("User successfully created")
+        setUsers([...users, {
+            id: workerSid, // temp for the frontend
+            firstName: userForm.firstName,
+            lastName: userForm.lastName,
+            role: userForm.role,
+            email: userForm.email,
+            sid: workerSid,
+            status: "PROVISIONED",
+        }]
+        )
+        return
+    })
     .catch(() => {
         // If an error occurs in creating user in Okta, delete newly created Twilio user
         deleteTwilioUser(workerSid)

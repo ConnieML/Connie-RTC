@@ -71,7 +71,7 @@ const AdminSettings = () => {
             <button
               className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
               onClick={() => {
-                setModalContent(<AdminUserModal setShowModal={setShowModal} />);
+                setModalContent(<AdminUserModal setShowModal={setShowModal} setUsers={setUsers} users={users} />);
                 setShowModal(true);
               }}
             >
@@ -81,7 +81,7 @@ const AdminSettings = () => {
 
         </div>
 
-        {currentTable === 1 ? <UsersTable users={users} /> : <TaskQueuesTable/>}
+        {currentTable === 1 ? <UsersTable users={users} setUsers={setUsers} /> : <TaskQueuesTable/>}
       </div>
     </div>
   );
