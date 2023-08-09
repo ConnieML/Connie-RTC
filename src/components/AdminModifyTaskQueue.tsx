@@ -44,11 +44,11 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
       return
     }
 
-    var addFlag = 0         // Check if add operations were valid
-    var removeFlag = 0      // Check if remove operations were valid
+    let addFlag = 0         // Check if add operations were valid
+    let removeFlag = 0      // Check if remove operations were valid
 
-    var toAdd = false       // Bool for if we add workers
-    var toRemove = false    // Bool for if we remove workers
+    let toAdd = false       // Bool for if we add workers
+    let toRemove = false    // Bool for if we remove workers
 
     if(editType === 'Add Workers'){ toAdd = true } else{ toRemove = true}
 
@@ -83,7 +83,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
       }
     }
 
-    var errMsg = ''
+    let errMsg = ''
 
     // Create alert based on booleans and check flags
     if(toAdd){
@@ -110,7 +110,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   };
 
   async function addWorkerToQueue(sid: string, prevAttributes: string) {
-    var attributes = JSON.parse(prevAttributes)
+    let attributes = JSON.parse(prevAttributes)
 
     // Check if the worker has a taskQueues attributes
     if(attributes.hasOwnProperty("taskQueues")){
@@ -142,7 +142,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   }
 
   async function removeWorkerFromQueue(sid: string, prevAttributes: string) {
-    var attributes = JSON.parse(prevAttributes)
+    let attributes = JSON.parse(prevAttributes)
 
     // Similar logic as adding to queue
     if(attributes.hasOwnProperty("taskQueues")){
@@ -198,12 +198,12 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   }
 
   const createMultiSelectOptions = () => {
-    var arr: Options[] = []
+    let arr: Options[] = []
 
     if (editType === 'Add Workers'){
       for(let i=0; i<workerList.length; i++){
         if(!assignedWorkers.includes(workerList[i].friendlyName)){
-          var newOption: Options = {value: i, label: workerList[i].friendlyName}
+          let newOption: Options = {value: i, label: workerList[i].friendlyName}
           arr.push(newOption)
         }
 
@@ -211,7 +211,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
     }
     else{
       for(let i=0; i < assignedWorkers.length; i++){
-        var newOption: Options = {value: i, label: assignedWorkers[i]}
+        let newOption: Options = {value: i, label: assignedWorkers[i]}
         arr.push(newOption)
       }
     }
