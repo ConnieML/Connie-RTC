@@ -1,12 +1,14 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, Dispatch, SetStateAction, useEffect, use } from 'react';
 import AdminCreateTaskQueue from '../components/AdminCreateTaskQueue';
 import AdminEditUser from '../components/AdminEditUser';
 import { FaChevronDown } from 'react-icons/fa';
 import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
+import { GetServerSideProps } from 'next';
+import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 
-
+const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,13 +16,24 @@ const AdminSettings = () => {
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [newTable, setNewTable] = useState(false);
   const [showSortOptions, setShowSortOptions] = useState(false);
+  const [workers, setWorkers] = useState<WorkerInstance[] | null>(null);
 
+  // Grab all workers from the workers api
+  useEffect(() => {
+    const getWorkers = async () => {
+      const res = await fetch('/api/workers?workspaceSid=' + workspaceSid);
+      const data = await res.json();
+      setWorkers(data.workers);
+    };
+    getWorkers();
+  }
+  , []);
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-gray-100">
       {showModal && (
         <Modal>
-          <div className="bg-white p-4 rounded-lg">{modalContent}</div>
+          <div className="p-4 bg-white rounded-lg">{modalContent}</div>
         </Modal>
       )}
       <div className="flex justify-between p-4">
@@ -53,7 +66,7 @@ const AdminSettings = () => {
           </div>
           {currentTable === 1 && (
             <button
-              className="bg-purple-600 text-white py-2 px-4 rounded mb-4"
+              className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
               onClick={() => {
                 setModalContent(<AdminEditUser setShowModal={setShowModal} />);
                 setShowModal(true);
@@ -65,7 +78,7 @@ const AdminSettings = () => {
 
         </div>
 
-        {currentTable === 1 ? <UsersTable /> : <TaskQueuesTable/>}
+        {currentTable === 1 ? <UsersTable workers={workers} /> : <TaskQueuesTable/>}
       </div>
     </div>
   );

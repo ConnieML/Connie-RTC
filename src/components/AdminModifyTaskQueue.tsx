@@ -1,23 +1,37 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
-import { FaChevronDown } from 'react-icons/fa';
+import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import Select from 'react-select';
+
+interface Options{
+  value: number,
+  label: string
+}
+interface Worker{
+  friendlyName: string,
+  attributes: string,
+  sid: string
+}
+
 
 interface IProps{
   sid: number,
-  taskQueueName: string,
+  taskQueueName: string
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
   editType: string;
-
+  workerList: Worker[],
+  assignedWorkers: string[]
 }
 
 const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
 
-const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChange, editType}: IProps)=> {
+const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChange, editType, workerList, assignedWorkers}: IProps)=> {
   
-  const [workersToAdd, setWorkersToAdd] = useState('');
-  const [workersToRemove, setWorkersToRemove] = useState('');
-  const [showEditOptions, setShowEditOptions] = useState(false);
-  const [editOptionsValue, setEditOptionsValue] = useState('Add Workers');
+  const [multiSelectOptions, setMultiSelectOptions] = useState<Options[]>([])
+  const [selectedOptions, setSelectedOptions] = useState<Options[]>([])
+
+  const handleChange = (options:any)=>{
+    setSelectedOptions(options)
+  }
   
   async function handleModifyTaskQueue() {
 
@@ -25,34 +39,29 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
       handleDeleteTaskQueue(sid)
       return
     }
+    if(selectedOptions.length === 0){
+      handleCancel()
+      return
+    }
 
-    const getWorkers = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,{
-      method:'GET'
-    })
-    const workersResponse = await getWorkers.json()
-    const workersList = workersResponse.workers
+    let addFlag = 0         // Check if add operations were valid
+    let removeFlag = 0      // Check if remove operations were valid
 
-    var parsedWorkersToAdd = workersToAdd.split(', ')
-    var parsedWorkersToRemove = workersToRemove.split(', ')
+    let toAdd = false       // Bool for if we add workers
+    let toRemove = false    // Bool for if we remove workers
 
-    var addFlag = 0         // Check if add operations were valid
-    var removeFlag = 0      // Check if remove operations were valid
+    if(editType === 'Add Workers'){ toAdd = true } else{ toRemove = true}
 
-    var toAdd = false       // Bool for if we add workers
-    var toRemove = false    // Bool for if we remove workers
-
-    if(parsedWorkersToAdd[0] !== ''){ toAdd = true}         
-    if(parsedWorkersToRemove[0] !== ''){ toRemove = true}
 
     if(toAdd){
-      for(let i= 0; i < parsedWorkersToAdd.length; i++){
-        for(let j = 0; j < workersList.length; j++){
-          if(parsedWorkersToAdd[i] === workersList[j].friendlyName){
-            addWorkerToQueue(workersList[j].sid, workersList[j].attributes)
+      for(let i= 0; i < selectedOptions.length; i++){
+        for(let j = 0; j < workerList.length; j++){
+          if(selectedOptions[i].label === workerList[j].friendlyName){
+            addWorkerToQueue(workerList[j].sid, workerList[j].attributes)
             break
           }
           // Worker does not exist - set add flag
-          else if(j === workersList.length-1){
+          else if(j === workerList.length-1){
             addFlag = addFlag - 1
           }
         }
@@ -60,21 +69,21 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
     }
 
     if(toRemove){
-      for(let i= 0; i < parsedWorkersToRemove.length; i++){
-        for(let j = 0; j < workersList.length; j++){
-          if(parsedWorkersToRemove[i] === workersList[j].friendlyName){
-            removeFlag = removeFlag + await removeWorkerFromQueue(workersList[j].sid, workersList[j].attributes)
+      for(let i= 0; i < selectedOptions.length; i++){
+        for(let j = 0; j < workerList.length; j++){
+          if(selectedOptions[i].label === workerList[j].friendlyName){
+            removeFlag = removeFlag + await removeWorkerFromQueue(workerList[j].sid, workerList[j].attributes)
             break
           }
           // Worker does not exist - set remove flag
-          else if(j === workersList.length-1){
+          else if(j === workerList.length-1){
             removeFlag = removeFlag - 1
           }
         }
       }
     }
 
-    var errMsg = ''
+    let errMsg = ''
 
     // Create alert based on booleans and check flags
     if(toAdd){
@@ -101,7 +110,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   };
 
   async function addWorkerToQueue(sid: string, prevAttributes: string) {
-    var attributes = JSON.parse(prevAttributes)
+    let attributes = JSON.parse(prevAttributes)
 
     // Check if the worker has a taskQueues attributes
     if(attributes.hasOwnProperty("taskQueues")){
@@ -133,15 +142,16 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   }
 
   async function removeWorkerFromQueue(sid: string, prevAttributes: string) {
-    var attributes = JSON.parse(prevAttributes)
-
+    let attributes = JSON.parse(prevAttributes)
     // Similar logic as adding to queue
+    let newTaskQueues = []
+
     if(attributes.hasOwnProperty("taskQueues")){
       if(!attributes.taskQueues.includes(taskQueueName)){
         console.log("Remove worker from queue error - Worker not assigned to this queue")
         return -1
       }
-      var newTaskQueues = []
+      
 
       // make new array with all but the queue to be removed
       for(let i=0; i < attributes.taskQueues.length; i++){
@@ -170,8 +180,7 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
   }
 
   const handleCancel = () => {
-    setWorkersToAdd('')
-    setWorkersToRemove('')
+    setSelectedOptions([])
     setShowModal(false);
   };
 
@@ -189,34 +198,61 @@ const AdminModifyTaskQueue = ( {sid, taskQueueName, setShowModal, handleDataChan
     handleDataChange()
   }
 
+  const createMultiSelectOptions = () => {
+    let arr: Options[] = []
+
+    if (editType === 'Add Workers'){
+      for(let i=0; i<workerList.length; i++){
+        if(!assignedWorkers.includes(workerList[i].friendlyName)){
+          let newOption: Options = {value: i, label: workerList[i].friendlyName}
+          arr.push(newOption)
+        }
+
+      }
+    }
+    else{
+      for(let i=0; i < assignedWorkers.length; i++){
+        let newOption: Options = {value: i, label: assignedWorkers[i]}
+        arr.push(newOption)
+      }
+    }
+
+    setMultiSelectOptions(arr)
+  }
+
+
+  useEffect(() =>  {
+    createMultiSelectOptions()
+    return
+  }, []);
+
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Edit {taskQueueName}</h2>
 
-      { editType === "Add Workers" &&
+      { editType !== "Delete" &&
         <label className="block mb-4">
-          {editOptionsValue} (Names separated by commas)        
-          <input
-            className="border border-gray-400 rounded w-full p-2"
-            type="text"
-            value={workersToAdd}
-            placeholder={"John Doe, Jane Smith, etc."}
-            onChange={(e) => setWorkersToAdd(e.target.value)}
-          />
+          {editType}
+
+          <form
+          onSubmit={() => {
+            handleModifyTaskQueue()
+            
+            }}>
+            <Select
+              isMulti
+              value={selectedOptions}
+              onChange={handleChange}
+              closeMenuOnSelect={false}
+              options={multiSelectOptions}
+              noOptionsMessage={() => null}
+            />
+          </form>
+
         </label>
       }
-      { editType === "Remove Workers" && 
-        <label className="block mb-4">
-          Remove Workers (Names separated by commas)        
-          <input
-            className="border border-gray-400 rounded w-full p-2"
-            type="text"
-            value={workersToRemove}
-            placeholder={"John Doe, Jane Smith, etc."}
-            onChange={(e) => setWorkersToRemove(e.target.value)}
-          />
-        </label>
-      }
+
       { editType === "Delete" && 
         <h3 className="mb-4">Are you sure you want to delete {taskQueueName}?</h3>
       }
