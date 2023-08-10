@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import logoImage from '../logo.png';
+import logoImage from 'src/logo.png';
 import Image from 'next/image';
 
 const CBOProfilePage = () => {
