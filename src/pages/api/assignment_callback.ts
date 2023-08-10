@@ -1,19 +1,31 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { config as dotenvConfig } from 'dotenv';
-import { Client } from 'twilio/lib/base/BaseTwilio';
 
-dotenvConfig();
-
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_AUTH_TOKEN;
-
-const client = new Client(accountSid, authToken);
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+// Type can be found here: https://www.twilio.com/docs/taskrouter/handle-assignment-callbacks
+interface ExtendedNextApiRequest extends NextApiRequest {
+  body: {
+    AccountSid: string;
+    WorkspaceSid: string;
+    WorkflowSid: string;
+    TaskQueueSid: string;
+    WorkerSid: string;
+    WorkerAttributes: string; // More info here: https://www.twilio.com/docs/taskrouter/api/worker
+    TaskSid: string;
+    TaskAttributes: string; // More info here: https://www.twilio.com/docs/taskrouter/api/task#task-attributes
+    TaskAge: string;
+    TaskPriority: string;
+    ReservedSid: string;
+  };
+}
+// TODO: Figure out how to type req.body
+export default function handler(
+  req: ExtendedNextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === 'GET' || req.method === 'POST') {
+    const taskAttributes = JSON.parse(req.body.TaskAttributes);
+
     // Respond to assignment callbacks with an acceptance and 200 response
-    console.log('HIIII');
-    const ret = `{"instruction": "dequeue", "from":"${process.env.TWILIO_CALLER_ID}", "post_work_activity_sid":"WA79401126500f72d0ca54cae16ec41789"}`;
+    const ret = `{"instruction": "dequeue", "from":"${taskAttributes.caller}"}`;
     res.status(200).json(JSON.parse(ret));
   } else {
     res.status(405).end();
