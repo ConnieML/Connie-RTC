@@ -11,8 +11,10 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.18",
-    "@mui/material": "^5.14.2",
+    "@mui/material": "^5.14.3",
     "@tailwindcss/forms": "^0.5.3",
+    "@twilio/voice-sdk": "^2.5.0",
+    "@types/node": "20.3.1",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
     "@types/react-icons": "^3.0.0",
@@ -32,27 +34,12 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.10.1",
+    "react-select": "^5.7.4",
     "tailwindcss": "3.3.2",
-    "twilio": "^4.13.0",
-    "twilio-sync": "^3.3.2",
-    "typescript": "5.1.3",
-    "yarn": "^1.22.19"
-  },
-  "browser": {
-    "fs": false,
-    "path": false,
-    "os": false,
-    "net": false,
-    "tls": false
-  },
-  "description": "Phase 1 of the Connie CPaaS Prototype",
-  "main": "next-auth.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "types": "./next-auth.d.ts",
-  "devDependencies": {
-    "@types/next": "^9.0.0",
-    "@types/node": "^20.4.1"
+    "twilio": "^4.12.0",
+    "twilio-client": "^1.15.0",
+    "twilio-sync": "^3.3.3",
+    "twilio-taskrouter": "^0.8.4",
+    "typescript": "5.1.3"
   }
 }
