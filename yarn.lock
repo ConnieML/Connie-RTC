@@ -3474,7 +3474,7 @@ twilio-client@^1.15.0:
     ws "7.4.6"
     xmlhttprequest "1.8.0"
 
-twilio-sync@^3.3.3:
+twilio-sync@^3.3.2:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/twilio-sync/-/twilio-sync-3.3.3.tgz#da97d70ac6e70755dd4cda7d3c63853765c90ad0"
   integrity sha512-pHNCcVMcWfjh1+0451RKxbT0A1gEAGfSTR6zpZUY6iQ2W3afmOX5eeoDJr0LklBzqkYUjtUN4E7X9YzBAOAWqw==
