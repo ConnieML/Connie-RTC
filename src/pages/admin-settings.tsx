@@ -3,6 +3,7 @@ import AdminUserModal from '../components/AdminUserModal';
 import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
+import Navbar from '@/components/Navbar';
 
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
@@ -14,8 +15,8 @@ const AdminSettings = () => {
     const getOktaUsers = async () => {
       const res = await fetch('/api/okta-users');
       const data = await res.json();
-      setUsers(data.oktaUsers
-        .map((user: any) => {
+      setUsers(
+        data.oktaUsers.map((user: any) => {
           return {
             id: user.id,
             sid: user.profile.employeeNumber,
@@ -23,14 +24,13 @@ const AdminSettings = () => {
             lastName: user.profile.lastName,
             email: user.profile.login,
             role: user.profile.userType,
-            status: user.status
-          }
+            status: user.status,
+          };
         })
       );
-    }
+    };
     getOktaUsers();
-  }
-  , []);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -39,9 +39,9 @@ const AdminSettings = () => {
           <div className="p-4 bg-white rounded-lg">{modalContent}</div>
         </Modal>
       )}
+      <Navbar />
       <div className="flex justify-between p-4">
-        <h2>Admin Dashboard</h2>
-        <h2>Welcome Back, Cameron</h2>
+        <h2 className="text-3xl font-bold">Admin Dashboard</h2>
       </div>
       <div className="p-4">
         <div className="flex justify-between mb-4">
@@ -71,17 +71,26 @@ const AdminSettings = () => {
             <button
               className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
               onClick={() => {
-                setModalContent(<AdminUserModal setShowModal={setShowModal} setUsers={setUsers} users={users} />);
+                setModalContent(
+                  <AdminUserModal
+                    setShowModal={setShowModal}
+                    setUsers={setUsers}
+                    users={users}
+                  />
+                );
                 setShowModal(true);
               }}
             >
               Invite User
             </button>
           )}
-
         </div>
 
-        {currentTable === 1 ? <UsersTable users={users} setUsers={setUsers} /> : <TaskQueuesTable/>}
+        {currentTable === 1 ? (
+          <UsersTable users={users} setUsers={setUsers} />
+        ) : (
+          <TaskQueuesTable />
+        )}
       </div>
     </div>
   );

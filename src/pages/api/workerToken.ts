@@ -2,9 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import AccessToken, { TaskRouterGrant } from 'twilio/lib/jwt/AccessToken';
 
 const account_sid = process.env.TWILIO_ACCOUNT_SID;
-const application_sid = process.env.TWILIO_TWIML_APP_SID;
-const api_key = process.env.API_KEY;
-const api_secret = process.env.API_SECRET;
+const api_key = process.env.TWILIO_API_KEY;
+const api_secret = process.env.TWILIO_API_SECRET;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { email, workerSid } = req.query as {
