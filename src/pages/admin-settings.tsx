@@ -4,12 +4,61 @@ import UsersTable from '../components/UserTable';
 import TaskQueuesTable from '../components/TaskQueues';
 import Modal from '@/components/Modal';
 import Navbar from '@/components/Navbar';
+import { Activity } from '@/lib/taskrouterInterfaces';
+import { Worker } from 'twilio-taskrouter';
 
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTable, setCurrentTable] = useState(1);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [users, setUsers] = useState<any[]>([]);
+
+  const handleSetAllWorkersOffline = async () => {
+    try {
+      // Get all workers
+
+      const workers = await fetch(
+        `/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,
+        {
+          method: 'GET',
+        }
+      )
+        .then(async (data) => await data.json())
+        .then((data) => data.workers);
+      console.log(workers);
+
+      // Get all activities
+      const activities = await fetch(
+        `/api/activities/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`
+      )
+        .then(async (data) => await data.json())
+        .then((data) => data.activities);
+      console.log(activities);
+
+      const offlineActivity: Activity = activities.find(
+        (activity: Activity) => (activity.friendlyName = 'Offline')
+      );
+
+      // Loop through each worker & set activity to "Offline"
+      workers.forEach(async (worker: Worker) => {
+        await fetch(
+          `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker?.sid}`,
+          {
+            method: 'PUT',
+            body: JSON.stringify({
+              activitySid: offlineActivity.sid,
+            }),
+          }
+        );
+      });
+      alert('All workers have been set offline');
+    } catch (e) {
+      console.error(e);
+      alert(
+        'Failed to set all workers offline. This could occur because a worker is currently performing a task'
+      );
+    }
+  };
 
   useEffect(() => {
     const getOktaUsers = async () => {
@@ -68,21 +117,29 @@ const AdminSettings = () => {
             </button>
           </div>
           {currentTable === 1 && (
-            <button
-              className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
-              onClick={() => {
-                setModalContent(
-                  <AdminUserModal
-                    setShowModal={setShowModal}
-                    setUsers={setUsers}
-                    users={users}
-                  />
-                );
-                setShowModal(true);
-              }}
-            >
-              Invite User
-            </button>
+            <div className="flex flex-row gap-x-4">
+              <button
+                onClick={handleSetAllWorkersOffline}
+                className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
+              >
+                Set all workers offline
+              </button>
+              <button
+                className="px-4 py-2 mb-4 text-white bg-purple-600 rounded"
+                onClick={() => {
+                  setModalContent(
+                    <AdminUserModal
+                      setShowModal={setShowModal}
+                      setUsers={setUsers}
+                      users={users}
+                    />
+                  );
+                  setShowModal(true);
+                }}
+              >
+                Invite User
+              </button>
+            </div>
           )}
         </div>
 

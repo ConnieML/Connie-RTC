@@ -3,23 +3,23 @@ import { Call, Device } from '@twilio/voice-sdk';
 import { useEffect, useRef, useState } from 'react';
 import { Reservation, Worker } from 'twilio-taskrouter';
 import { Activity } from '../taskrouterInterfaces';
-import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 
 export default function useCalls({
   email,
   workerSid,
   friendlyName,
 }: {
-  email: string | undefined;
+  email: string;
   workerSid: string | undefined;
   friendlyName: string;
 }) {
   const [initialized, setInitialized] = useState(false);
   const device = useRef<Device | null>(null);
   const worker = useRef<Worker | null>(null);
-  const taskSid = useRef<string | null>(null);
+  const taskSid = useRef<string>('');
   const call = useRef<Call | null>(null);
   const agentActivities = useRef<Activity[] | null>(null);
+  const checkEmail = useRef<string | null>(null);
 
   const [number, setNumber] = useState('');
   const [incomingCall, setIncomingCall] = useState(false);
@@ -76,12 +76,6 @@ export default function useCalls({
      * This section handles any errors during the websocket connection
      */
     worker.current.on('disconnected', (reservation: Reservation) => {
-      console.log(
-        `Reservation ${reservation.sid} has been created for ${
-          worker.current!.sid
-        }`
-      );
-
       alert('You have been disconnected. Please refresh the page to reconnect');
     });
 
@@ -108,7 +102,7 @@ export default function useCalls({
 
   const initializeDeviceListeners = () => {
     if (!device.current) return;
-    console.log('ANNOYED');
+
     device.current.on('registered', function () {
       console.log('Twilio.Device Ready to make and receive calls!');
     });
@@ -149,7 +143,8 @@ export default function useCalls({
   };
 
   useEffect(() => {
-    if (email && !initialized) {
+    if (email && email !== checkEmail.current && !initialized) {
+      checkEmail.current = email;
       const initializeCalls = async () => {
         await Promise.all([
           await initializeDevice(email).then((newDevice) => {
@@ -249,6 +244,14 @@ export default function useCalls({
     call.current.accept();
   };
 
+  const disconnectEverything = () => {
+    device.current?.disconnectAll();
+    device.current?.unregister();
+    device.current?.destroy();
+
+    worker.current?.disconnect();
+  };
+
   return {
     activityName,
     agentActivities: agentActivities.current,
@@ -263,6 +266,7 @@ export default function useCalls({
     acceptCall,
     endCall,
     rejectCall,
+    disconnectEverything,
   };
 }
 

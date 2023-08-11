@@ -25,3 +25,4 @@ export function formatTime(seconds: number): string {
 
   return formattedTime;
 }
+export const emptyFunction = () => true;

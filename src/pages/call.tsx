@@ -28,8 +28,9 @@ export default function CallPage() {
     acceptCall,
     endCall,
     rejectCall,
+    disconnectEverything,
   } = useCalls({
-    email: session?.user.email,
+    email: 'calebmarklim@gmail.com',
     workerSid: session?.employeeNumber,
     friendlyName: session?.user.name ?? '',
   });
@@ -49,7 +50,11 @@ export default function CallPage() {
 
   return (
     <main className="flex flex-col w-screen h-screen box-border">
-      <Navbar />
+      <Navbar
+        callback={() => {
+          disconnectEverything();
+        }}
+      />
       <section className="grid grid-cols-[2fr_1fr] h-full w-screen justify-center items-center">
         <div className="h-full w-full pl-20 pt-10">
           <AgentSection
