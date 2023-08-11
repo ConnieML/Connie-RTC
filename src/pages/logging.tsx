@@ -31,16 +31,22 @@ export default function Line() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/calls');
+        // Define the start time and end time values
+        const startTime = '2023-06-10';
+        const endTime = '2023-06-20';
+  
+        // Append the start time and end time values to the URL as query parameters
+        const response = await fetch(`/api/calls?startTime=${startTime}&endTime=${endTime}`);
         const data = await response.json();
         setCallData(data);
       } catch (error) {
         console.log('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   const transformData = (data: CallData[]): number[] => {
     let callsByInterval: number[] = [];
