@@ -3,13 +3,10 @@ import { withAuth } from 'next-auth/middleware';
 const ADMIN_PAGES = ['/queues-stats', 'admin-settings'];
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
-  function middleware(req) {
-    console.log(req.nextauth.token);
-  },
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname in ADMIN_PAGES) {
+        if (ADMIN_PAGES.includes(req.nextUrl.pathname)) {
           return token?.userType === 'admin';
         }
 
