@@ -31,7 +31,7 @@ export default function Line() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/endpoint-url');
+        const response = await fetch('/api/calls');
         const data = await response.json();
         setCallData(data);
       } catch (error) {
@@ -124,11 +124,11 @@ export default function Line() {
       ];
       data = transformedData;
     } else if (filterBy === 'week') {
-      yAxesMax = 7500; // Maximum value on y-axes for 'week' filter
+      yAxesMax = 1.25  // Maximum value on y-axes for 'week' filter
       labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
       data = transformedData;
     } else if (filterBy === 'month') {
-      yAxesMax = 10000; // Maximum value on y-axes for 'month' filter
+      yAxesMax = 1.25 ; // Maximum value on y-axes for 'month' filter
       labels = Array.from({ length: transformedData.length }, (_, i) => i + 1).map(String);
       data = transformedData;
     }
@@ -139,16 +139,14 @@ export default function Line() {
         {
           label: 'Average Call Duration',
           data,
-          backgroundColor: colors.purple.default, // Change this value to match the backgroundColor of the first chart
+          backgroundColor: colors.purple.half,
           borderColor: colors.indigo.default,
           pointStyle: 'circle',
-          pointRadius: 10,
-          pointHoverRadius: 15,
+          pointRadius: 6,         // Adjust the size of the circles
+          pointHoverRadius: 9,    // Adjust the size of the circles on hover
         },
       ],
     };
-    
-
     const config: ChartConfiguration = {
       type: 'line',
       data: chartData,
@@ -230,8 +228,8 @@ export default function Line() {
           backgroundColor: colors.purple.half,
           borderColor: colors.indigo.default,
           pointStyle: 'circle',
-          pointRadius: 10,
-          pointHoverRadius: 15,
+          pointRadius: 6,         // Adjust the size of the circles
+          pointHoverRadius: 9,    // Adjust the size of the circles on hover
         },
       ],
     };
@@ -302,9 +300,13 @@ export default function Line() {
           <option value="month">Month</option>
         </select>
       </div>
-      <div style={{ display: 'flex', maxWidth: '100vw' }}>
-        <canvas ref={callChartDataRef} className="w-[27vw]" />
-        <canvas ref={avgDurationChartDataRef} className="w-[27vw]" />
+      <div style={{ display: 'flex', maxWidth: '100vw', overflowX: 'auto' }}>
+        <div style={{ flex: 1 }}>
+          <canvas ref={callChartDataRef} style={{ width: '100%' }} />
+        </div>
+        <div style={{ flex: 1 }}>
+          <canvas ref={avgDurationChartDataRef} style={{ width: '100%' }} />
+        </div>
       </div>
       </div>
     </article>
