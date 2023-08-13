@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { SyncMapData } from '@/lib/syncInterfaces';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import { SyncMapItemInstance } from 'twilio/lib/rest/sync/v1/service/syncMap/syncMapItem';
-import logoImage from 'src/logo.png';
-import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -22,12 +20,21 @@ export default function QueuesStats({
   const { data: session, status } = useSession();
 
   useEffect(() => {
+    if (status !== 'loading') {
+      if (status === 'unauthenticated') {
+        router.push('/');
+      }
+    }
+  }, [status, router]);
+
+  useEffect(() => {
     async function initializeSyncClient() {
       await fetch('/api/accessToken')
         .then((response) => response.json())
         .then((data) => {
           setSyncClient(new SyncClient(data.accessToken, { logLevel: 'info' }));
-        });
+        })
+        .catch((e) => console.error('This failed: ', e));
     }
     initializeSyncClient();
   }, []);
@@ -71,14 +78,6 @@ export default function QueuesStats({
       };
     }
   }, [syncMapData.tasks.longestTaskWaitingAge, syncMapData.tasks.waitingTasks]);
-
-  useEffect(() => {
-    if (status !== 'loading') {
-      if (status === 'unauthenticated') {
-        router.push('/');
-      }
-    }
-  }, [status, router]);
 
   // basic auth logic
   if (status !== 'authenticated') {
@@ -316,6 +315,7 @@ export default function QueuesStats({
 export const getServerSideProps: GetServerSideProps<{
   initialSyncMapData: SyncMapData;
 }> = async () => {
+  console.log('ARE YOU RUNNING?');
   const syncMapsResponse = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/syncMaps`,
     {
