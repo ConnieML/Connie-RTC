@@ -11,6 +11,7 @@ import React from 'react';
 export default function QueuesStats({
   initialSyncMapData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  console.log('GOT IT');
   const [syncClient, setSyncClient] = useState<SyncClient | null>(null);
   const [syncMapData, setSyncMapData] =
     useState<SyncMapData>(initialSyncMapData);
@@ -29,6 +30,7 @@ export default function QueuesStats({
 
   useEffect(() => {
     async function initializeSyncClient() {
+      console.log('I WONDER IF THIS RUNS');
       await fetch('/api/accessToken')
         .then((response) => response.json())
         .then((data) => {
