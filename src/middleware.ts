@@ -1,6 +1,6 @@
 import { withAuth } from 'next-auth/middleware';
 
-const ADMIN_PAGES = ['/queues-stats', 'admin-settings'];
+const ADMIN_PAGES = ['/queues-stats', '/admin-settings'];
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
   {
