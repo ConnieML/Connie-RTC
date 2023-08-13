@@ -6,9 +6,9 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (ADMIN_PAGES.includes(req.nextUrl.pathname)) {
-          return token?.userType === 'admin';
-        }
+        // if (ADMIN_PAGES.includes(req.nextUrl.pathname)) {
+        //   return token?.userType === 'admin';
+        // }
 
         return token !== null;
       },
