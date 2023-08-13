@@ -66,6 +66,9 @@ export default function QueuesStats({
     }
   }, [syncMapData.tasks.longestTaskWaitingAge, syncMapData.tasks.waitingTasks]);
 
+  if (syncClient === null) {
+    return <div>Loading</div>;
+  }
   return (
     <>
       <Navbar />
