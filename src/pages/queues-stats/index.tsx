@@ -6,6 +6,9 @@ import { SyncMapItemInstance } from 'twilio/lib/rest/sync/v1/service/syncMap/syn
 import logoImage from 'src/logo.png';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 export default function QueuesStats({
   initialSyncMapData,
@@ -14,6 +17,9 @@ export default function QueuesStats({
   const [syncMapData, setSyncMapData] =
     useState<SyncMapData>(initialSyncMapData);
   const [longestTaskWaitingAge, setLongestTaskWaitingAge] = useState(0);
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     async function initializeSyncClient() {
@@ -65,6 +71,19 @@ export default function QueuesStats({
       };
     }
   }, [syncMapData.tasks.longestTaskWaitingAge, syncMapData.tasks.waitingTasks]);
+
+  useEffect(() => {
+    if (status !== 'loading') {
+      if (status === 'unauthenticated') {
+        router.push('/');
+      }
+    }
+  }, [status, router]);
+
+  // basic auth logic
+  if (status !== 'authenticated') {
+    return <React.Fragment>Loading...</React.Fragment>;
+  }
 
   return (
     <>

@@ -6,12 +6,17 @@ import Modal from '@/components/Modal';
 import Navbar from '@/components/Navbar';
 import { Activity } from '@/lib/taskrouterInterfaces';
 import { Worker } from 'twilio-taskrouter';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTable, setCurrentTable] = useState(1);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [users, setUsers] = useState<any[]>([]);
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
   const handleSetAllWorkersOffline = async () => {
     try {
@@ -80,6 +85,19 @@ const AdminSettings = () => {
     };
     getOktaUsers();
   }, []);
+
+  useEffect(() => {
+    if (status !== 'loading') {
+      if (status === 'unauthenticated') {
+        router.push('/');
+      }
+    }
+  }, [status, router]);
+
+  // basic auth logic
+  if (status !== 'authenticated') {
+    return <React.Fragment>Loading...</React.Fragment>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
