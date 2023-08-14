@@ -81,12 +81,13 @@ export default function QueuesStats({
   //   }
   // }, [syncMapData.tasks.longestTaskWaitingAge, syncMapData.tasks.waitingTasks]);
 
+  console.log('CONFUSED');
+  console.log(syncMapData);
+
   // basic auth logic
   if (status !== 'authenticated') {
     return <React.Fragment>Loading...</React.Fragment>;
   }
-
-  console.log(syncMapData);
 
   return <div>KEKW</div>;
 
