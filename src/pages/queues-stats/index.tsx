@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react';
 import { SyncMapData } from '@/lib/syncInterfaces';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import { SyncMapItemInstance } from 'twilio/lib/rest/sync/v1/service/syncMap/syncMapItem';
-import logoImage from 'src/logo.png';
-import Image from 'next/image';
+
 import Navbar from '@/components/Navbar';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
