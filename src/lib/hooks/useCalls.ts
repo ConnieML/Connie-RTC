@@ -4,6 +4,17 @@ import { useEffect, useRef, useState } from 'react';
 import { Reservation, Worker } from 'twilio-taskrouter';
 import { Activity } from '../taskrouterInterfaces';
 
+/**
+ * This is a pretty big custom React hook that contains all the
+ * functionality needed to power the agent client view. This
+ * hook contains information about the agent and any outgoing/incoming
+ * calls as well as methods to initiate, modify, or end those calls
+ *
+ * This hook makes extensive use of event emitters to listen for events
+ * and respond to them (i.e. incoming calls, user ended call, agent status)
+ * Find out more about Event Emitters here: https://medium.com/swlh/what-the-heck-is-an-event-emitter-84407fce6cd3
+ *
+ */
 export default function useCalls({
   email,
   workerSid,
@@ -142,6 +153,11 @@ export default function useCalls({
     });
   };
 
+  /**
+   * This useEffect hook is what we use to initialize the device to facilitate
+   * calls over the browser via WebRTC as well as the websocket connection
+   * for sending real-time taskrouter updates
+   */
   useEffect(() => {
     if (email && email !== checkEmail.current && !initialized) {
       checkEmail.current = email;
@@ -180,6 +196,18 @@ export default function useCalls({
     }
   }, [initialized, email]);
 
+  /**
+   * We use this function to make an outbound call
+   *
+   * Note: for all outbound calls, we set the agent activity to "Reserved"
+   * to prevent any incoming calls.
+   *
+   * TODO: If time permits, future cohorts should probably refactor
+   * this logic to instead create a new task for outoging calls
+   *
+   * @param number the phone number to call
+   *
+   */
   const makeCall = async (number: string) => {
     if (!device.current) return;
 
@@ -221,12 +249,18 @@ export default function useCalls({
     });
   };
 
+  /**
+   * Reject an incoming call
+   */
   function rejectCall() {
     if (!device.current) return;
     call.current?.reject();
     setIncomingCall(false);
   }
 
+  /**
+   * End a live call
+   */
   function endCall() {
     if (!call.current) return;
 
@@ -236,6 +270,9 @@ export default function useCalls({
     setNumber('');
   }
 
+  /**
+   * Accept an incoming call
+   */
   const acceptCall = async () => {
     if (call.current === null) return;
 
@@ -244,6 +281,11 @@ export default function useCalls({
     call.current.accept();
   };
 
+  /**
+   * Cleanup function used to kill the
+   * WebRTC and websocket connections
+   * created by the voice and taskrouter client SDKs
+   */
   const disconnectEverything = () => {
     device.current?.disconnectAll();
     device.current?.unregister();
@@ -270,6 +312,15 @@ export default function useCalls({
   };
 }
 
+/**
+ *
+ * This function initalizes a device so that users can have
+ * voice calls over the browser
+ *
+ * @param client the user's email
+ * this is the same value as the "client_url" in the worker's attribute
+ *
+ */
 async function initializeDevice(client: string) {
   const token = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/token?client=${client}`
@@ -286,6 +337,17 @@ async function initializeDevice(client: string) {
   return device;
 }
 
+/**
+ *
+ * This function initializes a websocket connection between
+ * the client app and Twilio to receive any taskrouter events
+ * for a specific worker
+ *
+ * @param workerSid - the unique worker ID found in twilio
+ * @param email  - the worker email
+ * @param friendlyName - the friendly name found in Okta and Twliio
+ *
+ */
 const initializeWorker = async (
   workerSid: string | undefined,
   email: string,
@@ -306,7 +368,7 @@ const initializeWorker = async (
     const token = await tokenResponse.json();
 
     const worker = new Worker(token);
-    await timeout(1000);
+    await timeout(1000); // For some reason, this is some much needed black magic
     return worker;
   } catch (e) {
     console.error(e);

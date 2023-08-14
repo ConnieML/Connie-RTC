@@ -3,20 +3,15 @@ import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
 import AdminUserModal from './AdminUserModal';
 import Modal from './Modal';
 
-const UsersTable = ({users, setUsers}: {users: any[]; setUsers: React.Dispatch<React.SetStateAction<any[]>>}) => {
-  // const [displaySkills, setDisplaySkills] = useState<number | undefined>(
-  //   undefined
-  // );
+const UsersTable = ({
+  users,
+  setUsers,
+}: {
+  users: any[];
+  setUsers: React.Dispatch<React.SetStateAction<any[]>>;
+}) => {
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
   const [showModal, setShowModal] = useState(false);
-
-  // const handleMoreClick = (id: number) => {
-  //   if (displaySkills === id) {
-  //     setDisplaySkills(undefined);
-  //   } else {
-  //     setDisplaySkills(id);
-  //   }
-  // };
 
   return (
     <>
@@ -43,7 +38,7 @@ const UsersTable = ({users, setUsers}: {users: any[]; setUsers: React.Dispatch<R
                   <BsPersonFill className="text-purple-800" />
                 </div>
                 <div className="pl-4">
-                  {user.firstName + ' ' + user.lastName} 
+                  {user.firstName + ' ' + user.lastName}
                   <p style={{ color: 'gray', fontSize: '0.8em' }}>
                     Role: {user.role}
                   </p>
@@ -53,39 +48,21 @@ const UsersTable = ({users, setUsers}: {users: any[]; setUsers: React.Dispatch<R
                 </div>
               </div>
               <div>
-              <p className="text-right text-gray-600 sm:text-left">
-                {user.email}
-              </p>
-              <p style={{ color: 'gray', fontSize: '0.8em' }}>
-                {user.sid}
-              </p>
+                <p className="text-right text-gray-600 sm:text-left">
+                  {user.email}
+                </p>
+                <p style={{ color: 'gray', fontSize: '0.8em' }}>{user.sid}</p>
               </div>
               <div className="flex flex-wrap">
                 {/* Placeholder skills */}
                 {['Skill A', 'Skill B', 'Skill C'].map((skill, index) => (
-                <div key={index} className='px-3 py-1 mb-2 mr-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full'>
-                  {skill}
-                </div>
-                ))}
-                {/* {order.skills
-                  .split(', ')
-                  .slice(0, displaySkills === order.id ? undefined : 3)
-                  .map((skill, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 mb-2 mr-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                {order.skills.split(', ').length > 3 && (
-                  <span
-                    className="text-sm text-gray-700 cursor-pointer"
-                    onClick={() => handleMoreClick(order.id)}
+                  <div
+                    key={index}
+                    className="px-3 py-1 mb-2 mr-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-full"
                   >
-                    {displaySkills === order.id ? 'Less' : '...More'}
-                  </span>
-                )} */}
+                    {skill}
+                  </div>
+                ))}
               </div>
               <div className="items-center justify-between hidden sm:flex">
                 <span className="px-3 py-1 mb-2 mr-2 text-sm font-semibold text-purple-800 bg-purple-100 rounded-full">
@@ -94,7 +71,12 @@ const UsersTable = ({users, setUsers}: {users: any[]; setUsers: React.Dispatch<R
                 <BsThreeDotsVertical
                   onClick={() => {
                     setModalContent(
-                      <AdminUserModal setShowModal={setShowModal} user={user} setUsers={setUsers} users={users} />
+                      <AdminUserModal
+                        setShowModal={setShowModal}
+                        user={user}
+                        setUsers={setUsers}
+                        users={users}
+                      />
                     );
                     setShowModal(true);
                   }}

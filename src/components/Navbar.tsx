@@ -2,6 +2,13 @@ import logoImage from '@public/logo.png';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
+/**
+ * This component is used to navigate across Connie
+ * Generally, put this component at the top of each page
+ * @param callback - invoke this method whenever you need to run a cleanup function on the page. We
+ * currently use this to close the websocket and WebRTC connections from the Twilio SDKs
+ * @returns
+ */
 export default function Navbar({ callback }: { callback?: () => void }) {
   const router = useRouter();
 

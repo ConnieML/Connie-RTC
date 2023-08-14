@@ -9,6 +9,10 @@ import { Worker } from 'twilio-taskrouter';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
+/**
+ * This page displays information about users and task queues, as well as gives you the
+ * ability to modify them
+ */
 const AdminSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentTable, setCurrentTable] = useState(1);
@@ -18,10 +22,19 @@ const AdminSettings = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  /**
+   * This function exists as a debugging tool for administrators.
+   * Sometimes, agents can be mistakenly set as "Available" and thus
+   * receive calls even when the agent client isn't open. This provides
+   * admins with a way to force these agents to go "Unavailable"
+   *
+   * Note: this feature might not stand the test of time, so feel free to
+   * axe if it doesn't make sense for future use cases
+   *
+   */
   const handleSetAllWorkersOffline = async () => {
     try {
       // Get all workers
-
       const workers = await fetch(
         `/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`,
         {

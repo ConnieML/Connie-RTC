@@ -11,6 +11,7 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    // Docs: https://next-auth.js.org/configuration/nextjs#callbacks
     async jwt({ token, account }: any) {
       if (account) {
         token.accessToken = account.access_token;

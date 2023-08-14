@@ -1,105 +1,107 @@
 import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import Select from 'react-select';
 
+const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string;
 
-const workspaceSid = process.env.NEXT_PUBLIC_WORKSPACE_SID as string
-
-interface Options{
-  value: number,
-  label: string
+interface Options {
+  value: number;
+  label: string;
 }
 
-interface Worker{
-  friendlyName: string,
-  attributes: string,
-  sid: string
+interface Worker {
+  friendlyName: string;
+  attributes: string;
+  sid: string;
 }
 
-interface IProps{
+interface IProps {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   handleDataChange: () => any;
   workerList: Worker[];
-
 }
 
-const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IProps) => {
+const AdminCreateTaskQueue = ({
+  setShowModal,
+  handleDataChange,
+  workerList,
+}: IProps) => {
   const [taskQueueName, setTaskQueueName] = useState('');
-  const [multiSelectOptions, setMultiSelectOptions] = useState<Options[]>([])
-  const [selectedOptions, setSelectedOptions] = useState<Options[]>([])
+  const [multiSelectOptions, setMultiSelectOptions] = useState<Options[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<Options[]>([]);
 
-  const handleChange = (options:any)=>{
-    setSelectedOptions(options)
-  }
-  
+  const handleChange = (options: any) => {
+    setSelectedOptions(options);
+  };
 
-  async function handleCreateTask(){
-    console.log(taskQueueName)
-    const createResponse = await fetch(`/api/taskQueues?workspaceSid=${workspaceSid}`,{
-      method: 'POST',
-      body: JSON.stringify({
-        "friendlyName": `${taskQueueName}`,
-        "targetWorkers": `taskQueues HAS "${taskQueueName}"`,
-      })
-    })
+  async function handleCreateTask() {
+    const createResponse = await fetch(
+      `/api/taskQueues?workspaceSid=${workspaceSid}`,
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          friendlyName: `${taskQueueName}`,
+          targetWorkers: `taskQueues HAS "${taskQueueName}"`,
+        }),
+      }
+    );
 
-    if (createResponse.status !== 200){
-      alert("Error creating task queue")
-      return
+    if (createResponse.status !== 200) {
+      alert('Error creating task queue');
+      return;
     }
 
-    let flag = false
+    let flag = false;
 
-    for(let i= 0; i < selectedOptions.length; i++){
-      for(let j = 0; j < workerList.length; j++){
-        if(selectedOptions[i].label === workerList[j].friendlyName){
-          addWorkerToQueue(workerList[j].sid, workerList[j].attributes)
-          break
+    for (let i = 0; i < selectedOptions.length; i++) {
+      for (let j = 0; j < workerList.length; j++) {
+        if (selectedOptions[i].label === workerList[j].friendlyName) {
+          addWorkerToQueue(workerList[j].sid, workerList[j].attributes);
+          break;
         }
-        if(j === workerList.length-1 ){
-          flag = true
+        if (j === workerList.length - 1) {
+          flag = true;
         }
       }
     }
 
-    handleDataChange()
+    handleDataChange();
 
-    if(flag === true){
-      alert("Error adding 1 or more workers provided")
-    }
-    else{
-      alert("All workers added successfully")
+    if (flag === true) {
+      alert('Error adding 1 or more workers provided');
+    } else {
+      alert('All workers added successfully');
     }
 
     setShowModal(false);
-  };
+  }
 
   async function addWorkerToQueue(sid: string, prevAttributes: string) {
+    let attributes = JSON.parse(prevAttributes);
 
-    let attributes = JSON.parse(prevAttributes)
-
-    if(attributes.hasOwnProperty("taskQueues")){
-      
-      if(attributes.taskQueues.includes(taskQueueName)){
-        console.log("worker already belongs to this task Queue")
-        return
+    if (attributes.hasOwnProperty('taskQueues')) {
+      if (attributes.taskQueues.includes(taskQueueName)) {
+        console.log('worker already belongs to this task Queue');
+        return;
       }
-      attributes.taskQueues.push(taskQueueName)
-    }
-    else{
-      attributes.taskQueues = [taskQueueName]
+      attributes.taskQueues.push(taskQueueName);
+    } else {
+      attributes.taskQueues = [taskQueueName];
     }
 
-    attributes = JSON.stringify(attributes)
+    attributes = JSON.stringify(attributes);
 
-    const editWorkerRequest = await fetch(`/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${sid}`,{
-      method: 'PUT',
-      body: JSON.stringify({
-        'attributes': `${attributes}`,
-      })
-    })
-    if(editWorkerRequest.status !== 200) {
-      alert("Error changing worker info")
-      return
+    const editWorkerRequest = await fetch(
+      `/api/workers?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${sid}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          attributes: `${attributes}`,
+        }),
+      }
+    );
+    if (editWorkerRequest.status !== 200) {
+      alert('Error changing worker info');
+      return;
     }
   }
 
@@ -108,19 +110,19 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
   };
 
   const createMultiSelectOptions = () => {
-    let arr: Options[] = []
+    let arr: Options[] = [];
 
-    for(let i=0; i < workerList.length; i++){
-      let newOption: Options = {value: i, label: workerList[i].friendlyName}
-      arr.push(newOption)
+    for (let i = 0; i < workerList.length; i++) {
+      let newOption: Options = { value: i, label: workerList[i].friendlyName };
+      arr.push(newOption);
     }
 
-    setMultiSelectOptions(arr)
-  }
+    setMultiSelectOptions(arr);
+  };
 
-  useEffect(() =>  {
-    createMultiSelectOptions()
-    return
+  useEffect(() => {
+    createMultiSelectOptions();
+    return;
   }, []);
 
   return (
@@ -135,22 +137,24 @@ const AdminCreateTaskQueue = ({ setShowModal, handleDataChange, workerList}: IPr
           onChange={(e) => setTaskQueueName(e.target.value)}
         />
       </label>
-      <label  className="mb-4">
+      <label className="mb-4">
         Select Workers to Add:
-      <form className='mb-4'
+        <form
+          className="mb-4"
           onSubmit={() => {
-            handleCreateTask()
-          }}>
-            <Select
-              isMulti
-              value={selectedOptions}
-              onChange={handleChange}
-              closeMenuOnSelect={false}
-              options={multiSelectOptions}
-              noOptionsMessage={() => null}
-            />
-          </form>
-          </label>
+            handleCreateTask();
+          }}
+        >
+          <Select
+            isMulti
+            value={selectedOptions}
+            onChange={handleChange}
+            closeMenuOnSelect={false}
+            options={multiSelectOptions}
+            noOptionsMessage={() => null}
+          />
+        </form>
+      </label>
       <button
         className="bg-purple-600 text-white py-2 px-4 rounded mr-2"
         onClick={handleCreateTask}
