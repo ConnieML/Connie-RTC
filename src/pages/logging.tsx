@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import Navbar from '@/components/Navbar';
 
 interface CallData {
   startTime: string;
@@ -27,6 +30,9 @@ export default function Line() {
   const [callDurations, setCallDurations] = useState<number[]>([]); // State to hold call durations
   const [averageDurations, setAverageDurations] = useState<number[]>([]); // State to hold average durations
   const [filterBy, setFilterBy] = useState<'day' | 'week' | 'month'>('day');
+
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -278,8 +284,6 @@ export default function Line() {
       data = avgDurationsByInterval;
     }
 
-    console.log('WAIT');
-    console.log(labels);
     const chartData = {
       labels,
       datasets: [
@@ -342,8 +346,22 @@ export default function Line() {
     };
   }, [filterBy, avgDurationsByInterval]);
 
+  useEffect(() => {
+    if (status !== 'loading') {
+      if (status === 'unauthenticated') {
+        router.push('/');
+      }
+    }
+  }, [status, router]);
+
+  // basic auth logic
+  if (status !== 'authenticated') {
+    return <React.Fragment>Loading...</React.Fragment>;
+  }
+
   return (
     <article>
+      <Navbar />
       <div>
         <div>
           <span style={{ marginLeft: '3rem' }}>Filter By:</span>{' '}
