@@ -10,12 +10,28 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 
+let initialSyncMapDummyData: SyncMapData = {
+  tasks: {
+    activeTasks: 0,
+    waitingTasks: 0,
+    longestTaskWaitingAge: 0,
+  },
+  workers: {
+    availableWorkers: 0,
+    unavailableWorkers: 0,
+    offlineWorkers: 0,
+    workersDetails: {},
+  },
+  taskQueuesDetails: {},
+};
+
 export default function QueuesStats({
   initialSyncMapData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [syncClient, setSyncClient] = useState<SyncClient | null>(null);
-  const [syncMapData, setSyncMapData] =
-    useState<SyncMapData>(initialSyncMapData);
+  const [syncMapData, setSyncMapData] = useState<SyncMapData>(
+    initialSyncMapData ?? initialSyncMapDummyData
+  );
   const [longestTaskWaitingAge, setLongestTaskWaitingAge] = useState(0);
 
   const router = useRouter();
@@ -338,20 +354,7 @@ export const getServerSideProps: GetServerSideProps<{
     syncMapItems = syncMapItemsData.syncMapItems;
   }
 
-  let initialSyncMapData: SyncMapData = {
-    tasks: {
-      activeTasks: 0,
-      waitingTasks: 0,
-      longestTaskWaitingAge: 0,
-    },
-    workers: {
-      availableWorkers: 0,
-      unavailableWorkers: 0,
-      offlineWorkers: 0,
-      workersDetails: {},
-    },
-    taskQueuesDetails: {},
-  };
+  let initialSyncMapData: SyncMapData = initialSyncMapDummyData;
 
   for (const syncMapItem of syncMapItems) {
     const { key, data } = syncMapItem;
