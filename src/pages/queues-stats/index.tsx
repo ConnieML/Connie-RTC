@@ -28,18 +28,18 @@ export default function QueuesStats({
     }
   }, [status, router]);
 
-  // useEffect(() => {
-  //   async function initializeSyncClient() {
-  //     console.log('I WONDER IF THIS RUNS');
-  //     await fetch('/api/accessToken')
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setSyncClient(new SyncClient(data.accessToken, { logLevel: 'info' }));
-  //       })
-  //       .catch((e) => console.error('This failed: ', e));
-  //   }
-  //   initializeSyncClient();
-  // }, []);
+  useEffect(() => {
+    async function initializeSyncClient() {
+      console.log('I WONDER IF THIS RUNS');
+      await fetch('/api/accessToken')
+        .then((response) => response.json())
+        .then((data) => {
+          setSyncClient(new SyncClient(data.accessToken, { logLevel: 'info' }));
+        })
+        .catch((e) => console.error('This failed: ', e));
+    }
+    initializeSyncClient();
+  }, []);
 
   // useEffect(() => {
   //   syncClient?.map('queuesStats').then((map) => {
