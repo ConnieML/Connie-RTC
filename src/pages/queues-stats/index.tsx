@@ -41,30 +41,30 @@ export default function QueuesStats({
     initializeSyncClient();
   }, []);
 
-  // useEffect(() => {
-  //   syncClient?.map('queuesStats').then((map) => {
-  //     map.on('itemAdded', (event) => {
-  //       const { key, data } = event.item.descriptor;
-  //       setSyncMapData((prevState) => {
-  //         return {
-  //           ...prevState,
-  //           [key]: data,
-  //         };
-  //       });
-  //     });
-  //   });
-  //   syncClient?.map('queuesStats').then((map) => {
-  //     map.on('itemUpdated', (event) => {
-  //       const { key, data } = event.item.descriptor;
-  //       setSyncMapData((prevState) => {
-  //         return {
-  //           ...prevState,
-  //           [key]: data,
-  //         };
-  //       });
-  //     });
-  //   });
-  // }, [syncClient]);
+  useEffect(() => {
+    syncClient?.map('queuesStats').then((map) => {
+      map.on('itemAdded', (event) => {
+        const { key, data } = event.item.descriptor;
+        setSyncMapData((prevState) => {
+          return {
+            ...prevState,
+            [key]: data,
+          };
+        });
+      });
+    });
+    syncClient?.map('queuesStats').then((map) => {
+      map.on('itemUpdated', (event) => {
+        const { key, data } = event.item.descriptor;
+        setSyncMapData((prevState) => {
+          return {
+            ...prevState,
+            [key]: data,
+          };
+        });
+      });
+    });
+  }, [syncClient]);
 
   // // Simulate the longest task waiting time increasing since we don't want to call the API every second
   // useEffect(() => {
@@ -85,6 +85,8 @@ export default function QueuesStats({
   if (status !== 'authenticated') {
     return <React.Fragment>Loading...</React.Fragment>;
   }
+
+  console.log(syncMapData);
 
   return <div>KEKW</div>;
 
@@ -368,6 +370,7 @@ export const getServerSideProps: GetServerSideProps<{
     }
   }
 
+  console.log('I CONFUSED');
   console.log(initialSyncMapData);
   return {
     props: {
