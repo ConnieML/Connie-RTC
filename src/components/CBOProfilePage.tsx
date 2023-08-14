@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import logoImage from 'src/logo.png';
 import Image from 'next/image';
+import logoImage from '@public/logo.png';
 
 /**
  * Note: currently unused

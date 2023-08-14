@@ -34,6 +34,7 @@ export default function Navbar({ callback }: { callback?: () => void }) {
         <button onClick={() => handleNavigate('/queues-stats')}>
           Dashboard
         </button>
+        <button onClick={() => handleNavigate('/logging')}>Logging</button>
         <button onClick={() => handleNavigate('/admin-settings')}>
           Settings
         </button>
