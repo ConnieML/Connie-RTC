@@ -20,13 +20,13 @@ export default function QueuesStats({
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  useEffect(() => {
-    if (status !== 'loading') {
-      if (status === 'unauthenticated') {
-        router.push('/');
-      }
-    }
-  }, [status, router]);
+  // useEffect(() => {
+  //   if (status !== 'loading') {
+  //     if (status === 'unauthenticated') {
+  //       router.push('/');
+  //     }
+  //   }
+  // }, [status, router]);
 
   useEffect(() => {
     async function initializeSyncClient() {
