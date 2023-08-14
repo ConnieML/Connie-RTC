@@ -18,16 +18,20 @@ export default async function handler(
 
   try {
     // Make startTimeAfter and startTimeBefore a Date object
-    const calls = await client.calls.list({
+    const outgoingCalls = await client.calls.list({
       from: phoneNumber,
       startTimeAfter: new Date(startTime),
       startTimeBefore: new Date(endTime),
     });
 
-    res.status(200).json(calls);
+    const incomingCalls = await client.calls.list({
+      from: phoneNumber,
+      startTimeAfter: new Date(startTime),
+      startTimeBefore: new Date(endTime),
+    });
+
+    res.status(200).json([...outgoingCalls, ...incomingCalls]);
   } catch (error) {
     res.status(500).json({ error: (error as Error).message });
   }
 }
-
-
