@@ -24,6 +24,18 @@ let initialSyncMapDummyData: SyncMapData = {
   taskQueuesDetails: {},
 };
 
+/**
+ * Weird bug on Amplify where you need to refresh page to see all the stats
+ * It's because SSR doesn't work in conjunction to useRouter()
+ *
+ * To fix, easiest would be to either not use Amplify to host
+ * or refactor this to fetch client side
+ * https://nextjs.org/docs/pages/building-your-application/data-fetching/client-side#client-side-data-fetching-with-useeffect
+ *
+ * See: https://stackoverflow.com/questions/76442514/nextjs-getserversideprops-not-always-executing-on-aws-amplify
+ * @param param0
+ * @returns
+ */
 export default function QueuesStats({
   initialSyncMapData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {

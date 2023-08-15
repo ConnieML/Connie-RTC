@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js/auto';
+import Navbar from '@/components/Navbar';
 
 interface CallData {
   startTime: string;
@@ -278,8 +279,6 @@ export default function Line() {
       data = avgDurationsByInterval;
     }
 
-    console.log('WAIT');
-    console.log(labels);
     const chartData = {
       labels,
       datasets: [
@@ -344,6 +343,7 @@ export default function Line() {
 
   return (
     <article>
+      <Navbar />
       <div>
         <div>
           <span style={{ marginLeft: '3rem' }}>Filter By:</span>{' '}
