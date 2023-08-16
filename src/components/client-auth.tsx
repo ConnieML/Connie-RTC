@@ -21,7 +21,7 @@ export default function ClientSideAuth() {
     }
     return (
         <React.Fragment>
-  <button onClick={() => signIn()}>Sign in</button>
+            <button onClick={() => signIn("okta")}>Sign in with Okta</button>
         </React.Fragment>
     )
 }

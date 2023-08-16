@@ -1,25 +1,10 @@
 import React from 'react';
 import Button from '@mui/material/Button';
-import { OktaAuth } from '@okta/okta-auth-js';
+import ClientSideAuth from '@/components/client-auth';
 
 
 const Login: React.FC = () => {
-  const handleOktaLogin = async () => {
-    try {
-      const oktaAuth = new OktaAuth({
-        issuer: 'https://trial-2094636.okta.com/oauth2/default',
-        clientId: '0oa5vcy6kr6JCCBpe697',
-        redirectUri: 'https://connie-rtc.vercel.app/api/auth/callback/okta/state=XKvImlFbW19uUMS47fclMpbUGBGUv12equo1AMaBfkU', // this link seems to be causing an error?
-      });
-  
-      await oktaAuth.signInWithRedirect();
-    } catch (error) {
-      console.error('Okta authentication error:', error);
-    }
-  };
-  
 
-  
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
@@ -35,34 +20,9 @@ const Login: React.FC = () => {
         Connie Sign In
       </h1>
 
-      <p style={{ fontSize: '14px', color: 'grey', marginBottom: '30px' }}>
-        Click here to sign in
-      </p>
 
-      <Button
-        onClick={handleOktaLogin}
-        variant="contained"
-        style={{
-          padding: '10px 20px',
-          backgroundColor: 'white',
-          color: 'black', // Text color is black
-          border: '1px solid gray',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          fontSize: '16px', // Adjust the font size as needed
-          fontWeight: 'normal', // Not bold
-          textTransform: 'capitalize', // Sentence case
-          boxShadow: 'none', // Remove the shadow
+      <ClientSideAuth/>
 
-        }}
-      >
-        <img
-          src="okta-logo.png" // Replace with your Okta logo image path
-          alt="Okta Logo"
-          style={{ marginRight: '10px' }}
-        />
-        Sign in with Okta
-      </Button>
     </div>
   );
 };
