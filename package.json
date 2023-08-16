@@ -12,6 +12,7 @@
     "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.18",
     "@mui/material": "^5.14.2",
+    "@okta/okta-auth-js": "^7.4.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/react": "18.2.12",
     "@types/react-dom": "18.2.5",
@@ -38,9 +39,9 @@
   },
   "browser": {
     "fs": false,
-    "path": false,
-    "os": false,
     "net": false,
+    "os": false,
+    "path": false,
     "tls": false
   },
   "description": "Phase 1 of the Connie CPaaS Prototype",
