@@ -159,7 +159,12 @@ export default function useCalls({
    * for sending real-time taskrouter updates
    */
   useEffect(() => {
-    if (email && email !== checkEmail.current && !initialized && !workerSid) {
+    if (
+      email &&
+      email !== checkEmail.current &&
+      !initialized &&
+      workerSid !== undefined
+    ) {
       checkEmail.current = email;
       const initializeCalls = async () => {
         await Promise.all([
