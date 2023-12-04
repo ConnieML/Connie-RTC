@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-*As a [USER TYPE], I should be able to [TASK] so I can [REASON].*
+**As a [USER TYPE], I should be able to [TASK] so I can [REASON].**
 
 # Acceptance Criteria
 
