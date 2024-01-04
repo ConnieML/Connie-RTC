@@ -76,11 +76,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* styles.css */
-.NavigationMenuLink {
-  text-decoration: none;
-}
-.NavigationMenuLink[data-active] {
-  background-color: red;
-}
