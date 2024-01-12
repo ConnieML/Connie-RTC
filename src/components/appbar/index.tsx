@@ -38,6 +38,8 @@ import { signOut } from "next-auth/react";
 
 import useCalls from "@/lib/hooks/useCalls";
 // import { useSession } from "next-auth/react";
+import AgentStatus from "./AgentStatus";
+import ClientOnly from "../ClientOnly";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
@@ -66,8 +68,13 @@ export default function Appbar({
       </Link>
       <div className="flex space-x-8">
         {/* TODO replace with Availability status toggle component */}
-        <div className="self-center">(Status)</div>
-        <div className="flex flex-row">
+        <div className="self-center">
+          <ClientOnly>
+            <AgentStatus />
+          </ClientOnly>
+
+        </div>
+        <div className="flex flex-row space-x-4">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
