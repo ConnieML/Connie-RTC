@@ -1,4 +1,6 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 import { Menubar } from "@/components/ui/menubar";
@@ -16,6 +18,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+
 import {
   LogOut,
   Settings,
@@ -28,7 +32,7 @@ import {
 
 import Logo from "./Logo";
 import MessagesCard from "./MessagesCard";
-import PhoneCard from "./PhoneCard";
+import DialPad from "./Dialpad";
 import NotificationsCard from "./NotificationsCard";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,6 +45,17 @@ export default function Appbar({
   initials,
   isProgramManager,
 }: AppbarProps) {
+  // TODO replace following empty functions with useCalls hook:
+  // https://github.com/ConnieML/Connie-RTC/blob/0a5aa1aca731bf4f9dee5765779bcf3bbcb0f6bf/src/lib/hooks/useCalls.ts
+  const [number, setNumber] = useState("");
+  const [inCall, setInCall] = useState(false);
+  const makeCall: (number: string) => void = (number: string) => {
+    setInCall(true);
+  };
+  const endCall: () => void = () => {
+    setInCall(false);
+  };
+
   return (
     <Menubar
       className={cn("flex flex-row justify-between h-16 px-4 py-2", className)}
@@ -51,10 +66,12 @@ export default function Appbar({
       <div className="flex space-x-8">
         {/* TODO replace with Availability status toggle component */}
         <div className="self-center">(Status)</div>
-        <div className="flex flex-row space-x-4">
+        <div className="flex flex-row">
           <Popover>
             <PopoverTrigger>
-              <MessageSquare color="#0F172A" />
+              <Button variant="ghost" size="icon">
+                <MessageSquare color="#D3D3D3" />
+              </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
               <MessagesCard />
@@ -62,15 +79,25 @@ export default function Appbar({
           </Popover>
           <Popover>
             <PopoverTrigger>
-              <Phone color="#0F172A" />
+              <Button variant="ghost" size="icon">
+                <Phone color={`${!inCall ? "#D3D3D3" : "#08B3E5"}`} />
+              </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
-              <PhoneCard />
+              <DialPad
+                number={number}
+                inCall={inCall}
+                setNumber={setNumber}
+                makeCall={makeCall}
+                endCall={endCall}
+              />
             </PopoverContent>
           </Popover>
           <Popover>
             <PopoverTrigger>
-              <Bell color="#0F172A" />
+              <Button variant="ghost" size="icon">
+                <Bell color="#D3D3D3" />
+              </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
               <NotificationsCard />
@@ -78,7 +105,7 @@ export default function Appbar({
           </Popover>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Avatar>
+              <Avatar className="ml-2">
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
