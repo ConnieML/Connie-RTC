@@ -31,3 +31,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ### Why pnpm?
 We chose to use pnpm for its improved security over npm, and also its improved package management speed compared to yarn. Read more [here](https://hackernoon.com/choosing-the-right-package-manager-npm-yarn-or-pnpm). 
+
+Build setting specifications:
+
+* Changed node version to 20 to be compatible with building next.js applications to fulfil requirement >=18.17.0
+* Changed container image to be Amazon linux 2023 to solve GLIBC_2.28 not found error after upgrading node version.
+* Added npmrc file as a linker between pnpm and npm because amplify does some part of its installation using npm here
