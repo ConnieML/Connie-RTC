@@ -34,6 +34,8 @@ We chose to use pnpm for its improved security over npm, and also its improved p
 
 ### Deployment
 
+View the latest deployment branch [here](https://develop.d2r9j66448p933.amplifyapp.com/).
+
 This project has been integrated with the AWS amplify github app for automatic deployments. All commits and pull requests to the ```develop``` branch have been set up for automatic deployment. Deployment and build settings should be edited through the AWS Amplify [console](https://console.aws.amazon.com/amplify/home) and through associated [documentation](https://docs.aws.amazon.com/amplify/latest/userguide/getting-started.html). 
 
 Deployment build setting specifications:
