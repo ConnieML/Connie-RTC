@@ -12,7 +12,6 @@ export default function Layout({
     if (status === 'loading') {
         return <React.Fragment>Loading...</React.Fragment>;
     } else if (session) {
-        console.log(session);
         return (children);
     } else {
         redirect('/');

@@ -19,6 +19,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isProgramManager = true; // TODO
+  const initials = "AA"; // TODO get initials from user name
 
   return (
     <NextAuthProvider>
