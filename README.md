@@ -43,3 +43,13 @@ Deployment build setting specifications:
 * Changed container image to be Amazon linux 2023 to solve [GLIBC_2.28 not found](https://stackoverflow.com/questions/72921215/getting-glibc-2-28-not-found) error after upgrading node version.
 * Added npmrc file as a linker between pnpm and npm because amplify does some part of its installation using npm [here](https://docs.aws.amazon.com/amplify/latest/userguide/monorepo-configuration.html#turborepo-pnpm-monorepo-configuration).
 * Since repository is public, AWS amplify app has no linked IAM service roles for [security purposes](https://docs.aws.amazon.com/amplify/latest/userguide/pr-previews.html) to enable pull request previews. 
+
+## Environment Setup
+
+### Environment Variables
+Create a .env file at the root of the repository with the following variables:
+NEXTAUTH_URL=http://localhost:3000
+OKTA_OAUTH2_CLIENT_ID={OKTA APPLICATION CLIENT ID}
+OKTA_OAUTH2_CLIENT_SECRET={OKTA APPLICATION SECRET}
+OKTA_OAUTH2_ISSUER=https://{YOUR OKTA ACCOUNT URL (click top right and it will appear below your email)}
+SECRET=Some long random string
