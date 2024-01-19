@@ -9,10 +9,9 @@ export default function Home() {
     return <React.Fragment>Loading...</React.Fragment>;
   }
   if (session) {
-    console.log(session);
     return (
       <React.Fragment>
-        {/* the line below breaks the build and gives syntax errors, but works fine when deployed */}
+        {/* the line below breaks the build and gives syntax errors, but works fine when running locally*/}
         {/* Welcome to the dashboard {session.user.name} - {session.userType}{' '} */}
         <button onClick={() => signOut()}>Sign out</button>
       </React.Fragment>
