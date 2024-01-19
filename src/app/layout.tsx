@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const isProgramManager = true; // TODO
-  const initials = "MX"; // TODO get initials from user name
+  const initials = "AA"; // TODO get initials from user name
 
   return (
     <NextAuthProvider>
