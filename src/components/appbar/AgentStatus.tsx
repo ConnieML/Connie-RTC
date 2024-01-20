@@ -4,13 +4,32 @@ import React, {useState} from 'react';
 import {Chip} from "@material-tailwind/react";
 import {Button} from "../ui/button";
 
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+
 const AgentStatus:React.FC = () => {
 
-    const [isAvailable, setIsAvailable] = useState(false);
+    const [activity, setActivity] = useState('Unavailable')
 
+   
     const toggleAvailability = async () => {
-        const newAvailability = !isAvailable;
-        setIsAvailable(newAvailability);
+         const newActivity = activity === 'Unavailable' ? 'Available' : 'Unavailable';
+         setActivity(newActivity);
+
+         //Request to API route
+         try {
+            // Send a request to your API route using axios
+            const response = await axios.post('/api/agent', {
+                newActivity,
+            });
+
+            console.log('Status updated to:', response.data.status);
+        } catch (error) {
+            console.error('Error updating status:', error);
+            // Optionally revert the status change in the UI if the API call fails
+            setActivity(activity);
+        }
     }
 
     return(
@@ -18,7 +37,7 @@ const AgentStatus:React.FC = () => {
             <Button 
                 variant="outline"
                 onClick={toggleAvailability}>
-                {isAvailable? 'Go Unavailable' : 'Go Available'}
+                {activity === 'Available' ? 'Go Offline' : 'Go Available'}
             </Button>
         <div className="flex gap-2 border border-gray-300 p-2 m-4 bg-gray-100 rounded">
         
@@ -27,7 +46,7 @@ const AgentStatus:React.FC = () => {
         <div>Status</div>
 
         <div>
-            {isAvailable? 
+            {activity === 'Available'? 
                 <>
             <Chip
                 variant="ghost"
