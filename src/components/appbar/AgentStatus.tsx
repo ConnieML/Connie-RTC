@@ -5,8 +5,15 @@ import {Chip} from "@material-tailwind/react";
 import {Button} from "../ui/button";
 
 import axios from 'axios';
-import toast from 'react-hot-toast';
 
+
+
+
+const activities = {
+    Available: 'WAd9d119cdf4ac2d6a37c372ea05029717',
+    Unavailable: 'WA387cdc981874d6497a7658e6832d20a7',
+    Break: 'WA0e780b853a43067109d8f4c6ecb25c59'
+}
 
 const AgentStatus:React.FC = () => {
 
@@ -16,18 +23,17 @@ const AgentStatus:React.FC = () => {
     const toggleAvailability = async () => {
          const newActivity = activity === 'Unavailable' ? 'Available' : 'Unavailable';
          setActivity(newActivity);
+         const activitySid = activities[newActivity];
 
          //Request to API route
          try {
             // Send a request to your API route using axios
             const response = await axios.post('/api/agent', {
-                newActivity,
+                activitySid
             });
-
-            console.log('Status updated to:', response.data.status);
         } catch (error) {
             console.error('Error updating status:', error);
-            // Optionally revert the status change in the UI if the API call fails
+            // If API call fail, make no change
             setActivity(activity);
         }
     }
