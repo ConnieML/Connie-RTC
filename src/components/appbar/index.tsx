@@ -35,6 +35,9 @@ import MessagesCard from "./MessagesCard";
 import DialPad from "./Dialpad";
 import NotificationsCard from "./NotificationsCard";
 
+import useCalls from "@/lib/hooks/useCalls";
+// import { useSession } from "next-auth/react";
+
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
   isProgramManager: boolean; // TODO replace with proper authorization check
@@ -45,16 +48,14 @@ export default function Appbar({
   initials,
   isProgramManager,
 }: AppbarProps) {
-  // TODO replace following empty functions with useCalls hook:
-  // https://github.com/ConnieML/Connie-RTC/blob/0a5aa1aca731bf4f9dee5765779bcf3bbcb0f6bf/src/lib/hooks/useCalls.ts
-  const [number, setNumber] = useState("");
-  const [inCall, setInCall] = useState(false);
-  const makeCall: (number: string) => void = (number: string) => {
-    setInCall(true);
-  };
-  const endCall: () => void = () => {
-    setInCall(false);
-  };
+
+  // const { data: session, status } = useSession();  
+
+  const { inCall, number, makeCall, setNumber, endCall } = useCalls({
+    email: "michelleshx462@gmail.com", // TODO replace with okta auth info
+    workerSid: "123", // session?.employeeNumber,
+    friendlyName: "", // session?.user.name ?? '',
+  });
 
   return (
     <Menubar
