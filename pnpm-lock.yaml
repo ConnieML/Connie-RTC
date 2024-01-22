@@ -960,6 +960,22 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@twilio/voice-errors@1.4.0:
+    resolution: {integrity: sha512-7BCg9MPz+KQ0JJ6Rl5W3Zw3E+i3Tt77VZw3/2i3Z+IPZITmCOQLu1nKx/0Nlj505Xtfr7eY9Mcern5PfIoBW0w==}
+    dev: false
+
+  /@twilio/voice-sdk@2.10.1:
+    resolution: {integrity: sha512-/+zYTAh/FMyWu4FiodrlXZXOO6ULGOmb2xuVgf49az6uUC1DnJy89QTh+ENTEGTJ36FSshZ83hlxiqBdUYyuvQ==}
+    engines: {node: '>= 12'}
+    dependencies:
+      '@twilio/voice-errors': 1.4.0
+      '@types/md5': 2.3.2
+      events: 3.3.0
+      loglevel: 1.6.7
+      md5: 2.3.0
+      rtcpeerconnection-shim: 1.2.8
+    dev: false
+
   /@tanstack/react-table@8.11.8(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-NEwvIq4iSiDQozEyvbdiSdCOiLa+g5xHmdEnvwDb98FObcK6YkBOkRrs/CNqrKdDy+/lqoIllIWHk+M80GW6+g==}
     engines: {node: '>=12'}
