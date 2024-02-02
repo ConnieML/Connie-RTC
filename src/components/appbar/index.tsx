@@ -48,13 +48,12 @@ export default function Appbar({
   initials,
   isProgramManager,
 }: AppbarProps) {
-
-  // const { data: session, status } = useSession();  
+  // const { data: session, status } = useSession();
 
   const { inCall, number, makeCall, setNumber, endCall } = useCalls({
     email: "michelleshx462@gmail.com", // TODO replace with okta auth info
-    workerSid: "123", // session?.employeeNumber,
-    friendlyName: "", // session?.user.name ?? '',
+    workerSid: "WK3b277b4e6a1d67f2240477fa33f75ea4", // session?.employeeNumber,
+    friendlyName: "michelleshx462", // session?.user.name ?? '',
   });
 
   return (

@@ -2,9 +2,7 @@ import { type NextRequest } from "next/server";
 import VoiceResponse from "twilio/lib/twiml/VoiceResponse";
 
 export async function POST(req: NextRequest) {
-  // const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  // const authToken = process.env.TWILIO_AUTH_TOKEN;
-  // const client = require("twilio")(accountSid, authToken);
+  const callerId = process.env.TWILIO_CALLER_ID;
 
   const resp = new VoiceResponse();
 
@@ -13,18 +11,15 @@ export async function POST(req: NextRequest) {
     const params = new URLSearchParams(queryString);
     const bodyTo = params.get("To");
 
-    if (bodyTo) {
-      // client.calls
-      //   .create({
-      //     url: "http://demo.twilio.com/docs/voice.xml",
-      //     to: """,
-      //     from: "",
-      //   })
-      //   .then((call: { sid: any }) => console.log(call.sid));
-
-      // Placing an outbound call from the Twilio client
-      const dial = resp.dial({ callerId: process.env.TWILIO_CALLER_ID });
-      dial.number(bodyTo);
+    // If the request to the /voice endpoint is TO your Twilio Number,
+    // then it is an incoming call towards your Twilio.Device.
+    if (bodyTo == callerId) {
+      // Incoming call
+      const dial = resp.dial();
+    } else if (bodyTo) {
+      // Outgoing call
+      const dial = resp.dial({ callerId });
+      dial.number({}, bodyTo);
     } else {
       resp.say("Thanks for calling!");
     }
