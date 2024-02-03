@@ -45,31 +45,27 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
         className
       )}
     >
-      <ButtonLink href="/">
+      <ButtonLink href="/dashboard">
         <Home className="mr-2 h-4 w-4" />
         Home
       </ButtonLink>
-      <ButtonLink href="/tasks">
+      <ButtonLink href="/dashboard/tasks">
         <ListChecks className="mr-2 h-4 w-4" />
         Tasks
       </ButtonLink>
       {isProgramManager && (
         <>
-          <ButtonLink href="/agents">
+          <ButtonLink href="/dashboard/agents">
             <Users className="mr-2 h-4 w-4" />
             Agents
           </ButtonLink>
-          <ButtonLink href="/billings">
+          <ButtonLink href="/dashboard/billings">
             <DollarSign className="mr-2 h-4 w-4" />
             Billings & Usage
           </ButtonLink>
         </>
       )}
-      <ButtonLink href="/clients">
-        <SquareUser className="mr-2 h-4 w-4" />
-        Clients
-      </ButtonLink>
-      <ButtonLink href="/settings/org/audit-log">
+      <ButtonLink href="/dashboard/settings">
         <Settings className="mr-2 h-4 w-4" />
         Settings
       </ButtonLink>
