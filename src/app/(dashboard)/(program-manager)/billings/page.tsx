@@ -51,11 +51,11 @@ export default function Billings() {
         <div className="flex justify-start mt-4">
           <div>
             <h4 className="text-lg font-semibold">Calls placed</h4>
-            <p className="text-gray-600">{usageStatistics.callsPlaced}</p>
+            <p className="text-lead20 text-black">{usageStatistics.callsPlaced}</p>
           </div>
           <div className="ml-20">
             <h4 className="text-lg font-semibold">Messages sent</h4>
-            <p className="text-gray-600">{usageStatistics.messagesSent}</p>
+            <p className="text-lead20 text-black">{usageStatistics.messagesSent}</p>
           </div>
         </div>
       </div>
