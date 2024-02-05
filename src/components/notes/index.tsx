@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { Search } from "lucide-react";
-import Note from "./Note";
+import NoteComp from "./Note";
+import { Note } from "@/types/noteInterface";
 
 // Test Data
-export const notes = [
+export const test_notes = [
   {
     name: "Agent Jason K.",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
@@ -111,8 +113,8 @@ export const notes = [
 
 function NewNote() {
   return (
-    <div className="flex flex-col mt-4">
-      <textarea />
+    <div className="grid w-full gap-2 mt-4">
+      <Textarea placeholder="Type your note here." />
       <Button className="w-full">Save Note</Button>
     </div>
   );
@@ -124,6 +126,7 @@ interface NotesProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function Notes({ className, client }: NotesProps) {
   const [openNote, setOpenNote] = useState(false);
+  const [notes, setNotes] = useState<Note[]>(test_notes);
   return (
     <div className="h-full bg-white p-8">
       <Button
@@ -142,7 +145,7 @@ export default function Notes({ className, client }: NotesProps) {
         <ScrollArea className="h-80 w-[500px] mt-4 flex flex-col">
           <div className="flex flex-wrap justify-between">
             {notes.map((item) => (
-              <Note note={item} selected={false} />
+              <NoteComp note={item} selected={false} />
             ))}
           </div>
         </ScrollArea>
