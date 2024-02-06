@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Home, Users, DollarSign, ListChecks, Settings } from "lucide-react";
 
+
 interface ButtonLinkProps extends React.HTMLAttributes<HTMLDivElement> {
   href: string;
 }
@@ -57,7 +58,7 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
           </ButtonLink>
         </>
       )}
-      <ButtonLink href="/settings">
+      <ButtonLink href="/settings/org/audit-log">
         <Settings className="mr-2 h-4 w-4" />
         Settings
       </ButtonLink>
