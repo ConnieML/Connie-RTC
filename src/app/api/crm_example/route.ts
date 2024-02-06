@@ -1,4 +1,4 @@
-import { AirtableCRMProvider } from "../../../lib/crm_data/airtable";
+import { AirtableCRMProvider } from "../../../lib/crm/airtable";
 
 
 // ENV variables for now, pending CRM configuration feature
