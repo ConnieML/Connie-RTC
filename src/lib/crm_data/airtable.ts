@@ -14,12 +14,12 @@ export class AirtableCRMTable implements CRMTable {
    * @returns A Promise that resolves to the API response.
    */
   makeAirtableCall(url: string, headers: Record<string, string>, method?: string, body?: any): Promise<Response> {
-    console.log("Json obj:", JSON.stringify(body));
     return fetch(url, {
       method: method || "GET",
       headers: {
         ...headers,
-        Authorization: `Bearer ${this.token}`
+        Authorization: `Bearer ${this.token}`,
+        "Content-Type": body ? "application/json" : ""
       },
       body: JSON.stringify(body)
     });
@@ -71,34 +71,43 @@ export class AirtableCRMTable implements CRMTable {
     const filterFormula: string = `Phone=\"${AirtableCRMTable.formatPhoneNumber(phoneNumber)}\"`;
     const encodedFormula: string = encodeURIComponent(filterFormula);
     const airtableUrl: string = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}?filterByFormula=${encodedFormula}`;
-    // console.log(airtableUrl);
 
     const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
     return this.parseSingleCrmEntry(response, true);
-
   }
 
-  async storeClientByPhone(phoneNumber: string, client: CRMEntry): Promise<void> {
-    // TODO: Implement this method
-    // if (client.id) {
-    //   const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}/${client.id}`;
+  /**
+   * Stores a client in Airtable using their phone number as the identifier.
+   * If the client already has an ID, it updates the existing record.
+   * If the client does not have an ID, it throws an error indicating that adding a new record is required.
+   * @param phoneNumber - The phone number of the client.
+   * @param client - The CRM entry representing the client.
+   * @returns A Promise that resolves to the updated CRM entry if successful, or null if the client does not have an ID.
+   * @throws An error if there is an issue updating the data in Airtable or if adding a new record is required.
+   */
+  async storeClientByPhone(phoneNumber: string, client: CRMEntry): Promise<CRMEntry | null> {
+    const existing = await this.getClientByPhone(phoneNumber);
+    if (!existing) {
+      throw new Error("Still under implementation - adding a new record to Airtable.");
+    }
 
-    //   // remove id and RECORD_ID if they are in the CRM entry
-    //   delete client.id;
-    //   delete client.RECORD_ID;
+    // merge the two objects
+    const merged = { ...existing, ...client };
 
+    const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}/${client.id}`;
 
-    //   const fields = { ...client };
-    //   const dataObj = { fields };
-    //   const response = await this.makeAirtableCall(airtableUrl, {}, "PATCH", dataObj);
-    //   if (response.status !== 200) {
-    //     throw new Error(`Error updating data in airtable: ${response.status} - ${response.statusText}`);
-    //   }
-    // } else {
-    //   // not implemented yet
-    //   throw new Error("Not yet implemented - storing new object");
-    // }
-    throw new Error("Not yet implemented");
+    // remove id and RECORD_ID if they are in the CRM entry
+    delete merged.id;
+    delete merged.RECORD_ID;
+
+    const fields = { ...merged };
+    const dataObj = { fields };
+    const response = await this.makeAirtableCall(airtableUrl, {}, "PATCH", dataObj);
+    if (response.status !== 200) {
+      throw new Error(`Error updating data in airtable: ${response.status} - ${response.statusText}`);
+    }
+
+    return this.parseSingleCrmEntry(response, false);
   }
 
   // helper converts a string number into this format (123) 456-7890
@@ -119,6 +128,3 @@ export class AirtableCRMProvider implements ConnieCRMProvider {
     return new AirtableCRMTable(this.baseId, table_id, this.token);
   }
 }
-
-
-
