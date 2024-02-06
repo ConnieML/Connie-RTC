@@ -1,4 +1,5 @@
 import { NoteData } from "@/types/noteInterface";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,14 +9,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { MoreVertical } from "lucide-react";
+
+import Note from "./Note";
 
 interface NoteProps {
   note: NoteData;
@@ -24,11 +27,14 @@ interface NoteProps {
 
 export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
   return (
-    <Card className="border-0 flex flex-col justify-between">
+    <Card
+      key={note.id}
+      className="text-left text-sm h-44 transition-all hover:bg-accent flex flex-col justify-between"
+    >
       <div>
-        <CardHeader>
-          <CardTitle>{note.title}</CardTitle>
-          <CardDescription>
+        <CardHeader className="p-4 pb-0">
+          <CardTitle className="text-sm font-semibold">{note.title}</CardTitle>
+          <CardDescription className="text-xs">
             <span className="font-semibold">Author: </span>
             {note.author}
             <br />
@@ -36,11 +42,21 @@ export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
             {note.dateCreated}
           </CardDescription>
         </CardHeader>
-        <ScrollArea className="h-72">
-          <CardContent>{note.content}</CardContent>
-        </ScrollArea>
+        <CardContent className="text-xs text-foreground p-4 py-2">
+          <p className="line-clamp-3">{note.content}</p>
+        </CardContent>
       </div>
-      <CardFooter className="flex justify-end align-bottom pr-0 pb-0">
+      <CardFooter className="flex justify-between py-4 px-0 h-8 text-muted-foreground">
+        <Dialog>
+          <DialogTrigger>
+            <Button variant="link" className="text-xs">
+              See more
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="h-fit p-4">
+            <Note note={note} />
+          </DialogContent>
+        </Dialog>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -51,7 +67,7 @@ export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" side="bottom" className="">
+          <DropdownMenuContent align="start" side="bottom" className="text-xs">
             <DropdownMenuItem
               onClick={() => {
                 handleRemoveNote(note.id);
@@ -59,6 +75,10 @@ export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
             >
               Delete note
             </DropdownMenuItem>
+            {/* TODO implement extra note features */}
+            {/* <DropdownMenuItem>Add label</DropdownMenuItem> */}
+            {/* <DropdownMenuItem>Make a copy</DropdownMenuItem>
+            <DropdownMenuItem>Version history</DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       </CardFooter>
