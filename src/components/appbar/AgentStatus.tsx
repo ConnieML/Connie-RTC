@@ -8,11 +8,11 @@ import axios from 'axios';
 
 
 
-
+//Need to change based on every single diff. Taskrouter workspace
 const activities = {
-    Available: 'WAd9d119cdf4ac2d6a37c372ea05029717',
-    Unavailable: 'WA387cdc981874d6497a7658e6832d20a7',
-    Break: 'WA0e780b853a43067109d8f4c6ecb25c59'
+    Available: '',
+    Unavailable: '',
+    Offline: ''
 }
 
 const AgentStatus:React.FC = () => {
