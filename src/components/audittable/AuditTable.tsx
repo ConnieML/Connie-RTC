@@ -47,7 +47,7 @@ const AuditTable: React.FC = () => {
         const fetchCalls = async() => {
             setLoading(true);
             try {
-                const response = await axios.get('/api/audit-log');
+                const response = await axios.get('/api/audit-log/calls');
                 setCalls(response.data);
                 console.log("call retrieved")
                 console.log(calls)
