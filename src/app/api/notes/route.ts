@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 const test_notes = [
   {
     title: "Agent Jason K.",
+    clientId: "12345",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -15,7 +16,20 @@ const test_notes = [
     labels: ["meeting", "work", "important"],
   },
   {
-    title: "Agent Jason K.",
+    title: "Note - January 5",
+    clientId: "12345",
+    id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
+    author: "William Smith",
+    callDate: "November 20, 2023",
+    callDuration: "13 min 20 sec",
+    dateCreated: "November 20, 2023",
+    dateUpdated: "November 20, 2023",
+    content: "moved to germany, mobility issues",
+    labels: ["meeting", "work", "important"],
+  },
+  {
+    title: "Another Name",
+    clientId: "12345",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -27,17 +41,7 @@ const test_notes = [
   },
   {
     title: "Agent Jason K.",
-    id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
-    author: "William Smith",
-    callDate: "November 20, 2023",
-    callDuration: "13 min 20 sec",
-    dateCreated: "November 20, 2023",
-    dateUpdated: "November 20, 2023",
-    content: "moved to germany, mobility issues",
-    labels: ["meeting", "work", "important"],
-  },
-  {
-    title: "Agent Jason K.",
+    clientId: "12345",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -50,6 +54,19 @@ const test_notes = [
   },
   {
     title: "Agent Jason K.",
+    clientId: "4567",
+    id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
+    author: "William Smith",
+    callDate: "November 20, 2023",
+    callDuration: "13 min 20 sec",
+    dateCreated: "November 20, 2023",
+    dateUpdated: "November 20, 2023",
+    content: "this is a test note",
+    labels: ["meeting", "work", "important"],
+  },
+  {
+    title: "Agent Jason K.",
+    clientId: "4567",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -61,6 +78,7 @@ const test_notes = [
   },
   {
     title: "Agent Jason K.",
+    clientId: "12345",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -72,17 +90,7 @@ const test_notes = [
   },
   {
     title: "Agent Jason K.",
-    id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
-    author: "William Smith",
-    callDate: "November 20, 2023",
-    callDuration: "13 min 20 sec",
-    dateCreated: "November 20, 2023",
-    dateUpdated: "November 20, 2023",
-    content: "moved to germany, mobility issues",
-    labels: ["meeting", "work", "important"],
-  },
-  {
-    title: "Agent Jason K.",
+    clientId: "12345",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -94,6 +102,7 @@ const test_notes = [
   },
   {
     title: "Agent Jason K.",
+    clientId: "4567",
     id: "6c84fb90-12c4-11e1-840d-7b25c5ee775a",
     author: "William Smith",
     callDate: "November 20, 2023",
@@ -106,13 +115,17 @@ const test_notes = [
 ];
 
 export async function GET(req: NextRequest) {
-  // TODO implement external data source used for notes
-  return Response.json(test_notes);
+  const searchParams = req.nextUrl.searchParams;
+  const client: string = searchParams.get("clientId") ?? "";
+
+  // TODO implement fetch from external data source api used for notes
+
+  return Response.json(test_notes.filter((n) => n.clientId === client));
 }
 
 export async function POST(req: NextRequest) {
-  const queryString = await req.text();
-  const params = new URLSearchParams(queryString);
+  const searchParams = req.nextUrl.searchParams;
+  const client: string = searchParams.get("clientId") ?? "";
 
   // TODO add the note to the data source
   // const resp = await...
@@ -125,9 +138,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const queryString = await req.text();
-  const params = new URLSearchParams(queryString);
-  const client: string = params.get("id") ?? "";
+  const searchParams = req.nextUrl.searchParams;
+  const id: string = searchParams.get("id") ?? "";
 
   // TODO delete from data source
   // const resp = await...

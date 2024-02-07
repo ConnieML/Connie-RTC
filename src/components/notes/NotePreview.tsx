@@ -48,13 +48,13 @@ export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
       </div>
       <CardFooter className="flex justify-between py-4 px-0 h-8 text-muted-foreground">
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button variant="link" className="text-xs">
               See more
             </Button>
           </DialogTrigger>
           <DialogContent className="h-fit p-4">
-            <Note note={note} />
+            <Note note={note} handleRemoveNote={handleRemoveNote} />
           </DialogContent>
         </Dialog>
         <DropdownMenu>
