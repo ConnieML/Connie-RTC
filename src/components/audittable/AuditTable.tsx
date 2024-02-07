@@ -6,6 +6,14 @@ import axios from 'axios';
 import {Calls, columns} from "./columns";
 import { DataTable } from './DataTable';
 
+interface FetchedCalls {
+    from: string;
+    to: string;
+    direction: string;
+    answeredBy: string;
+    dateCreated: string;
+}
+
 
 const dummyCalls = [
     {
@@ -32,7 +40,7 @@ const dummyCalls = [
 ]
 
 const AuditTable: React.FC = () => {
-    const [calls, setCalls] = useState<Calls[]>([]);
+    const [calls, setCalls] = useState<FetchedCalls[]>([]);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -49,7 +57,7 @@ const AuditTable: React.FC = () => {
             }
         }
 
-        fetchCalls;
+        fetchCalls();
     }, [])
 
     if (loading) {

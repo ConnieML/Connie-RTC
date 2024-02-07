@@ -2,15 +2,15 @@
 import {NextResponse, NextRequest} from 'next/server';
 
 
-interface Calls {
+interface FetchedCalls {
     from: string;
     to: string;
     direction: string;
     answeredBy: string;
-    dateCreated: Date | string;
+    dateCreated: string;
 }
 
-export async function POST(
+export async function GET(
     request: NextRequest,
     res: NextResponse
 ) {
@@ -20,7 +20,7 @@ export async function POST(
    try{
     console.log('success')
     const calls: any[] = await client.calls.list();
-    const formattedCalls: Calls[] = calls.map(call => ({
+    const formattedCalls: FetchedCalls[] = calls.map(call => ({
         from: call.from,
         to: call.to,
         direction: call.direction,
