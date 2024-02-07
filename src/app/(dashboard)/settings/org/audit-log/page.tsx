@@ -1,4 +1,4 @@
-import AuditTable from "@/components/AuditTable";
+import AuditTable from "@/components/audittable/AuditTable";
 
 
 export default function AuditLog() {
