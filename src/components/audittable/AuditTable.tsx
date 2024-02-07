@@ -50,6 +50,7 @@ const AuditTable: React.FC = () => {
                 const response = await axios.get('/api/audit-log');
                 setCalls(response.data);
                 console.log("call retrieved")
+                console.log(calls)
                 setLoading(false);
             } catch (error) {
                 console.log('error fetching calls', error);
@@ -67,6 +68,7 @@ const AuditTable: React.FC = () => {
     return (
     <div  className="container mx-auto py-10">
       <DataTable columns={columns} data={dummyCalls}></DataTable>
+      
       
     {calls.length === 0 && <p>No calls to display.</p>}
     </div>

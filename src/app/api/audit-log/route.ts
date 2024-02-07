@@ -19,13 +19,14 @@ export async function GET(
    const client = require('twilio')(accountSid, authToken);
    try{
     console.log('success')
-    const calls: any[] = await client.calls.list();
+    const calls: any[] = await client.calls.list({limit:20});
+    //if want to display all calls, can delete the limit parameter
     const formattedCalls: FetchedCalls[] = calls.map(call => ({
         from: call.from,
         to: call.to,
         direction: call.direction,
-        answeredBy: call.answered_by,
-        dateCreated: call.date_created
+        answeredBy: call.answeredBy,
+        dateCreated: call.dateCreated
         
     }))
     
