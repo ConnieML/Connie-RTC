@@ -16,23 +16,15 @@ import {
 
 
 // This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
-export type Calls = {
+export type FetchedCalls = {
     id: string;
     direction: string;
     from: string | null;
     to: string | null;
-    timestamp: Date;  
+    timestamp: string;  
 }
 
-export const columns: ColumnDef<Calls>[] = [
+export const columns: ColumnDef<FetchedCalls>[] = [
     {
         id: "select",
         header: ({ table }) => (

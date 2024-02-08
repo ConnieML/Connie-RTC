@@ -3,16 +3,8 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
-import {Calls, columns} from "./columns";
+import {FetchedCalls, columns} from "./columns";
 import { DataTable } from './DataTable';
-
-interface FetchedCalls {
-    from: string;
-    to: string;
-    direction: string;
-    answeredBy: string;
-    dateCreated: string;
-}
 
 
 const dummyCalls = [
@@ -42,6 +34,7 @@ const dummyCalls = [
 const AuditTable: React.FC = () => {
     const [calls, setCalls] = useState<FetchedCalls[]>([]);
     const [loading, setLoading] = useState(false);
+    const [showCalls, setShowCalls] = useState(true);
 
     useEffect(() => {
         const fetchCalls = async() => {
@@ -49,8 +42,8 @@ const AuditTable: React.FC = () => {
             try {
                 const response = await axios.get('/api/audit-log/calls');
                 setCalls(response.data);
-                console.log("call retrieved")
-                console.log(calls)
+                // console.log("call retrieved")
+                // console.log(calls)
                 setLoading(false);
             } catch (error) {
                 console.log('error fetching calls', error);
@@ -67,7 +60,7 @@ const AuditTable: React.FC = () => {
 
     return (
     <div  className="container mx-auto py-10">
-      <DataTable columns={columns} data={dummyCalls}></DataTable>
+      <DataTable columns={columns} data={calls}></DataTable>
       
       
     {calls.length === 0 && <p>No calls to display.</p>}
