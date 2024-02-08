@@ -3,10 +3,11 @@ import {NextResponse, NextRequest} from 'next/server';
 
 
 interface FetchedMessage {
+    id: string;
     from: string;
     to: string;
     direction: string;
-    dateCreated: string;
+    timestamp: string;
 }
 
 export async function GET(
@@ -20,13 +21,26 @@ export async function GET(
     console.log('success')
     const messages: any[] = await client.messages.list({limit:20});
     //if want to display all calls, can delete the limit parameter
-    const formattedMessages: FetchedMessage[] = messages.map(message => ({
-        from: message.from,
-        to: message.to,
-        direction: message.direction,
-        dateCreated: message.dateCreated
+    const formattedMessages: FetchedMessage[] = messages.map(message => {
+        const date = new Date(message.dateCreated);
+        const year = date.getUTCFullYear();
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+        return{
+            id: message.sid,
+            direction: message.direction,
+            from: message.from,
+            to: message.to,
+            timestamp: formattedDate
+        }
+    
         
-    }))
+    })
     
     console.log(formattedMessages)
     return NextResponse.json(formattedMessages)
