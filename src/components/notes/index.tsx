@@ -1,38 +1,25 @@
 "use client";
 import { useState, useEffect, ChangeEvent } from "react";
+import dayjs from "dayjs";
+
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Search } from "lucide-react";
 
-import NotePreview from "./NotePreview";
+import Note from "./Note";
 import { NoteData } from "@/types/noteInterface";
 
-interface NotesProps extends React.HTMLAttributes<HTMLDivElement> {
-  clientId: string;
-}
-
-export default function Notes({ clientId }: NotesProps) {
+export default function Notes({ clientId }: { clientId: string }) {
   const [notes, setNotes] = useState<NoteData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [searchItem, setSearchItem] = useState("");
   const [filteredNotes, setFilteredNotes] = useState<NoteData[]>([]);
 
-  const [openNote, setOpenNote] = useState(false);
-  const [newNote, setNewNote] = useState(""); // TODO combine with title
-  const [newTitle, setNewTitle] = useState("");
+  const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -42,6 +29,9 @@ export default function Notes({ clientId }: NotesProps) {
           `${process.env.NEXT_PUBLIC_URL}/api/notes?clientId=${clientId}`
         );
         const data = await response.json();
+        data.sort((a: NoteData, b: NoteData) =>
+          dayjs(b.dateCreated).diff(dayjs(a.dateCreated))
+        );
         setNotes(data);
         setFilteredNotes(data);
         setLoading(false);
@@ -58,11 +48,10 @@ export default function Notes({ clientId }: NotesProps) {
 
   async function handleAddNote(note: string) {
     const newNote = {
-      title: "Agent Name - Date", // TODO
-      author: "Agent Name",
-      callDate: new Date().toLocaleString(),
-      dateCreated: new Date().toLocaleString(),
-      dateUpdated: new Date().toLocaleString(),
+      author: "Agent Name", // TODO get agent name from auth
+      callDate: new Date().toISOString(),
+      dateCreated: new Date().toISOString(),
+      dateUpdated: new Date().toISOString(),
       content: note,
       clientId,
     };
@@ -85,28 +74,20 @@ export default function Notes({ clientId }: NotesProps) {
         },
         ...notes,
       ]);
-      // update filtered notes?
+      if (note.includes(searchItem)) {
+        setFilteredNotes([
+          {
+            ...newNote,
+            id: data.id,
+          },
+          ...filteredNotes,
+        ]);
+      }
       setNewNote("");
-      setOpenNote(false);
+      setError(null);
     } catch (e) {
       console.error(e);
       setError("There was an error saving the note.");
-    }
-  }
-
-  async function handleRemoveNote(id: string) {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/notes`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id }),
-      });
-      const data = await response.json();
-
-      setNotes(notes.filter((n) => n.id !== id));
-    } catch (e) {
-      console.error(e);
-      setError("There was an error deleting the note.");
     }
   }
 
@@ -115,92 +96,56 @@ export default function Notes({ clientId }: NotesProps) {
     setSearchItem(searchTerm);
 
     const filteredNotes = notes.filter((note) =>
-      note.title.toLowerCase().includes(searchTerm)
+      note.content.toLowerCase().includes(searchTerm)
     );
 
     setFilteredNotes(filteredNotes);
   }
 
   return (
-    <div className="h-full bg-white p-8">
-      {/* {!openNote && ( */}
-      <Button
-        variant="secondary"
-        className="w-full"
-        onClick={() => setOpenNote(!openNote)}
-      >
-        Take a note...
-      </Button>
-      {/* )} */}
-      {openNote && (
-        <Card className="grid  w-full gap-2 mt-4">
-          <CardHeader>
-            <Input id="title" placeholder="Title" />
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="Take a note..."
-              value={newNote}
-              onChange={(e) => setNewNote(e.target.value)}
-            />
-          </CardContent>
-          <CardFooter>
-            {/* TODO implement ability to update the note? or add metadata (labels) to the note */}
-            <Button onClick={() => handleAddNote(newNote)} className="w-full">
-              Save Note
-            </Button>
-          </CardFooter>
-        </Card>
-        // <div className="grid w-full gap-2 mt-4">
-        //   <div className="grid w-full max-w-sm items-center gap-1.5">
-        //     <Label htmlFor="email">Title</Label>
-        //     <Input type="email" id="email" placeholder="Email" />
-        //   </div>
-        //   <Textarea
-        //     placeholder="Type your note here..."
-        //     value={newNote}
-        //     onChange={(e) => setNewNote(e.target.value)}
-        //   />
-        //   {/* TODO implement ability to keep updating the note? or add metadata like labels to the note */}
-        //   <Button onClick={() => handleAddNote(newNote)} className="w-full">
-        //     Save Note
-        //   </Button>
-        // </div>
-      )}
-      <div className="mt-4">
-        <div className="relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search Notes"
-            value={searchItem}
-            onChange={(e) => handleSearchNote(e)}
-            className="pl-8"
-          />
+    <div className="h-full bg-white p-8 grid gap-4">
+      <h3 className="text-2xl font-semibold">Notes</h3>
+      <div className="relative">
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search Notes"
+          value={searchItem}
+          onChange={(e) => handleSearchNote(e)}
+          className="pl-8"
+        />
+      </div>
+      <ScrollArea className="h-[600px] w-[414px]">
+        <div className="grid gap-4">
+          {loading &&
+            [...Array(4)].map((_, i) => (
+              <div key={i}>
+                <Skeleton className="h-5 w-[156px] mb-2" />
+                <Skeleton className="h-2 w-[200px] my-2" />
+                <Skeleton className="h-12 w-[400px] mt-2" />
+              </div>
+            ))}
+          {error && <p>{error}</p>}
+          {!loading && !error && filteredNotes.length === 0 ? (
+            <p className="text-secondary-foreground"> No notes found</p>
+          ) : (
+            filteredNotes.map((item, i) => <Note key={i} note={item} />)
+          )}
         </div>
-        <ScrollArea className="h-80 w-[500px] mt-4 flex flex-col">
-          <div className="grid grid-cols-2 gap-2">
-            {loading &&
-              [...Array(4)].map((_, i) => (
-                <div key={i}>
-                  <Skeleton className="h-5 w-[212px] mb-2" />
-                  <Skeleton className="h-3 w-[156px] my-2" />
-                  <Skeleton className="h-12 w-[250px] mt-2" />
-                </div>
-              ))}
-            {error && <p>{error}</p>}
-            {!loading && !error && filteredNotes.length === 0 ? (
-              <p> No notes found</p>
-            ) : (
-              filteredNotes.map((item, i) => (
-                <NotePreview
-                  key={i}
-                  note={item}
-                  handleRemoveNote={handleRemoveNote}
-                />
-              ))
-            )}
-          </div>
-        </ScrollArea>
+      </ScrollArea>
+      <div className="grid gap-4">
+        <Textarea
+          placeholder="Take a note..."
+          value={newNote}
+          onChange={(e) => setNewNote(e.target.value)}
+        />
+        <div className="flex justify-end">
+          <Button
+            onClick={() => newNote !== "" && handleAddNote(newNote)}
+            className="bg-primitives-blue-2 hover:bg-[#0da8bf]"
+          >
+            Add Note
+          </Button>
+        </div>
       </div>
     </div>
   );

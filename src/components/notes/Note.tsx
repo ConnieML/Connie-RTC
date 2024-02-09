@@ -1,67 +1,34 @@
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 import { NoteData } from "@/types/noteInterface";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { MoreVertical } from "lucide-react";
 
-interface NoteProps {
-  note: NoteData;
-  handleRemoveNote: (id: string) => void;
-}
-
-export default function NotePreview({ note, handleRemoveNote }: NoteProps) {
+export default function Note({ note }: { note: NoteData }) {
+  dayjs.extend(localizedFormat);
   return (
-    <Card className="border-0 flex flex-col justify-between">
+    <Card
+      key={note.id}
+      className="rounded-none border-0 border-l-2 border-primitives-blue-1 text-sm mr-2 transition-all hover:bg-accent flex flex-col justify-between"
+    >
       <div>
-        <CardHeader>
-          <CardTitle>{note.title}</CardTitle>
-          <CardDescription>
-            <span className="font-semibold">Author: </span>
+        <CardHeader className="p-4 pb-0">
+          <CardTitle className="text-sm font-semibold text-primitives-blue-2">
             {note.author}
-            <br />
-            <span className="font-semibold">Date created: </span>
-            {note.dateCreated}
+          </CardTitle>
+          <CardDescription className="text-xs font-medium">
+            {dayjs(note.dateCreated).format("LLL")}
           </CardDescription>
         </CardHeader>
-        <ScrollArea className="h-72">
-          <CardContent>{note.content}</CardContent>
-        </ScrollArea>
+        <CardContent className="text-xs text-foreground px-4 py-2">
+          <p>{note.content}</p>
+        </CardContent>
       </div>
-      <CardFooter className="flex justify-end align-bottom pr-0 pb-0">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 hover:bg-slate-200"
-            >
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" side="bottom" className="">
-            <DropdownMenuItem
-              onClick={() => {
-                handleRemoveNote(note.id);
-              }}
-            >
-              Delete note
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardFooter>
     </Card>
   );
 }
