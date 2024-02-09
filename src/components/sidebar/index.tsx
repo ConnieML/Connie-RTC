@@ -12,6 +12,14 @@ import {
   Settings,
   SquareUser,
 } from "lucide-react";
+import {
+  Home,
+  Users,
+  DollarSign,
+  ListChecks,
+  Settings,
+  SquareUser,
+} from "lucide-react";
 
 interface ButtonLinkProps extends React.HTMLAttributes<HTMLDivElement> {
   href: string;
