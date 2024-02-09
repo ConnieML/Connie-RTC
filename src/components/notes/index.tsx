@@ -103,9 +103,9 @@ export default function Notes({ clientId }: { clientId: string }) {
   }
 
   return (
-    <div className="h-full bg-white p-8 grid gap-4">
-      <h3 className="text-2xl font-semibold">Notes</h3>
-      <div className="relative">
+    <div className="h-[calc(100%-4rem)] bg-white p-8 flex flex-col absolute top-16 right-0">
+      <h3 className="text-2xl font-semibold pb-4 ">Notes</h3>
+      <div className="relative pb-4">
         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Search Notes"
@@ -114,7 +114,7 @@ export default function Notes({ clientId }: { clientId: string }) {
           className="pl-8"
         />
       </div>
-      <ScrollArea className="h-[600px] w-[414px]">
+      <ScrollArea className="h-5/6 w-[414px] pb-4">
         <div className="grid gap-4">
           {loading &&
             [...Array(4)].map((_, i) => (
