@@ -42,7 +42,7 @@ export async function GET(
         
     })
     
-    console.log(formattedMessages)
+    // console.log(formattedMessages)
     return NextResponse.json(formattedMessages)
     
    } catch (error) {

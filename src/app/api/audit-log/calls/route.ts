@@ -39,8 +39,8 @@ export async function GET(
             timestamp: formattedDate // Use the formatted date string
         };
     });
-    
-    console.log(formattedCalls)
+    //Log statement used for testing
+    // console.log(formattedCalls)
     return NextResponse.json(formattedCalls)
     
    } catch (error) {

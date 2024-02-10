@@ -1,8 +1,8 @@
 import AuditTable from "@/components/audittable/AuditTable";
+import { Button } from "@/components/ui/button";
 
 
 export default function AuditLog() {
-
 
     return (
       <main>
@@ -11,6 +11,7 @@ export default function AuditLog() {
         View all calls and SMS message your organization made via Connie.
       </p>
       <hr className="my-6 border-t border-gray-200" />
+        
         <div>
             <AuditTable/>
         </div>
