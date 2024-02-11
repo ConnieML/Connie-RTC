@@ -69,7 +69,7 @@ export default function Appbar({
         <div className="self-center">(Status)</div>
         <div className="flex flex-row">
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <MessageSquare color="#D3D3D3" />
               </Button>
@@ -79,7 +79,7 @@ export default function Appbar({
             </PopoverContent>
           </Popover>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Phone color={`${!inCall ? "#D3D3D3" : "#08B3E5"}`} />
               </Button>
@@ -95,7 +95,7 @@ export default function Appbar({
             </PopoverContent>
           </Popover>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Bell color="#D3D3D3" />
               </Button>

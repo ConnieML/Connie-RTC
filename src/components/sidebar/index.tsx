@@ -4,7 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
-import { Home, Users, DollarSign, ListChecks, Settings } from "lucide-react";
+import {
+  Home,
+  Users,
+  DollarSign,
+  ListChecks,
+  Settings,
+  SquareUser,
+} from "lucide-react";
 
 interface ButtonLinkProps extends React.HTMLAttributes<HTMLDivElement> {
   href: string;
@@ -57,6 +64,11 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
           </ButtonLink>
         </>
       )}
+
+      <ButtonLink href="/dashboard/clients">
+        <SquareUser className="mr-2 h-4 w-4" />
+        Clients
+      </ButtonLink>
       <ButtonLink href="/dashboard/settings">
         <Settings className="mr-2 h-4 w-4" />
         Settings
