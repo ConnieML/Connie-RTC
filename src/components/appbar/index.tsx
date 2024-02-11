@@ -35,6 +35,9 @@ import MessagesCard from "./MessagesCard";
 import DialPad from "./Dialpad";
 import NotificationsCard from "./NotificationsCard";
 
+import useCalls from "@/lib/hooks/useCalls";
+// import { useSession } from "next-auth/react";
+
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
   isProgramManager: boolean; // TODO replace with proper authorization check
@@ -45,16 +48,13 @@ export default function Appbar({
   initials,
   isProgramManager,
 }: AppbarProps) {
-  // TODO replace following empty functions with useCalls hook:
-  // https://github.com/ConnieML/Connie-RTC/blob/0a5aa1aca731bf4f9dee5765779bcf3bbcb0f6bf/src/lib/hooks/useCalls.ts
-  const [number, setNumber] = useState("");
-  const [inCall, setInCall] = useState(false);
-  const makeCall: (number: string) => void = (number: string) => {
-    setInCall(true);
-  };
-  const endCall: () => void = () => {
-    setInCall(false);
-  };
+  // const { data: session, status } = useSession();
+
+  const { inCall, number, makeCall, setNumber, endCall } = useCalls({
+    email: "michelleshx462@gmail.com", // TODO replace with okta auth info
+    workerSid: "WK3b277b4e6a1d67f2240477fa33f75ea4", // session?.employeeNumber,
+    friendlyName: "michelleshx462", // session?.user.name ?? '',
+  });
 
   return (
     <Menubar
@@ -68,7 +68,7 @@ export default function Appbar({
         <div className="self-center">(Status)</div>
         <div className="flex flex-row">
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <MessageSquare color="#D3D3D3" />
               </Button>
@@ -78,7 +78,7 @@ export default function Appbar({
             </PopoverContent>
           </Popover>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Phone color={`${!inCall ? "#D3D3D3" : "#08B3E5"}`} />
               </Button>
@@ -94,7 +94,7 @@ export default function Appbar({
             </PopoverContent>
           </Popover>
           <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Bell color="#D3D3D3" />
               </Button>
