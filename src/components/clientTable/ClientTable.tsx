@@ -1,15 +1,13 @@
 "use client";
-
 import { useState } from "react";
+
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -31,15 +29,16 @@ export function ClientTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
-      columnFilters,
+      globalFilter,
     },
   });
 
@@ -51,16 +50,8 @@ export function ClientTable<TData, TValue>({
           <Input
             id="clientSearch"
             placeholder="Name, phone number, email"
-            value={
-              (table.getColumn("client")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) => {
-              table.getColumn("client")?.setFilterValue(event.target.value);
-              // table
-              //   .getColumn("phoneNumber")
-              //   ?.setFilterValue(event.target.value);
-              // table.getColumn("client")?.setFilterValue(event.target.value);
-            }}
+            value={globalFilter ?? ""}
+            onChange={(e) => setGlobalFilter(String(e.target.value))}
           />
         </div>
         <p className="italic text-secondary-foreground text-sm">
@@ -68,7 +59,6 @@ export function ClientTable<TData, TValue>({
         </p>
         <Separator />
       </div>
-
       <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
