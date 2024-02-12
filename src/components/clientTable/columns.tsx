@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,6 +46,10 @@ export const columns: ColumnDef<Client>[] = [
     enableHiding: false,
   },
   {
+    header: () => <p className="text-lg text-black">Id</p>,
+    accessorKey: "id",
+  },
+  {
     accessorKey: "client",
     header: () => <p className="text-lg text-black">Client</p>,
   },
@@ -76,26 +81,18 @@ export const columns: ColumnDef<Client>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              // TODO open side panel
-              onClick={() => console.log("open side panel")}
+              // TODO Trigger call functionality
+              onClick={() => console.log("calling...")}
             >
-              See more details
+              Call
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(client.phoneNumber)}
             >
               Copy phone number
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(client.client)}
-            >
-              Copy name
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              // TODO Trigger call
-              onClick={() => console.log("calling...")}
-            >
-              Call
+            <DropdownMenuItem>
+              <Link href={`/clients/${client.id}`}>See more details</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

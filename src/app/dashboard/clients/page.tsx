@@ -1,42 +1,21 @@
 import { ClientTable } from "@/components/clientTable/ClientTable";
 import { columns, Client } from "@/components/clientTable/columns";
 
-async function getData(): Promise<Client[]> {
-  // TODO get data from airtable
-  return [
-    {
-      id: "617394",
-      client: "Judy S.",
-      phoneNumber: "+12345678901",
-      email: "judys@gmail.com",
-      lastContacted: "January 28, 2024, 5:26pm",
-    },
-    {
-      id: "617394",
-      client: "Judy S.",
-      phoneNumber: "+12345678901",
-      email: "judys@gmail.com",
-      lastContacted: "January 28, 2024, 5:26pm",
-    },
-    {
-      id: "617394",
-      client: "ABC",
-      phoneNumber: "+12345678901",
-      email: "abc@gmail.com",
-      lastContacted: "January 28, 2024, 5:26pm",
-    },
-    {
-      id: "617394",
-      client: "Judy S.",
-      phoneNumber: "+12345678901",
-      email: "judys@gmail.com",
-      lastContacted: "January 28, 2024, 5:26pm",
-    },
-  ];
+async function fetchData(): Promise<Client[]> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/clients`, {
+      method: "GET",
+    });
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
 
 export default async function Clients() {
-  const data = await getData();
+  const data: Client[] = await fetchData();
 
   return (
     <main className="p-4">
