@@ -92,7 +92,9 @@ export const columns: ColumnDef<Client>[] = [
               Copy phone number
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Link href={`/clients/${client.id}`}>See more details</Link>
+              <Link href={`/dashboard/clients/${client.id}`}>
+                See more details
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
