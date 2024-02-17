@@ -55,7 +55,7 @@ export default function DashboardHome() {
           <div className="flex mt-4">
             <div className="flex flex-col">
               {steps.map((step, index) => (
-                <div className="flex items-center mb-5 ml-2 relative">
+                <div key={index} className="flex items-center mb-5 ml-2 relative">
                   <div className={`w-7 h-7 rounded-full ${index === currentPage ? 'bg-orange-500' : completedSteps[index] ? 'bg-orange-500' : 'bg-gray-200'}`}></div>
                 </div>
               ))}
