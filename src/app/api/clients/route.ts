@@ -1,4 +1,6 @@
 import { AirtableCRMProvider } from "../../../lib/crm/airtable";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 
 // ENV variables for now, pending CRM configuration feature
 const AIRTABLE_TEST_API_KEY = process.env.AIRTABLE_TEST_API_KEY || "";
@@ -51,7 +53,25 @@ const test_data = [
   },
 ];
 
+/**
+ * GET /api/clients
+ *
+ * @param request - The incoming request object
+ * @returns A JSON response with the clients
+ */
 export async function GET() {
+  // Check session
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    return new Response("You must be logged in.", {
+      status: 401,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    });
+  }
+
   const provider = new AirtableCRMProvider(
     AIRTABLE_TEST_BASE_ID,
     AIRTABLE_TEST_API_KEY

@@ -19,16 +19,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Client } from "@/components/clientTable/columns";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  columns: ColumnDef<Client>[];
+  data: Client[];
 }
 
-export function ClientTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+export function ClientTable({ columns, data }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({

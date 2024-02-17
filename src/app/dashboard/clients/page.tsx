@@ -1,21 +1,9 @@
 import { ClientTable } from "@/components/clientTable/ClientTable";
 import { columns, Client } from "@/components/clientTable/columns";
+import fetchClients from "@/lib/data/clients";
 
-async function fetchData(): Promise<Client[]> {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/clients`, {
-      method: "GET",
-    });
-    const data = await response.json();
-    return data;
-  } catch (e) {
-    console.error(e);
-    return [];
-  }
-}
-
-export default async function Clients() {
-  const data: Client[] = await fetchData();
+export default async function ClientsPage() {
+  const data: Client[] = await fetchClients();
 
   return (
     <main className="p-4">
