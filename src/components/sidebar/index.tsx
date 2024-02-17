@@ -73,6 +73,10 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
         <Settings className="mr-2 h-4 w-4" />
         Settings
       </ButtonLink>
+      <ButtonLink href="/settings/org/audit-log">
+        <Settings className="mr-2 h-4 w-4" />
+        Audit-log
+      </ButtonLink>
     </div>
   );
 }
