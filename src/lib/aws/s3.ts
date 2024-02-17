@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
 } from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
 
 const s3 = new S3Client({ region: 'us-east-2' });
 const bucket_name = process.env.BUCKET_NAME;
@@ -24,6 +25,6 @@ export const getObject = async (key: string) => {
   };
   const command = new GetObjectCommand(params);
   const { Body } = await s3.send(command);
-  return Body;
+  return Readable.from(Body).toString();
 };
 
