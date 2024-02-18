@@ -68,7 +68,7 @@ export const columns: ColumnDef<Client>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const client = row.original;
       return (
         <DropdownMenu>
@@ -80,14 +80,20 @@ export const columns: ColumnDef<Client>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              // TODO Trigger call functionality
-              onClick={() => console.log("calling...")}
+            {/* <DropdownMenuItem
+              // TODO test call functionality
+              onClick={() =>
+                (table.options.meta as any)?.onMakeCall(client.phoneNumber)
+              }
             >
               Call
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(client.phoneNumber)}
+              onClick={() =>
+                (table.options.meta as any)?.onPhoneNumberCopy(
+                  client.phoneNumber
+                )
+              }
             >
               Copy phone number
             </DropdownMenuItem>

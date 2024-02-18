@@ -37,3 +37,7 @@ export function formatTime(seconds: number): string {
 export function formatDate(date: Date | string | number, format: string = 'YYYY-MM-DD HH:mm') {
   return dayjs(date).format(format);
 }
+
+export function copyText(text: string): void {
+  navigator.clipboard.writeText(text);
+}

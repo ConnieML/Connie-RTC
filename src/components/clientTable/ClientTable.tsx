@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 import {
   ColumnDef,
@@ -21,6 +22,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Client } from "@/components/clientTable/columns";
 
+import { copyText } from "@/lib/utils";
+import useCalls from "@/lib/hooks/useCalls";
+
 interface DataTableProps {
   columns: ColumnDef<Client>[];
   data: Client[];
@@ -28,6 +32,13 @@ interface DataTableProps {
 
 export function ClientTable({ columns, data }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
+  const { data: session } = useSession();
+
+  const { makeCall } = useCalls({
+    email: session?.user?.email ?? "",
+    workerSid: "WK3b277b4e6a1d67f2240477fa33f75ea4", // TODO link twilio worker id with okta
+    friendlyName: session?.user?.name ?? "",
+  });
 
   const table = useReactTable({
     data,
@@ -37,6 +48,14 @@ export function ClientTable({ columns, data }: DataTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       globalFilter,
+    },
+    meta: {
+      onPhoneNumberCopy: (number: string) => {
+        copyText(number);
+      },
+      onMakeCall: (number: string) => {
+        makeCall(number);
+      },
     },
   });
 
