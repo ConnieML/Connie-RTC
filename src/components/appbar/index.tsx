@@ -121,7 +121,7 @@ export default function Appbar({
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link href="/settings" className="flex flex-row">
+                <Link href="/dashboard/settings" className="flex flex-row">
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </Link>
@@ -130,7 +130,7 @@ export default function Appbar({
                 <>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
-                    <Link href="/agents" className="flex flex-row">
+                    <Link href="/dashboard/agents" className="flex flex-row">
                       <Users className="mr-2 h-4 w-4" />
                       <span>Agents</span>
                     </Link>
