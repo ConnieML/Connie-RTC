@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
 
             // If employeeNumber is still not found, create a new Twilio worker and assign ID
             if (!token.employeeNumber) {
-                console.log("TIME TO UPDATE")
                 const accountSid = process.env.TWILIO_ACCOUNT_SID;
                 const authToken = process.env.TWILIO_AUTH_TOKEN;
                 const client = require('twilio')(accountSid, authToken);
