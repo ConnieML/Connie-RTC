@@ -17,11 +17,16 @@ export default function Layout({
     if (status === 'loading') {
         return <React.Fragment>Loading...</React.Fragment>;
     } else if (session) {
-        console.log(session)
-        console.log("ASDASDAS")
         const isProgramManager = true; // TODO
-        const initials = "AA"; // TODO get initials from user name
-      
+        let initials = "AA";
+        if (session.user?.name) {
+            const parts = session.user.name.split(' ');
+            if (parts.length > 1) {
+                initials = (parts[0][0] + parts[1][0]).toUpperCase();
+            } else if (parts.length > 0) {
+                initials = parts[0][0].toUpperCase();
+            }
+        }
         return (
             <div className="h-screen w-screen">
                 <Appbar initials={initials} isProgramManager={isProgramManager} />
