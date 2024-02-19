@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from "next-auth/next";
-import { putObject, getObject } from '../../../../lib/aws/s3';
+import { putObject, getObjectString } from '../../../../lib/aws/s3';
 // import { authOptions } from '../../../../pages/api/auth/[...nextauth]';
 import { authOptions } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
@@ -22,11 +22,14 @@ export async function POST(req: NextRequest) {
   const body = await req.json() as AirtableTokenData;
   const token = body.token;
 
+  
   try {
     const key = `crm_airtable:${oktaId}`;
+    console.log("Storing token for airtable: ", token);
+    console.log("Key: ", key);
     await putObject(key, token);
     // sanity check to ensure it stored
-    const storedToken = await getObject(key);
+    const storedToken = await getObjectString(key);
     console.log("Stored token: ", storedToken);
     return new Response('Success', { status: 200 });
   } catch (error) {

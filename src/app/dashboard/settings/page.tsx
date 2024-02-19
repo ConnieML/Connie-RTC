@@ -27,7 +27,6 @@ const Page = () => {
 
     return (
         <div>
-            <h1>Page</h1>
             <SingleForm onSubmit={onSubmit} formField="Airtable Token" formLabel="Airtable Token"/>
         </div>
     );
