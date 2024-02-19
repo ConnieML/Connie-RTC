@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
   }
 
   const oktaId = session.oktaId;
-
+  
   const [airtable_token, airtable_base_id, airtable_table_id] = await Promise.all([
     getObjectString(s3KeyForAirtableToken(oktaId)),
     getObjectString(s3KeyForAirtableBase(oktaId)),

@@ -25,6 +25,12 @@ export const getObjectString = async (key: string) => {
   };
   const command = new GetObjectCommand(params);
   const { Body } = await s3.send(command);
+  
+  // handle what happens if object not present
+  if (!Body) {
+    throw new Error(`Object not found in s3://${bucket_name}/${key}`);
+  }
+
   const stream = Body as Readable;
   // convert the stream into a string
   const chunks = [];
