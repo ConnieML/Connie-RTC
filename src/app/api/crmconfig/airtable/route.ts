@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from "next-auth/next";
 import { putObject, getObjectString } from '../../../../lib/aws/s3';
-// import { authOptions } from '../../../../pages/api/auth/[...nextauth]';
 import { authOptions } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
+import { s3KeyForAirtableBase, s3KeyForAirtableTable, s3KeyForAirtableToken } from '@/lib/crm/airtable';
 
 type AirtableTokenData = {
   token: string;
+  baseId: string;
+  tableId: string;
 };
 
 export async function POST(req: NextRequest) {
@@ -21,16 +23,21 @@ export async function POST(req: NextRequest) {
   const oktaId  = session.oktaId;
   const body = await req.json() as AirtableTokenData;
   const token = body.token;
-
+  const baseId = body.baseId;
+  const tableId = body.tableId;
   
   try {
-    const key = `crm_airtable:${oktaId}`;
-    console.log("Storing token for airtable: ", token);
-    console.log("Key: ", key);
-    await putObject(key, token);
-    // sanity check to ensure it stored
-    const storedToken = await getObjectString(key);
-    console.log("Stored token: ", storedToken);
+    const tokenKey = s3KeyForAirtableToken(oktaId);
+    const baseIdKey = s3KeyForAirtableBase(oktaId);
+    const tableIdKey = s3KeyForAirtableTable(oktaId);
+    
+    await Promise.all([
+      putObject(tokenKey, token),
+      putObject(baseIdKey, baseId),
+      putObject(tableIdKey, tableId)
+    ]);
+
+        
     return new Response('Success', { status: 200 });
   } catch (error) {
     console.error(error);
