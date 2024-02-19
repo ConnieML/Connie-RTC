@@ -46,6 +46,25 @@ export class AirtableCRMTable implements CRMTable {
     };
   }
 
+  async getAllRows(): Promise<CRMEntry[]> {
+    const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}`;
+
+    const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
+
+    // check for error code
+    if (response.status !== 200) {
+      throw new Error(`Error fetching data from airtable: ${response.status} - ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.records.map((record: any) => {
+      return {
+        id: record.id,
+        ...record.fields
+      };
+    });
+  }
+
 
   async getRowById(recordId: string): Promise<CRMEntry | null> {
     const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}/${recordId}`;
@@ -73,6 +92,9 @@ export class AirtableCRMTable implements CRMTable {
     const airtableUrl: string = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}?filterByFormula=${encodedFormula}`;
 
     const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
+    if (response.status !== 200) {
+      throw new Error(`Error fetching data from airtable: ${response.status} - ${response.statusText}`);
+    }
     return this.parseSingleCrmEntry(response, true);
   }
 
@@ -127,4 +149,16 @@ export class AirtableCRMProvider implements ConnieCRMProvider {
   getTable(table_id: string): CRMTable {
     return new AirtableCRMTable(this.baseId, table_id, this.token);
   }
+}
+
+export function s3KeyForAirtableToken(oktaId: string): string {
+  return `crm_airtable_token:${oktaId}`;
+}
+
+export function s3KeyForAirtableBase(oktaId: string): string {
+  return `crm_airtable_base:${oktaId}`;
+}
+
+export function s3KeyForAirtableTable(oktaId: string): string {
+  return `crm_airtable_table:${oktaId}`;
 }
