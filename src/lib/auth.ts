@@ -17,14 +17,14 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account }: any) {
             if (account) {
-                
+                console.log("we is here");
                 token.accessToken = account.access_token;
                 token.idToken = account.id_token;
                 token.oktaId = account.providerAccountId;
                 token.groups = account.groups;
+                token.employeeNumber = account.employeeNumber;
             }
             
-
             // Decrypting JWT to check if expired
             var tokenParsed = JSON.parse(
                 Buffer.from(token.idToken.split('.')[1], 'base64').toString()
@@ -34,8 +34,42 @@ export const authOptions: NextAuthOptions = {
                 throw Error('expired token');
             }
 
-            // Add fields to token that are useful
-            token.employeeNumber = tokenParsed.employeeNumber;
+            // Request token from Okta API to get user's employeeNumber
+            if (!token.employeeNumber) {
+                const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
+                    headers: {
+                        'Authorization': `SSWS ${process.env.OKTA_API_KEY}`
+                    }
+                });
+                const userData = await response.json();
+                token.employeeNumber = userData.profile.employeeNumber;
+            }
+
+            // If employeeNumber is still not found, create a new Twilio worker and assign ID
+            if (!token.employeeNumber) {
+                console.log("TIME TO UPDATE")
+                const accountSid = process.env.TWILIO_ACCOUNT_SID;
+                const authToken = process.env.TWILIO_AUTH_TOKEN;
+                const client = require('twilio')(accountSid, authToken);
+
+                client.taskrouter.v1.workspaces(process.env.TWILIO_WORKSPACE_SID)
+                                    .workers
+                                    .create({friendlyName:  tokenParsed.email})
+                                    .then(async (worker: { sid: any; }) => {
+                                        token.employeeNumber = worker.sid;
+                                        const profile = {'profile':{"employeeNumber": worker.sid}};
+                                
+                                        const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Authorization': `SSWS ${process.env.OKTA_API_KEY}`,
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify(profile)
+                                        });
+                                    })
+            }
+
             token.groups = tokenParsed.groups;
 
             return token;
