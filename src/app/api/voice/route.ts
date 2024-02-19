@@ -3,6 +3,7 @@ import VoiceResponse from "twilio/lib/twiml/VoiceResponse";
 
 export async function POST(req: NextRequest) {
   const callerId = process.env.TWILIO_CALLER_ID;
+  const workflowSid = process.env.TWILIO_WORKFLOW_SID;
 
   const resp = new VoiceResponse();
 
@@ -15,7 +16,9 @@ export async function POST(req: NextRequest) {
     // then it is an incoming call towards your Twilio.Device.
     if (bodyTo == callerId) {
       // Incoming call
-      const dial = resp.dial();
+      resp.say("Please hold");
+      resp.enqueue({ workflowSid: workflowSid });
+      
     } else if (bodyTo) {
       // Outgoing call
       const dial = resp.dial({ callerId });
