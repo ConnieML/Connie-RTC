@@ -37,7 +37,7 @@ import NotificationsCard from "./NotificationsCard";
 import { signOut } from "next-auth/react";
 
 import useCalls from "@/lib/hooks/useCalls";
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
@@ -49,12 +49,12 @@ export default function Appbar({
   initials,
   isProgramManager,
 }: AppbarProps) {
-  // const { data: session, status } = useSession();
+  const { data: session, status } = useSession();
 
   const { inCall, number, makeCall, setNumber, endCall } = useCalls({
-    email: "michelleshx462@gmail.com", // TODO replace with okta auth info
-    workerSid: "WK3b277b4e6a1d67f2240477fa33f75ea4", // session?.employeeNumber,
-    friendlyName: "michelleshx462", // session?.user.name ?? '',
+    email: session?.user?.email || '',
+    workerSid: session?.employeeNumber || '',
+    friendlyName: session?.user?.name || '',
   });
 
   return (
