@@ -17,7 +17,6 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account }: any) {
             if (account) {
-                console.log("we is here");
                 token.accessToken = account.access_token;
                 token.idToken = account.id_token;
                 token.oktaId = account.providerAccountId;
@@ -80,6 +79,8 @@ export const authOptions: NextAuthOptions = {
             session.userType = token.userType;
             session.employeeNumber = token.employeeNumber;
             session.groups = token.groups;
+            session.user.email = token.email
+            session.user.name = token.name
 
             return session;
         },
