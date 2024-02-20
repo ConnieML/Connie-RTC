@@ -1,8 +1,9 @@
 
 import {NextResponse, NextRequest} from 'next/server';
+import { formatDate } from '@/lib/utils';
 
 
-interface FetchedCalls {
+interface Calls {
     id: string;
     direction: string;
     from: string | null;
@@ -18,18 +19,11 @@ export async function GET(
    const authToken = process.env.TWILIO_AUTH_TOKEN;
    const client = require('twilio')(accountSid, authToken);
    try{
-    console.log('success')
     const calls: any[] = await client.calls.list({limit:20});
     //if want to display all calls, can delete the limit parameter
-    const formattedCalls: FetchedCalls[] = calls.map(call => {
+    const formattedCalls: Calls[] = calls.map(call => {
         const date = new Date(call.dateCreated);
-        const year = date.getUTCFullYear();
-        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
-        const day = date.getUTCDate().toString().padStart(2, '0');
-        const hours = date.getUTCHours().toString().padStart(2, '0');
-        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    
-        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+        const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm')
     
         return {
             id: call.sid,
@@ -39,8 +33,6 @@ export async function GET(
             timestamp: formattedDate // Use the formatted date string
         };
     });
-    //Log statement used for testing
-    // console.log(formattedCalls)
     return NextResponse.json(formattedCalls)
     
    } catch (error) {

@@ -1,8 +1,8 @@
 
 import {NextResponse, NextRequest} from 'next/server';
+import { formatDate } from '@/lib/utils';
 
-
-interface FetchedMessage {
+interface Message {
     id: string;
     from: string;
     to: string;
@@ -18,19 +18,11 @@ export async function GET(
    const authToken = process.env.TWILIO_AUTH_TOKEN;
    const client = require('twilio')(accountSid, authToken);
    try{
-    console.log('success')
     const messages: any[] = await client.messages.list({limit:20});
     //if want to display all calls, can delete the limit parameter
-    const formattedMessages: FetchedMessage[] = messages.map(message => {
+    const formattedMessages: Message[] = messages.map(message => {
         const date = new Date(message.dateCreated);
-        const year = date.getUTCFullYear();
-        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed
-        const day = date.getUTCDate().toString().padStart(2, '0');
-        const hours = date.getUTCHours().toString().padStart(2, '0');
-        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    
-        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
-
+        const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm')
         return{
             id: message.sid,
             direction: message.direction,

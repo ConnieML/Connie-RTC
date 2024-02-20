@@ -72,8 +72,6 @@ const AuditTable: React.FC = () => {
     <div  className="container mx-auto py-10">
       <DataTable columns={columns} data={data}></DataTable>
       
-      
-    {data.length === 0 && <p>No calls to display.</p>}
     </div>
     </>
     );
