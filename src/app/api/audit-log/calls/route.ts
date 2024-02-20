@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import Twilio from 'twilio';
 import { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
 

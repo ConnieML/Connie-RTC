@@ -11,23 +11,24 @@ const Page = () => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const airtableToken = formData.get(AIRTABLE_TOKEN_STR);
-    const airtableBaseId = formData.get(AIRTABLE_BASE_ID_STR);
-    const airtableTableId = formData.get(AIRTABLE_TABLE_ID_STR);
+    // TODO: handle form submission
+    // const formData = new FormData(event.currentTarget);
+    // const airtableToken = formData.get(AIRTABLE_TOKEN_STR);
+    // const airtableBaseId = formData.get(AIRTABLE_BASE_ID_STR);
+    // const airtableTableId = formData.get(AIRTABLE_TABLE_ID_STR);
 
     try {
-      const response = await fetch('../api/crmconfig/airtable', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: airtableToken,
-          baseId: airtableBaseId,
-          tableId: airtableTableId,
-        }),
-      });
+      // const response = await fetch('../api/crmconfig/airtable', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     token: airtableToken,
+      //     baseId: airtableBaseId,
+      //     tableId: airtableTableId,
+      //   }),
+      // });
       // Handle the response
     } catch (error) {
       // Handle the error

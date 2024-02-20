@@ -1,7 +1,5 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
-import { NextRequest, NextResponse } from 'next/server';
-
+import { NextRequest } from 'next/server';
 import { authOptions } from '@/lib/auth';
 import {
   s3KeyForAirtableBase,
@@ -9,7 +7,7 @@ import {
   s3KeyForAirtableToken,
 } from '@/lib/crm/airtable';
 
-import { getObjectString, putObject } from '../../../../lib/aws/s3';
+import { putObject } from '@/lib/aws/s3';
 
 type AirtableTokenData = {
   token: string;
@@ -18,9 +16,9 @@ type AirtableTokenData = {
 };
 
 export async function POST(req: NextRequest) {
-  const session = (await getServerSession(authOptions)) as any;
+  const session = (await getServerSession(authOptions));
 
-  const res = NextResponse.next();
+  // const res = NextResponse.next();
   if (!session) {
     return new Response('Unauthorized', { status: 401 });
   }

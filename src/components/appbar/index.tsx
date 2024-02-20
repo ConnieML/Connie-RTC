@@ -12,8 +12,6 @@ import {
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { useState } from 'react';
-
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {

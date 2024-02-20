@@ -1,15 +1,13 @@
 import { getServerSession } from 'next-auth/next';
-import { NextRequest } from 'next/server';
-
+import { NextResponse } from 'next/server';
 import { authOptions } from '@/lib/auth';
 import { getObjectString } from '@/lib/aws/s3';
-
 import {
   AirtableCRMProvider,
   s3KeyForAirtableBase,
   s3KeyForAirtableTable,
   s3KeyForAirtableToken,
-} from '../../../lib/crm/airtable';
+} from '@/lib/crm/airtable';
 
 // ENV variables for now, pending CRM configuration feature
 
@@ -19,8 +17,8 @@ import {
  * @param request - The incoming request object.
  * @returns A JSON response with the client info.
  */
-export async function GET(request: NextRequest) {
-  const session = (await getServerSession(authOptions)) as any;
+export async function GET() {
+  const session = (await getServerSession(authOptions));
   if (!session) {
     return new Response('Unauthorized', { status: 401 });
   }
@@ -40,7 +38,8 @@ export async function GET(request: NextRequest) {
 
   const table = provider.getTable(airtable_table_id);
 
-  const url = new URL(request.url);
+  // TODO: Implement
+  // const url = new URL(request.url);
   // const queryParams = new URLSearchParams(url.search);
   // const phone: string = queryParams.get("phone") || "1234567890";
 
@@ -48,7 +47,7 @@ export async function GET(request: NextRequest) {
 
   const allClients = await table.getAllRows();
 
-  return new Response(JSON.stringify(allClients), {
+  return NextResponse.json(allClients, {
     headers: {
       'content-type': 'application/json',
     },

@@ -1,5 +1,4 @@
 import AuditTable from '@/components/audittable/AuditTable';
-import { Button } from '@/components/ui/button';
 
 export default function AuditLog() {
   return (

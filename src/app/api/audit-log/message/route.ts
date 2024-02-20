@@ -1,6 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import Twilio from 'twilio';
 
 import { formatDate } from '@/lib/utils';
+import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
 
 interface Message {
   id: string;
@@ -10,12 +12,14 @@ interface Message {
   timestamp: string;
 }
 
-export async function GET(request: NextRequest, res: NextResponse) {
+const DEFAULT_LIMIT = 20;
+
+export async function GET() {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const client = require('twilio')(accountSid, authToken);
+  const client = Twilio(accountSid, authToken);
   try {
-    const messages: any[] = await client.messages.list({ limit: 20 });
+    const messages: MessageInstance[] = await client.messages.list({ limit: DEFAULT_LIMIT });
     //if want to display all calls, can delete the limit parameter
     const formattedMessages: Message[] = messages.map((message) => {
       const date = new Date(message.dateCreated);

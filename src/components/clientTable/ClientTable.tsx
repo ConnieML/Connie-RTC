@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  RowData,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -30,6 +31,14 @@ import { copyText } from '@/lib/utils';
 interface DataTableProps {
   columns: ColumnDef<CRMEntry>[];
   data: CRMEntry[];
+}
+
+declare module '@tanstack/table-core' {
+  // eslint-disable-next-line 
+  interface TableMeta<TData extends RowData> {
+    onPhoneNumberCopy: (number: string) => void;
+    onMakeCall: (number: string) => void;
+  }
 }
 
 export function ClientTable({ columns, data }: DataTableProps) {
@@ -93,9 +102,9 @@ export function ClientTable({ columns, data }: DataTableProps) {
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                       </TableHead>
                     );
                   })}

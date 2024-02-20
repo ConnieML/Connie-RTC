@@ -83,7 +83,8 @@ export const columns: ColumnDef<CRMEntry>[] = [
             </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
-                (table.options.meta as any)?.onPhoneNumberCopy(client.Phone)
+                // TODO: Handle type safety
+                table.options.meta?.onPhoneNumberCopy(client.Phone)
               }
             >
               Copy phone number

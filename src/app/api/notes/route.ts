@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Test Data
 const test_notes = [
@@ -107,16 +107,18 @@ const test_notes = [
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams;
-  const client: string = searchParams.get('clientId') ?? '';
+  const clientId: string = searchParams.get('clientId') ?? '';
 
   // TODO implement fetch from external data source api used for notes
 
-  return Response.json(test_notes.filter((n) => n.clientId === client));
+  return Response.json(test_notes.filter((note) => note.clientId === clientId));
 }
 
-export async function POST(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const client: string = searchParams.get('clientId') ?? '';
+export async function POST(
+  // req: NextRequest
+) {
+  // const searchParams = req.nextUrl.searchParams;
+  // const client: string = searchParams.get('clientId') ?? '';
 
   // TODO add the note to the data source
   // const resp = await...
@@ -128,13 +130,16 @@ export async function POST(req: NextRequest) {
   });
 }
 
-export async function DELETE(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams;
-  const id: string = searchParams.get('id') ?? '';
+export async function DELETE(
+  // req: NextRequest
+) {
+  // TODO: Implement delete note
+  // const searchParams = req.nextUrl.searchParams;
+  // const id: string = searchParams.get('id') ?? '';
 
   // TODO delete from data source
   // const resp = await...
-  return new Response('Success', {
+  return NextResponse.json({ result: 'Success', }, {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

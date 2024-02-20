@@ -11,7 +11,7 @@ export class AirtableCRMTable implements CRMTable {
     private baseId: string,
     private tableId: string,
     private token: string,
-  ) {}
+  ) { }
 
   /**
    * Makes a call to the Airtable API.
@@ -25,8 +25,9 @@ export class AirtableCRMTable implements CRMTable {
     url: string,
     headers: Record<string, string>,
     method?: string,
-    body?: any,
+    body?: Record<string, unknown>,
   ): Promise<Response> {
+    // TODO: Ensure type safety for the body parameter
     return fetch(url, {
       method: method || 'GET',
       headers: {
@@ -75,7 +76,7 @@ export class AirtableCRMTable implements CRMTable {
     }
 
     const data = await response.json();
-    return data.records.map((record: any) => {
+    return data.records.map((record: AirtableRecord) => {
       return {
         id: record.id,
         ...record.fields,
@@ -106,7 +107,7 @@ export class AirtableCRMTable implements CRMTable {
    */
   async getClientByPhone(phoneNumber: string): Promise<CRMEntry | null> {
     // do a fetch from airtable API
-    const filterFormula: string = `Phone=\"${AirtableCRMTable.formatPhoneNumber(phoneNumber)}\"`;
+    const filterFormula: string = `Phone="${AirtableCRMTable.formatPhoneNumber(phoneNumber)}"`;
     const encodedFormula: string = encodeURIComponent(filterFormula);
     const airtableUrl: string = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}?filterByFormula=${encodedFormula}`;
 
@@ -177,7 +178,7 @@ export class AirtableCRMProvider implements ConnieCRMProvider {
   constructor(
     private baseId: string,
     private token: string,
-  ) {}
+  ) { }
   getDefaultTable(): CRMTable {
     return new AirtableCRMTable(this.baseId, 'clients', this.token);
   }
@@ -198,3 +199,9 @@ export function s3KeyForAirtableBase(oktaId: string): string {
 export function s3KeyForAirtableTable(oktaId: string): string {
   return `crm_airtable_table:${oktaId}`;
 }
+
+type AirtableRecord = {
+  id: string,
+  fields: Record<string, string | boolean | number>,
+  createdTime: string,
+};

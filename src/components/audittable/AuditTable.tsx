@@ -13,7 +13,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
 import { DataTable } from './DataTable';
-import { FetchedCalls, columns } from './columns';
+import { columns } from './columns';
 
 interface SelectionChange<TData> {
   selectionState: Record<string, boolean>;
