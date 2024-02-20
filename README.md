@@ -1,34 +1,65 @@
-# .env.example
-NEXT_PUBLIC_URL=""
-APP_URL=""
-NEXTAUTH_URL=""
+## Getting Started
 
-# Twilio Configurations
-# Found at https://console.twilio.com/us1/account/keys-credentials/api-keys under "Live credentials"
-TWILIO_ACCOUNT_SID=""
-TWILIO_AUTH_TOKEN=""
+Install [pnpm](https://pnpm.io/installation)
 
-# Found at https://console.twilio.com/us1/account/keys-credentials/api-keys under "API keys" as SID
-# Create an API key if one doesn't exist. More instructions at https://www.twilio.com/docs/glossary/what-is-an-api-key
-TWILIO_API_KEY=""
-# When you create the API key, you’ll be shown its secret, which is the variable below
-# For security, you will only be shown the secret at this time so store it in a secure location
-TWILIO_API_SECRET=""
+(For example, using homebrew:)
 
-# Found at https://console.twilio.com/us1/develop/phone-numbers/manage/twiml-apps 
-TWILIO_TWIML_APP_SID=""
-TWILIO_CALLER_ID=""
+```
+brew install pnpm
+```
 
-# Found at https://www.twilio.com/console/sync/services
-TWILIO_SYNC_SERVICE_SID=""
+Create a configuration file for your application by copying the .env.example and edit the .env file with the appropriate values
 
-NEXT_PUBLIC_WORKSPACE_SID=""
+```bash
+cp .env.example .env
+```
 
-NEXT_PUBLIC_OKTA_URL=""
+Install dependencies, then run the dev server.
 
-# Airtable test tokens, has to be generated with https://airtable.com/create/tokens
-# TEST_BASE_ID and TEST_TABLE_ID can be found in the url of the target airtable table e.g. 
-# https://airtable.com/{BASE_ID}/{TABLE_ID}
-AIRTABLE_TEST_API_KEY=your_api_key
-AIRTABLE_TEST_BASE_ID=starts_with_app
-AIRTABLE_TEST_TABLE_ID=your_table_id
+```bash
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## Learn More
+
+### Next.js
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+### Why pnpm?
+
+We chose to use pnpm for its improved security over npm, and also its improved package management speed compared to yarn. Read more [here](https://hackernoon.com/choosing-the-right-package-manager-npm-yarn-or-pnpm).
+
+### Deployment
+
+View the latest deployment branch [here](https://develop.d2r9j66448p933.amplifyapp.com/).
+
+This project has been integrated with the AWS amplify github app for automatic deployments. All commits and pull requests to the `develop` branch have been set up for automatic deployment. Deployment and build settings should be edited through the AWS Amplify [console](https://console.aws.amazon.com/amplify/home) and through associated [documentation](https://docs.aws.amazon.com/amplify/latest/userguide/getting-started.html).
+
+Deployment build setting specifications:
+- Changed node version to 20 to be compatible with building next.js applications to fulfil requirement >=18.17.0
+- Changed container image to be Amazon linux 2023 to solve [GLIBC_2.28 not found](https://stackoverflow.com/questions/72921215/getting-glibc-2-28-not-found) error after upgrading node version.
+- Added npmrc file as a linker between pnpm and npm because amplify does some part of its installation using npm [here](https://docs.aws.amazon.com/amplify/latest/userguide/monorepo-configuration.html#turborepo-pnpm-monorepo-configuration).
+- Since repository is public, AWS amplify app has no linked IAM service roles for [security purposes](https://docs.aws.amazon.com/amplify/latest/userguide/pr-previews.html) to enable pull request previews.
+
+## Environment Setup
+
+### Environment Variables
+Create a .env file at the root of the repository with the following variables:
+NEXTAUTH_URL=http://localhost:3000
+OKTA_OAUTH2_CLIENT_ID={OKTA APPLICATION CLIENT ID}
+OKTA_OAUTH2_CLIENT_SECRET={OKTA APPLICATION SECRET}
+OKTA_OAUTH2_ISSUER=https://{YOUR OKTA ACCOUNT URL (click top right and it will appear below your email)}
+SECRET=Some long random string
