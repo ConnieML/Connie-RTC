@@ -1,27 +1,27 @@
 ---
 name: Internal Task
-about: Generic issue for detailed work that needs to be done that isn't necessarily user-facing 
-title: '[Internal]'
+about: Generic issue for detailed work that needs to be done that isn't necessarily user-facing
+title: "[Internal]"
 labels: internal
-assignees: ''
+assignees: ""
 ---
 
 # Overview
 
-*Describe the nature of this issue at a high level.*
+_Describe the nature of this issue at a high level._
 
 # Acceptance Criteria
 
-*Describe what specific conditions must be met for this issue to be resolved.*
+_Describe what specific conditions must be met for this issue to be resolved._
 
 - [ ] Criteria 1
 
 # Tasks
 
-*If applicable, include a recommended set of non-user-facing technical tasks needed for a developer to implement this issue.*
+_If applicable, include a recommended set of non-user-facing technical tasks needed for a developer to implement this issue._
 
 - [ ] Task 1
 
 # Additional Info
 
-*If there are any additional documents or supplementary materials to resolve this issue, link them here. Remove if not needed.*
+_If there are any additional documents or supplementary materials to resolve this issue, link them here. Remove if not needed._

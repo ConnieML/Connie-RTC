@@ -1,93 +1,93 @@
-import { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from "next-auth";
 
-import Okta from 'next-auth/providers/okta'
+import Okta from "next-auth/providers/okta";
 
 export const authOptions: NextAuthOptions = {
-    providers: [
-        Okta({
-            clientId: process.env.OKTA_OAUTH2_CLIENT_ID as string,
-            clientSecret: process.env.OKTA_OAUTH2_CLIENT_SECRET as string,
-            issuer: process.env.OKTA_OAUTH2_ISSUER as string,
-            authorization: {
-                params: {scope: 'openid profile email groups' }
-            }
-        }),
-    ],
-    secret: process.env.SECRET as string,
-    callbacks: {
-        async jwt({ token, account }: any) {
-            if (account) {
-                token.accessToken = account.access_token;
-                token.idToken = account.id_token;
-                token.oktaId = account.providerAccountId;
-                token.groups = account.groups;
-                token.employeeNumber = account.employeeNumber;
-            }
-            
-            // Decrypting JWT to check if expired
-            var tokenParsed = JSON.parse(
-                Buffer.from(token.idToken.split('.')[1], 'base64').toString()
-            );
-            const dateNowInSeconds = new Date().getTime() / 1000;
-            if (dateNowInSeconds > tokenParsed.exp) {
-                throw Error('expired token');
-            }
+  providers: [
+    Okta({
+      clientId: process.env.OKTA_OAUTH2_CLIENT_ID as string,
+      clientSecret: process.env.OKTA_OAUTH2_CLIENT_SECRET as string,
+      issuer: process.env.OKTA_OAUTH2_ISSUER as string,
+      authorization: {
+        params: { scope: 'openid profile email groups' }
+      }
+    }),
+  ],
+  secret: process.env.SECRET as string,
+  callbacks: {
+    async jwt({ token, account }: any) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.idToken = account.id_token;
+        token.oktaId = account.providerAccountId;
+        token.groups = account.groups;
+        token.employeeNumber = account.employeeNumber;
+      }
 
-            // Request token from Okta API to get user's employeeNumber
-            if (!token.employeeNumber) {
-                const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
-                    headers: {
-                        'Authorization': `SSWS ${process.env.OKTA_API_KEY}`
-                    }
-                });
-                const userData = await response.json();
-                token.employeeNumber = userData.profile.employeeNumber;
-            }
+      // Decrypting JWT to check if expired
+      var tokenParsed = JSON.parse(
+        Buffer.from(token.idToken.split('.')[1], 'base64').toString()
+      );
+      const dateNowInSeconds = new Date().getTime() / 1000;
+      if (dateNowInSeconds > tokenParsed.exp) {
+        throw Error('expired token');
+      }
 
-            // If employeeNumber is still not found, create a new Twilio worker and assign ID
-            if (!token.employeeNumber) {
-                const accountSid = process.env.TWILIO_ACCOUNT_SID;
-                const authToken = process.env.TWILIO_AUTH_TOKEN;
-                const client = require('twilio')(accountSid, authToken);
+      // Request token from Okta API to get user's employeeNumber
+      if (!token.employeeNumber) {
+        const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
+          headers: {
+            'Authorization': `SSWS ${process.env.OKTA_API_KEY}`
+          }
+        });
+        const userData = await response.json();
+        token.employeeNumber = userData.profile.employeeNumber;
+      }
 
-                client.taskrouter.v1.workspaces(process.env.TWILIO_WORKSPACE_SID)
-                                    .workers
-                                    .create({
-                                        friendlyName:  tokenParsed.email,
-                                        attributes: JSON.stringify({
-                                            contact_uri: `client:${token.email}` // this will be used to associate Twilio device with worker
-                                        })
-                                    })
-                                    .then(async (worker: { sid: any; }) => {
-                                        token.employeeNumber = worker.sid;
-                                        const profile = {'profile':{"employeeNumber": worker.sid}};
-                                
-                                        const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Authorization': `SSWS ${process.env.OKTA_API_KEY}`,
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(profile)
-                                        });
-                                    })
-            }
+      // If employeeNumber is still not found, create a new Twilio worker and assign ID
+      if (!token.employeeNumber) {
+        const accountSid = process.env.TWILIO_ACCOUNT_SID;
+        const authToken = process.env.TWILIO_AUTH_TOKEN;
+        const client = require('twilio')(accountSid, authToken);
 
-            token.groups = tokenParsed.groups;
+        client.taskrouter.v1.workspaces(process.env.TWILIO_WORKSPACE_SID)
+          .workers
+          .create({
+            friendlyName: tokenParsed.email,
+            attributes: JSON.stringify({
+              contact_uri: `client:${token.email}` // this will be used to associate Twilio device with worker
+            })
+          })
+          .then(async (worker: { sid: any; }) => {
+            token.employeeNumber = worker.sid;
+            const profile = { 'profile': { "employeeNumber": worker.sid } };
 
-            return token;
-        },
-        async session({ session, token }: any) {
-            session.accessToken = token.accessToken;
-            session.idToken = token.idToken;
-            session.oktaId = token.oktaId;
-            session.userType = token.userType;
-            session.employeeNumber = token.employeeNumber;
-            session.groups = token.groups;
-            session.user.email = token.email
-            session.user.name = token.name
+            const response = await fetch(`${process.env.OKTA_OAUTH2_ISSUER}/api/v1/users/${tokenParsed.sub}`, {
+              method: 'POST',
+              headers: {
+                'Authorization': `SSWS ${process.env.OKTA_API_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(profile)
+            });
+          })
+      }
 
-            return session;
-        },
+      token.groups = tokenParsed.groups;
+
+      return token;
     },
+    async session({ session, token }: any) {
+      session.accessToken = token.accessToken;
+      session.idToken = token.idToken;
+      session.oktaId = token.oktaId;
+      session.userType = token.userType;
+      session.employeeNumber = token.employeeNumber;
+      session.groups = token.groups;
+      session.user.email = token.email
+      session.user.name = token.name
+
+      return session;
+    },
+  },
 };

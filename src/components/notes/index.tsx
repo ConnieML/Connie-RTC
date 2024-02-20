@@ -29,11 +29,11 @@ export default function Notes({ clientId }: { clientId: string }) {
       setLoading(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/notes?clientId=${clientId}`
+          `${process.env.NEXT_PUBLIC_URL}/api/notes?clientId=${clientId}`,
         );
         const data = await response.json();
         data.sort((a: NoteData, b: NoteData) =>
-          dayjs(b.dateCreated).diff(dayjs(a.dateCreated))
+          dayjs(b.dateCreated).diff(dayjs(a.dateCreated)),
         );
         setNotes(data);
         setFilteredNotes(data);
@@ -66,7 +66,7 @@ export default function Notes({ clientId }: { clientId: string }) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ note: newNote }),
-        }
+        },
       );
       const data = await response.json();
 
@@ -99,7 +99,7 @@ export default function Notes({ clientId }: { clientId: string }) {
     setSearchItem(searchTerm);
 
     const filteredNotes = notes.filter((note) =>
-      note.content.toLowerCase().includes(searchTerm)
+      note.content.toLowerCase().includes(searchTerm),
     );
 
     setFilteredNotes(filteredNotes);

@@ -392,7 +392,7 @@ async function initializeDevice(client: string, workerSid: string) {
 const initializeWorker = async (
   workerSid: string | undefined,
   email: string,
-  friendlyName: string
+  friendlyName: string,
 ) => {
   try {
     if (!workerSid) {

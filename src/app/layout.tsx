@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "../styles/globals.css";
 
-import { NextAuthProvider } from "../components/nextAuthProvider"
+import { NextAuthProvider } from "../components/nextAuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +17,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <NextAuthProvider>
-        <html lang="en">
-          <body className={cn(inter.className, "h-screen overflow-hidden")}>
-            {children}
-          </body>
-        </html>
+      <html lang="en">
+        <body className={cn(inter.className, "h-screen overflow-hidden")}>
+          {children}
+        </body>
+      </html>
     </NextAuthProvider>
   );
 }

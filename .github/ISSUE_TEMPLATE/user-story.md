@@ -1,23 +1,22 @@
 ---
 name: User Story
 about: Generic user story template for a new user-facing feature
-title: ''
+title: ""
 labels: feature
-assignees: ''
-
+assignees: ""
 ---
 
 **As a [USER TYPE], I should be able to [TASK] so I can [REASON].**
 
 # Acceptance Criteria
 
-*Describe what conditions must be met for this issue to be resolved.*
+_Describe what conditions must be met for this issue to be resolved._
 
 - [ ] Criteria 1
 
 # Tasks
 
-*If applicable, include a recommended set of non-user-facing technical tasks needed for a developer to implement this issue.*
+_If applicable, include a recommended set of non-user-facing technical tasks needed for a developer to implement this issue._
 
 - [ ] Task 1
 
