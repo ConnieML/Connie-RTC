@@ -1,6 +1,5 @@
-import { NextAuthOptions } from "next-auth";
-
-import Okta from "next-auth/providers/okta";
+import { NextAuthOptions } from 'next-auth';
+import Okta from 'next-auth/providers/okta';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,13 +8,13 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.OKTA_OAUTH2_CLIENT_SECRET as string,
       issuer: process.env.OKTA_OAUTH2_ISSUER as string,
       authorization: {
-        params: { scope: 'openid profile email groups' }
-      }
+        params: { scope: 'openid profile email groups' },
+      },
     }),
   ],
   secret: process.env.SECRET as string,
   callbacks: {
-    async jwt({ token, account }: any) {
+    async jwt({ token, account }) {
       if (account) {
         token.accessToken = account.access_token;
         token.idToken = account.id_token;
@@ -25,8 +24,8 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Decrypting JWT to check if expired
-      var tokenParsed = JSON.parse(
-        Buffer.from(token.idToken.split('.')[1], 'base64').toString()
+      const tokenParsed = JSON.parse(
+        Buffer.from(token.idToken.split('.')[1], 'base64').toString(),
       );
       const dateNowInSeconds = new Date().getTime() / 1000;
       if (dateNowInSeconds > tokenParsed.exp) {
@@ -77,7 +76,7 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    async session({ session, token }: any) {
+    async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.idToken = token.idToken;
       session.oktaId = token.oktaId;

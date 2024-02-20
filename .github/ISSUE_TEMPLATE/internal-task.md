@@ -1,9 +1,9 @@
 ---
 name: Internal Task
 about: Generic issue for detailed work that needs to be done that isn't necessarily user-facing
-title: "[Internal]"
+title: '[Internal]'
 labels: internal
-assignees: ""
+assignees: ''
 ---
 
 # Overview

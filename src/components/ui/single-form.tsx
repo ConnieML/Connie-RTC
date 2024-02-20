@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React from "react";
-import * as Form from "@radix-ui/react-form";
+import Form from '@radix-ui/react-form';
+import React from 'react';
 
 interface SingleFormProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;

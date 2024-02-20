@@ -1,9 +1,9 @@
 ---
 name: User Story
 about: Generic user story template for a new user-facing feature
-title: ""
+title: ''
 labels: feature
-assignees: ""
+assignees: ''
 ---
 
 **As a [USER TYPE], I should be able to [TASK] so I can [REASON].**

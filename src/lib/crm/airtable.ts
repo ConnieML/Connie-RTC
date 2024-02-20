@@ -1,8 +1,11 @@
-import { CRMEntry, CRMTable, ConnieCRMProvider } from "./types";
+import { CRMEntry, CRMTable, ConnieCRMProvider } from './types';
 
 const AIRTABLE_API_BASE: string =
-  process.env.AIRTABLE_API_BASE || "https://api.airtable.com/v0";
+  process.env.AIRTABLE_API_BASE || 'https://api.airtable.com/v0';
 
+/**
+ * A CRM table that uses Airtable as its backend.
+ */
 export class AirtableCRMTable implements CRMTable {
   constructor(
     private baseId: string,
@@ -25,11 +28,11 @@ export class AirtableCRMTable implements CRMTable {
     body?: any,
   ): Promise<Response> {
     return fetch(url, {
-      method: method || "GET",
+      method: method || 'GET',
       headers: {
         ...headers,
         Authorization: `Bearer ${this.token}`,
-        "Content-Type": body ? "application/json" : "",
+        'Content-Type': body ? 'application/json' : '',
       },
       body: JSON.stringify(body),
     });
@@ -62,7 +65,7 @@ export class AirtableCRMTable implements CRMTable {
   async getAllRows(): Promise<CRMEntry[]> {
     const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}`;
 
-    const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
+    const response = await this.makeAirtableCall(airtableUrl, {}, 'GET');
 
     // check for error code
     if (response.status !== 200) {
@@ -83,7 +86,7 @@ export class AirtableCRMTable implements CRMTable {
   async getRowById(recordId: string): Promise<CRMEntry | null> {
     const airtableUrl = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}/${recordId}`;
 
-    const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
+    const response = await this.makeAirtableCall(airtableUrl, {}, 'GET');
 
     // check for error code
     if (response.status !== 200) {
@@ -107,7 +110,7 @@ export class AirtableCRMTable implements CRMTable {
     const encodedFormula: string = encodeURIComponent(filterFormula);
     const airtableUrl: string = `${AIRTABLE_API_BASE}/${this.baseId}/${this.tableId}?filterByFormula=${encodedFormula}`;
 
-    const response = await this.makeAirtableCall(airtableUrl, {}, "GET");
+    const response = await this.makeAirtableCall(airtableUrl, {}, 'GET');
     if (response.status !== 200) {
       throw new Error(
         `Error fetching data from airtable: ${response.status} - ${response.statusText}`,
@@ -132,7 +135,7 @@ export class AirtableCRMTable implements CRMTable {
     const existing = await this.getClientByPhone(phoneNumber);
     if (!existing) {
       throw new Error(
-        "Still under implementation - adding a new record to Airtable.",
+        'Still under implementation - adding a new record to Airtable.',
       );
     }
 
@@ -150,7 +153,7 @@ export class AirtableCRMTable implements CRMTable {
     const response = await this.makeAirtableCall(
       airtableUrl,
       {},
-      "PATCH",
+      'PATCH',
       dataObj,
     );
     if (response.status !== 200) {
@@ -165,7 +168,7 @@ export class AirtableCRMTable implements CRMTable {
   // helper converts a string number into this format (123) 456-7890
   static formatPhoneNumber(phoneNumber: string): string {
     // first remove all non-numeric characters
-    phoneNumber = phoneNumber.replace(/\D/g, "");
+    phoneNumber = phoneNumber.replace(/\D/g, '');
     return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6)}`;
   }
 }
@@ -176,7 +179,7 @@ export class AirtableCRMProvider implements ConnieCRMProvider {
     private token: string,
   ) {}
   getDefaultTable(): CRMTable {
-    return new AirtableCRMTable(this.baseId, "clients", this.token);
+    return new AirtableCRMTable(this.baseId, 'clients', this.token);
   }
 
   getTable(table_id: string): CRMTable {

@@ -1,12 +1,13 @@
-"use client";
+'use client';
 
-import React from "react";
-import SingleForm from "@/components/ui/single-form";
+import React from 'react';
+
+import SingleForm from '@/components/ui/single-form';
 
 const Page = () => {
-  const AIRTABLE_TOKEN_STR = "Airtable Token";
-  const AIRTABLE_BASE_ID_STR = "Airtable Base ID";
-  const AIRTABLE_TABLE_ID_STR = "Airtable Table ID";
+  const AIRTABLE_TOKEN_STR = 'Airtable Token';
+  const AIRTABLE_BASE_ID_STR = 'Airtable Base ID';
+  const AIRTABLE_TABLE_ID_STR = 'Airtable Table ID';
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,10 +17,10 @@ const Page = () => {
     const airtableTableId = formData.get(AIRTABLE_TABLE_ID_STR);
 
     try {
-      const response = await fetch("../api/crmconfig/airtable", {
-        method: "POST",
+      const response = await fetch('../api/crmconfig/airtable', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           token: airtableToken,

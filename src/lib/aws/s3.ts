@@ -2,10 +2,10 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
-} from "@aws-sdk/client-s3";
-import { Readable } from "stream";
+} from '@aws-sdk/client-s3';
+import { Readable } from 'stream';
 
-const s3 = new S3Client({ region: "us-east-2" });
+const s3 = new S3Client({ region: 'us-east-2' });
 const bucket_name = process.env.BUCKET_NAME;
 
 export const putObject = async (key: string, body: string) => {
@@ -37,5 +37,5 @@ export const getObjectString = async (key: string) => {
   for await (const chunk of stream) {
     chunks.push(chunk);
   }
-  return Buffer.concat(chunks).toString("utf8");
+  return Buffer.concat(chunks).toString('utf8');
 };

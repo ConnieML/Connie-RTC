@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import "./Home.css";
+import React, { useState } from 'react';
+
+import './Home.css';
 
 const steps = [
-  "Dashboard Cards",
-  "Notifications",
-  "Communicate With Clients",
-  "Change Status",
+  'Dashboard Cards',
+  'Notifications',
+  'Communicate With Clients',
+  'Change Status',
 ];
 
 export default function DashboardHome() {
@@ -42,7 +43,7 @@ export default function DashboardHome() {
 
   return (
     <div
-      className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ${!showPopup ? "hidden" : ""}`}
+      className={`fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 ${!showPopup ? 'hidden' : ''}`}
     >
       {showPopup && (
         <div className="bg-white rounded-2xl max-w-[836px] max-h-[537px] flex flex-col shadow overflow-hidden p-6 relative">
@@ -62,7 +63,7 @@ export default function DashboardHome() {
                   className="flex items-center mb-5 ml-2 relative"
                 >
                   <div
-                    className={`w-7 h-7 rounded-full ${index === currentPage ? "bg-orange-500" : completedSteps[index] ? "bg-orange-500" : "bg-gray-200"}`}
+                    className={`w-7 h-7 rounded-full ${index === currentPage ? 'bg-orange-500' : completedSteps[index] ? 'bg-orange-500' : 'bg-gray-200'}`}
                   ></div>
                 </div>
               ))}
@@ -72,10 +73,10 @@ export default function DashboardHome() {
               {steps.map((step, index) => (
                 <div
                   key={step}
-                  className={`flex items-center mb-8 ml-9 relative step-oval ${index === currentPage ? "active" : completedSteps[index] ? "completed" : ""}`}
+                  className={`flex items-center mb-8 ml-9 relative step-oval ${index === currentPage ? 'active' : completedSteps[index] ? 'completed' : ''}`}
                 >
                   <div
-                    className={`w-6 h-6 rounded-full border flex items-center justify-center absolute left-2.5 ${index === currentPage ? "active" : ""} ${completedSteps[index] ? "completed step-checkmark" : ""} ${index === currentPage || completedSteps[index] ? "border-orange-500" : "border-gray-300"} `}
+                    className={`w-6 h-6 rounded-full border flex items-center justify-center absolute left-2.5 ${index === currentPage ? 'active' : ''} ${completedSteps[index] ? 'completed step-checkmark' : ''} ${index === currentPage || completedSteps[index] ? 'border-orange-500' : 'border-gray-300'} `}
                   ></div>
                   <div className="ml-10 mr-4 text-sm">{step}</div>
                 </div>
@@ -85,7 +86,7 @@ export default function DashboardHome() {
               {steps.map((content, index) => (
                 <div
                   key={content}
-                  className={`ml-7 content ${index === currentPage ? "block" : "hidden"}`}
+                  className={`ml-7 content ${index === currentPage ? 'block' : 'hidden'}`}
                 >
                   {`Content for ${content}`}
                 </div>
@@ -98,7 +99,7 @@ export default function DashboardHome() {
                 className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
                 onClick={goToNextPage}
               >
-                {currentPage === steps.length - 1 ? "Finish" : "Next"}
+                {currentPage === steps.length - 1 ? 'Finish' : 'Next'}
               </button>
             ) : (
               <button

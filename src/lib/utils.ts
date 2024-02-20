@@ -1,34 +1,34 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import dayjs from "dayjs";
+import { type ClassValue, clsx } from 'clsx';
+import dayjs from 'dayjs';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export function formatPhoneNumber(phoneNumberString: string) {
-  const cleaned = ("" + phoneNumberString).replace(/\D/g, "");
+  const cleaned = ('' + phoneNumberString).replace(/\D/g, '');
   const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
   if (match) {
-    const intlCode = match[1] ? "+1 " : "";
-    return [intlCode, "(", match[2], ") ", match[3], "-", match[4]].join("");
+    const intlCode = match[1] ? '+1 ' : '';
+    return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
   }
   return phoneNumberString;
 }
 
 export function formatTime(seconds: number): string {
   if (isNaN(seconds) || seconds < 0) {
-    return "Invalid input";
+    return 'Invalid input';
   }
 
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const remainingSeconds = seconds % 60;
 
-  const formattedTime = `${hours > 0 ? `${hours.toString().padStart(2, "0")}:` : ""
-    }${minutes.toString().padStart(2, "0")}:${remainingSeconds
+  const formattedTime = `${hours > 0 ? `${hours.toString().padStart(2, '0')}:` : ''
+    }${minutes.toString().padStart(2, '0')}:${remainingSeconds
       .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, '0')}`;
 
   return formattedTime;
 }
@@ -53,4 +53,7 @@ export function formatDate(date: Date | string | number, format: string = 'YYYY-
 
 export function copyText(text: string): void {
   navigator.clipboard.writeText(text);
+}
+export function timeout(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

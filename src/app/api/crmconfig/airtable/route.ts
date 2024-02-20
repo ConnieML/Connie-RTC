@@ -1,13 +1,15 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { getObjectString, putObject } from "../../../../lib/aws/s3";
-import { authOptions } from "@/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { NextRequest, NextResponse } from 'next/server';
+
+import { authOptions } from '@/lib/auth';
 import {
   s3KeyForAirtableBase,
   s3KeyForAirtableTable,
   s3KeyForAirtableToken,
-} from "@/lib/crm/airtable";
+} from '@/lib/crm/airtable';
+
+import { getObjectString, putObject } from '../../../../lib/aws/s3';
 
 type AirtableTokenData = {
   token: string;
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest) {
 
   const res = NextResponse.next();
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   const oktaId = session.oktaId;
@@ -40,9 +42,11 @@ export async function POST(req: NextRequest) {
       putObject(tableIdKey, tableId),
     ]);
 
-    return new Response("Success", { status: 200 });
+    return new Response('Success', { status: 200 });
   } catch (error) {
     console.error(error);
-    return new Response("Put in S3 unsuccessful: " + error, { status: 500 });
+    return new Response('Put in S3 unsuccessful: ' + error, {
+      status: 500,
+    });
   }
 }

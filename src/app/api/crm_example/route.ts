@@ -1,13 +1,16 @@
+import { getServerSession } from 'next-auth/next';
+import { NextRequest } from 'next/server';
+
+import { authOptions } from '@/lib/auth';
+import { getObjectString } from '@/lib/aws/s3';
+
 import {
   AirtableCRMProvider,
   s3KeyForAirtableBase,
   s3KeyForAirtableTable,
   s3KeyForAirtableToken,
-} from "../../../lib/crm/airtable";
-import { authOptions } from "@/lib/auth";
-import { getObjectString } from "@/lib/aws/s3";
-import { getServerSession } from "next-auth/next";
-import { NextRequest } from "next/server";
+} from '../../../lib/crm/airtable';
+
 // ENV variables for now, pending CRM configuration feature
 
 /**
@@ -19,7 +22,7 @@ import { NextRequest } from "next/server";
 export async function GET(request: NextRequest) {
   const session = (await getServerSession(authOptions)) as any;
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+    return new Response('Unauthorized', { status: 401 });
   }
 
   const oktaId = session.oktaId;
@@ -47,7 +50,7 @@ export async function GET(request: NextRequest) {
 
   return new Response(JSON.stringify(allClients), {
     headers: {
-      "content-type": "application/json",
+      'content-type': 'application/json',
     },
   });
 }

@@ -1,9 +1,5 @@
-"use client";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+'use client';
 
-import { Button } from "@/components/ui/button";
 import {
   ChevronsUpDown,
   DollarSign,
@@ -12,14 +8,17 @@ import {
   Settings,
   SquareUser,
   Users,
-} from "lucide-react";
+} from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
+import { Button } from '@/components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { useState } from "react";
+} from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
 
 interface ButtonLinkProps extends React.HTMLAttributes<HTMLDivElement> {
   href: string;
@@ -33,7 +32,7 @@ const ButtonLink = ({ href, children }: ButtonLinkProps) => {
     <Button
       asChild
       variant="ghost"
-      className={`w-full justify-start ${isActive && "bg-slate-100"}`}
+      className={`w-full justify-start ${isActive && 'bg-slate-100'}`}
     >
       <Link href={href}>{children}</Link>
     </Button>
@@ -44,13 +43,16 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isProgramManager: boolean;
 }
 
+/**
+ *
+ * @param param0
+ * @returns
+ */
 export default function Sidebar({ className, isProgramManager }: SidebarProps) {
-  // const [settingOpen, setSettingOpen] = useState(true);
-
   return (
     <div
       className={cn(
-        "pb-2 w-40 border-r bg-background text-slate-600",
+        'pb-2 w-40 border-r bg-background text-slate-600',
         className,
       )}
     >

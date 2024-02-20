@@ -1,26 +1,27 @@
-"use client";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
-import dayjs from "dayjs";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Textarea } from "@/components/ui/textarea";
-import { Search } from "lucide-react";
+import dayjs from 'dayjs';
+import { Search } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
-import Note from "./Note";
-import { NoteData } from "@/types/noteInterface";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
+import { NoteData } from '@/types/noteInterface';
+
+import Note from './Note';
 
 export default function Notes({ clientId }: { clientId: string }) {
   const [notes, setNotes] = useState<NoteData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
-  const [searchItem, setSearchItem] = useState("");
+  const [searchItem, setSearchItem] = useState('');
   const [filteredNotes, setFilteredNotes] = useState<NoteData[]>([]);
 
-  const [newNote, setNewNote] = useState("");
+  const [newNote, setNewNote] = useState('');
 
   const { data: session } = useSession();
 
@@ -42,7 +43,7 @@ export default function Notes({ clientId }: { clientId: string }) {
       } catch (e) {
         console.error(e);
         setLoading(false);
-        setError("There was an error loading the notes");
+        setError('There was an error loading the notes');
       }
     };
 
@@ -51,7 +52,7 @@ export default function Notes({ clientId }: { clientId: string }) {
 
   async function handleAddNote(note: string) {
     const newNote = {
-      author: session?.user?.name ?? "Agent",
+      author: session?.user?.name ?? 'Agent',
       callDate: new Date().toISOString(),
       dateCreated: new Date().toISOString(),
       dateUpdated: new Date().toISOString(),
@@ -63,8 +64,8 @@ export default function Notes({ clientId }: { clientId: string }) {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_URL}/api/notes?clientId=${clientId}`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ note: newNote }),
         },
       );
@@ -86,11 +87,11 @@ export default function Notes({ clientId }: { clientId: string }) {
           ...filteredNotes,
         ]);
       }
-      setNewNote("");
+      setNewNote('');
       setError(null);
     } catch (e) {
       console.error(e);
-      setError("There was an error saving the note.");
+      setError('There was an error saving the note.');
     }
   }
 
@@ -143,7 +144,7 @@ export default function Notes({ clientId }: { clientId: string }) {
         />
         <div className="flex justify-end">
           <Button
-            onClick={() => newNote !== "" && handleAddNote(newNote)}
+            onClick={() => newNote !== '' && handleAddNote(newNote)}
             className="bg-primitives-blue-2 hover:bg-[#0da8bf]"
           >
             Add Note

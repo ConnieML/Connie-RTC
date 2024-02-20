@@ -1,6 +1,4 @@
-"use client";
-import { useState } from "react";
-import { useSession } from "next-auth/react";
+'use client';
 
 import {
   ColumnDef,
@@ -9,7 +7,14 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import {
   Table,
   TableBody,
@@ -17,15 +22,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-
-import { copyText } from "@/lib/utils";
-import useCalls from "@/lib/hooks/useCalls";
-import { CRMEntry } from "@/lib/crm/types";
+} from '@/components/ui/table';
+import { CRMEntry } from '@/lib/crm/types';
+import useCalls from '@/lib/hooks/useCalls';
+import { copyText } from '@/lib/utils';
 
 interface DataTableProps {
   columns: ColumnDef<CRMEntry>[];
@@ -33,13 +33,13 @@ interface DataTableProps {
 }
 
 export function ClientTable({ columns, data }: DataTableProps) {
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [globalFilter, setGlobalFilter] = useState('');
   const { data: session } = useSession();
 
   const { makeCall } = useCalls({
-    email: session?.user?.email ?? "",
-    workerSid: "WK3b277b4e6a1d67f2240477fa33f75ea4", // TODO link twilio worker id with okta
-    friendlyName: session?.user?.name ?? "",
+    email: session?.user?.email ?? '',
+    workerSid: 'WK3b277b4e6a1d67f2240477fa33f75ea4', // TODO link twilio worker id with okta
+    friendlyName: session?.user?.name ?? '',
   });
 
   const table = useReactTable({
@@ -73,7 +73,7 @@ export function ClientTable({ columns, data }: DataTableProps) {
             <Input
               id="clientSearch"
               placeholder="Name, phone number, email"
-              value={globalFilter ?? ""}
+              value={globalFilter ?? ''}
               onChange={(e) => setGlobalFilter(String(e.target.value))}
             />
           </div>
@@ -107,7 +107,7 @@ export function ClientTable({ columns, data }: DataTableProps) {
                 rows.map((row) => (
                   <TableRow
                     key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                    data-state={row.getIsSelected() && 'selected'}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>

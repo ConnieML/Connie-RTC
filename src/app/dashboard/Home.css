@@ -1,5 +1,5 @@
 .step-oval::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 50%;
@@ -20,7 +20,7 @@
 }
 
 .step-checkmark::after {
-  content: "\2714"; /* Unicode checkmark */
+  content: '\2714'; /* Unicode checkmark */
   color: #ff9500; /* Adjust checkmark color as needed */
   font-size: 18px;
   position: absolute;

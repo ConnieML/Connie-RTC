@@ -1,11 +1,12 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import React from "react";
-import Appbar from "../../components/appbar";
-import Sidebar from "../../components/sidebar";
+'use client';
 
-import "../../styles/globals.css";
+import { useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
+import React from 'react';
+
+import Appbar from '../../components/appbar';
+import Sidebar from '../../components/sidebar';
+import '../../styles/globals.css';
 
 
 export default function Layout({

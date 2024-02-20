@@ -1,7 +1,7 @@
-import { ClientTable } from "@/components/clientTable/ClientTable";
-import { columns } from "@/components/clientTable/columns";
-import { CRMEntry } from "@/lib/crm/types";
-import fetchClients from "@/lib/data/clients";
+import { ClientTable } from '@/components/clientTable/ClientTable';
+import { columns } from '@/components/clientTable/columns';
+import { CRMEntry } from '@/lib/crm/types';
+import fetchClients from '@/lib/data/clients';
 
 export default async function ClientsPage() {
   const data: CRMEntry[] = await fetchClients();
