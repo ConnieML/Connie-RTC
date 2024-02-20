@@ -83,7 +83,7 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
 
       <ButtonLink href="/dashboard/clients">
         <SquareUser className="mr-2 h-4 w-4" />
-        Cleints
+        Clients
       </ButtonLink>
       <Collapsible>
       
@@ -105,15 +105,6 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
               </ButtonLink>
           </CollapsibleContent>
       </Collapsible>
-      {/* <ButtonLink href="/dashboard/settings">
-        <Settings className="mr-2 h-4 w-4" />
-        Settings
-      </ButtonLink>
-
-      <ButtonLink href="/dashboard/settings/org/audit-log">
-        <Settings className="mr-2 h-4 w-4" />
-        Audit-log
-      </ButtonLink> */}
     </div>
   );
 }

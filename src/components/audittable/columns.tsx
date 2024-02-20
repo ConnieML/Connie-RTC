@@ -87,7 +87,7 @@ export const columns: ColumnDef<FetchedCalls>[] = [
               Export
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View call details</DropdownMenuItem>
+            <DropdownMenuItem>View details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
