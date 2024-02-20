@@ -62,6 +62,8 @@ export function ClientTable({ columns, data }: DataTableProps) {
     },
   });
 
+  const rows = table.getRowModel().rows;
+
   return (
     <div>
       <div className="grid gap-6">
@@ -101,8 +103,8 @@ export function ClientTable({ columns, data }: DataTableProps) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
+              {rows?.length ? (
+                rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
