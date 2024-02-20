@@ -63,4 +63,3 @@ OKTA_OAUTH2_CLIENT_ID={OKTA APPLICATION CLIENT ID}
 OKTA_OAUTH2_CLIENT_SECRET={OKTA APPLICATION SECRET}
 OKTA_OAUTH2_ISSUER=https://{YOUR OKTA ACCOUNT URL (click top right and it will appear below your email)}
 SECRET=Some long random string
-
