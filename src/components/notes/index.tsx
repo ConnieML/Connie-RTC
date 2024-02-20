@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, ChangeEvent } from "react";
+import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,8 @@ export default function Notes({ clientId }: { clientId: string }) {
   const [filteredNotes, setFilteredNotes] = useState<NoteData[]>([]);
 
   const [newNote, setNewNote] = useState("");
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -48,7 +51,7 @@ export default function Notes({ clientId }: { clientId: string }) {
 
   async function handleAddNote(note: string) {
     const newNote = {
-      author: "Agent Name", // TODO get agent name from auth
+      author: session?.user?.name ?? "Agent",
       callDate: new Date().toISOString(),
       dateCreated: new Date().toISOString(),
       dateUpdated: new Date().toISOString(),

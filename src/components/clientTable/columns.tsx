@@ -12,17 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
+import { CRMEntry } from "@/lib/crm/types";
 
-// This type is used to define the shape of our data.
-export type Client = {
-  id: string;
-  client: string;
-  phoneNumber: string;
-  email: string;
-  lastContacted: string;
-};
-
-export const columns: ColumnDef<Client>[] = [
+export const columns: ColumnDef<CRMEntry>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -50,11 +42,11 @@ export const columns: ColumnDef<Client>[] = [
     accessorKey: "id",
   },
   {
-    accessorKey: "client",
+    accessorKey: "full_name",
     header: () => <p className="text-lg text-black">Client</p>,
   },
   {
-    accessorKey: "phoneNumber",
+    accessorKey: "Phone",
     header: () => <p className="text-lg text-black">Phone Number</p>,
   },
   {
@@ -83,16 +75,14 @@ export const columns: ColumnDef<Client>[] = [
             {/* <DropdownMenuItem
               // TODO test call functionality
               onClick={() =>
-                (table.options.meta as any)?.onMakeCall(client.phoneNumber)
+                (table.options.meta as any)?.onMakeCall(client.Phone)
               }
             >
               Call
             </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
-                (table.options.meta as any)?.onPhoneNumberCopy(
-                  client.phoneNumber
-                )
+                (table.options.meta as any)?.onPhoneNumberCopy(client.Phone)
               }
             >
               Copy phone number
