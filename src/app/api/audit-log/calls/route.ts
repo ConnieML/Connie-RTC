@@ -24,7 +24,6 @@ export async function GET(
     const formattedCalls: Calls[] = calls.map(call => {
         const date = new Date(call.dateCreated);
         const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm')
-    
         return {
             id: call.sid,
             from: call.from,
