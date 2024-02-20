@@ -7,8 +7,8 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  useReactTable,
   getPaginationRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import {
   Table,

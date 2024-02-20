@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Phone,
   Delete,
-  MicOff,
-  Video,
-  PauseCircle,
-  MessageSquare,
   Hash,
+  MessageSquare,
+  MicOff,
+  PauseCircle,
+  Phone,
   StickyNote,
+  Video,
 } from "lucide-react";
 
 export default function DialPad({

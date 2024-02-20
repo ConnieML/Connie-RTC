@@ -21,14 +21,14 @@ import {
 import { Button } from "../../components/ui/button";
 
 import {
+  Bell,
+  BellDot,
   LogOut,
+  MessageSquare,
+  Phone,
   Settings,
   UserPlus,
   Users,
-  Bell,
-  Phone,
-  MessageSquare,
-  BellDot,
 } from "lucide-react";
 
 import Logo from "./Logo";

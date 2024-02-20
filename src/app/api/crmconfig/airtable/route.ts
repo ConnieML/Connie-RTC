@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
-import { putObject, getObjectString } from "../../../../lib/aws/s3";
+import { getObjectString, putObject } from "../../../../lib/aws/s3";
 import { authOptions } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import {
