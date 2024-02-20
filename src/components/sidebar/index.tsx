@@ -11,7 +11,18 @@ import {
   ListChecks,
   Settings,
   SquareUser,
+  ChevronsUpDown
 } from "lucide-react";
+
+
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { useState } from "react";
+
 
 
 interface ButtonLinkProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -23,13 +34,14 @@ const ButtonLink = ({ href, children }: ButtonLinkProps) => {
   const isActive = pathname === href;
 
   return (
-    <Button
-      asChild
-      variant="ghost"
-      className={`w-full justify-start ${isActive && "bg-slate-100"}`}
-    >
-      <Link href={href}>{children}</Link>
-    </Button>
+
+      <Button
+        asChild
+        variant="ghost"
+        className={`w-full justify-start ${isActive && "bg-slate-100"}`}
+      >
+        <Link href={href}>{children}</Link>
+      </Button>
   );
 };
 
@@ -38,6 +50,9 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function Sidebar({ className, isProgramManager }: SidebarProps) {
+
+  // const [settingOpen, setSettingOpen] = useState(true);
+
   return (
     <div
       className={cn(
@@ -65,14 +80,40 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
           </ButtonLink>
         </>
       )}
-      <ButtonLink href="/dashboard/settings">
+
+      <ButtonLink href="/dashboard/clients">
+        <SquareUser className="mr-2 h-4 w-4" />
+        Cleints
+      </ButtonLink>
+      <Collapsible>
+      
+          <ButtonLink href="/dashboard/settings" >
+            <Settings className="mr-2 h-4 w-4" />
+            
+                Settings
+                <CollapsibleTrigger>
+          <ChevronsUpDown className="mr-2 h-4 w-7" />
+          </CollapsibleTrigger>
+          <></>
+           </ButtonLink>
+
+            
+        <CollapsibleContent>
+          <ButtonLink href="/dashboard/settings/org/audit-log">
+              
+                Audit-log
+              </ButtonLink>
+          </CollapsibleContent>
+      </Collapsible>
+      {/* <ButtonLink href="/dashboard/settings">
         <Settings className="mr-2 h-4 w-4" />
         Settings
       </ButtonLink>
+
       <ButtonLink href="/dashboard/settings/org/audit-log">
         <Settings className="mr-2 h-4 w-4" />
         Audit-log
-      </ButtonLink>
+      </ButtonLink> */}
     </div>
   );
 }
