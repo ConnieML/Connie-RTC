@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { Button } from '@/components/ui/button';
+import useCalls from '@/lib/hooks/useCalls';
 
 function formatTime(seconds: number) {
   const days = Math.floor(seconds / (24 * 60 * 60));
@@ -23,6 +24,12 @@ export default function Tasks() {
   const [tasks, setTasks] = useState([]);
   const [activeTasks, setActiveTasks] = useState([]);
   const { data: session } = useSession();
+
+  const { inCall, number, makeCall, setNumber, endCall } = useCalls({
+    email: session?.user?.email || '',
+    workerSid: session?.employeeNumber || '',
+    friendlyName: session?.user?.name || '',
+  });
 
   useEffect(() => {
     const fetchTasks = () => {
@@ -60,8 +67,7 @@ export default function Tasks() {
           </tr>
         </thead>
         <tbody>
-          {tasks && Array.isArray(tasks) && tasks
-            .filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending')
+          {activeTasks && Array.isArray(activeTasks) && activeTasks
             .map((task: any) => (
             <tr key={task.task.sid} >
               <td>
@@ -76,7 +82,7 @@ export default function Tasks() {
                 {task.task.taskChannelUniqueName === 'voice' ? (
                   <Button
                     className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
-                    onClick={() => console.log('Call mode')}
+                    onClick={() => console.log(task)}
                   >
                     Call
                   </Button>
