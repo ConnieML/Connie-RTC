@@ -21,11 +21,18 @@ const config = {
     },
     extend: {
       colors: {
-        border: 'hsl(var(--border))',
+        border: 'var(--border)',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        divider: '#E2E8F0',
+        // TODO: Migrate to using CSS variables
+        emphasis: {
+          high: '#000000',
+          medium: '#0F172A',
+          low: '#64748B',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
