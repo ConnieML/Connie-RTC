@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 // TODO check if user exists
 
-export default function Client({ params }: { params: { client: string } }) {
+export default function ClientPage({ params }: { params: { client: string } }) {
   const [openNotes, setOpenNotes] = useState(false);
   return (
     <main className="flex flex-row justify-between">

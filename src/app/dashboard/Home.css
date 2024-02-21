@@ -1,0 +1,33 @@
+.step-oval::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%; /* Adjust width as needed */
+  height: 45px; /* Adjust height as needed */
+  border-radius: 30px;
+  border: 2px solid #E2E8F0; /* Adjust color as needed */
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.step-oval.active::before {
+  border-color: #FF9500; /* Adjust for active step */
+}
+
+.step-oval.completed::before {
+  border-color: #FF9500; /* Adjust for completed step */
+}
+
+.step-checkmark::after {
+  content: '\2714'; /* Unicode checkmark */
+  color: #FF9500; /* Adjust checkmark color as needed */
+  font-size: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+

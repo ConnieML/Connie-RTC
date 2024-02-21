@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import dayjs from "dayjs";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -31,4 +32,12 @@ export function formatTime(seconds: number): string {
     .padStart(2, "0")}`;
 
   return formattedTime;
+}
+
+export function formatDate(date: Date | string | number, format: string = 'YYYY-MM-DD HH:mm') {
+  return dayjs(date).format(format);
+}
+
+export function copyText(text: string): void {
+  navigator.clipboard.writeText(text);
 }

@@ -34,6 +34,7 @@ import Logo from "./Logo";
 import MessagesCard from "./MessagesCard";
 import DialPad from "./Dialpad";
 import NotificationsCard from "./NotificationsCard";
+import { signOut } from "next-auth/react";
 
 import useCalls from "@/lib/hooks/useCalls";
 // import { useSession } from "next-auth/react";
@@ -134,8 +135,7 @@ export default function Appbar({
                 </>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                {/* TODO trigger logout onclick*/}
+              <DropdownMenuItem onClick={() => signOut()}>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
               </DropdownMenuItem>

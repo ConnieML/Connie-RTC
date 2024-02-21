@@ -5,6 +5,7 @@ export interface CRMTable {
   getRowById(id: string): Promise<CRMEntry | null>;
   getClientByPhone(phoneNumber: string): Promise<CRMEntry | null>;
   storeClientByPhone(phoneNumber: string, client: CRMEntry): Promise<CRMEntry | null>;
+  getAllRows(): Promise<CRMEntry[]>;
 }
 
 export interface ConnieCRMProvider {

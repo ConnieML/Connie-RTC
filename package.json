@@ -6,17 +6,28 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write ."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.513.0",
     "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-collapsible": "^1.0.3",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-form": "^0.0.3",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-menubar": "^1.0.4",
     "@radix-ui/react-popover": "^1.0.7",
     "@radix-ui/react-scroll-area": "^1.0.5",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+<<<<<<< HEAD
     "chart.js": "^4.4.1",
+=======
+    "@radix-ui/react-switch": "^1.0.3",
+    "@tanstack/react-table": "^8.12.0",
+>>>>>>> develop
     "@twilio/voice-sdk": "^2.10.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -24,6 +35,7 @@
     "lucide": "^0.300.0",
     "lucide-react": "^0.300.0",
     "next": "14.0.4",
+    "next-auth": "^4.24.5",
     "react": "^18",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
@@ -40,6 +52,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
+    "prettier": "3.2.5",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
