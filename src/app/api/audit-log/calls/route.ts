@@ -1,34 +1,33 @@
 import { NextResponse } from 'next/server';
-import Twilio from 'twilio';
 import { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
 
 import { formatDate } from '@/lib/utils';
+import twilioClient from '@/lib/server/comms/twilioClient';
 
-interface Calls {
+type Call = {
   id: string;
   direction: string;
   from: string | null;
   to: string | null;
   timestamp: string;
-}
+};
 
 const DEFAULT_LIMIT = 20;
 
 /**
- * A rout
- *
- * Resource /api/audit-log/calls
+ * Handles GET requests to `/api/audit-log/calls`
+ * 
+ * This function fetches the call logs from Twilio and returns them in a
+ * format that can be consumed by the frontend.
  */
 export async function GET() {
-  const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const client = Twilio(accountSid, authToken);
+  // TODO: Add limit and page query parameters to support pagination
   try {
-    const calls: CallInstance[] = await client.calls.list({
+    const calls: CallInstance[] = await twilioClient.calls.list({
       limit: DEFAULT_LIMIT,
     });
     //if want to display all calls, can delete the limit parameter
-    const formattedCalls: Calls[] = calls.map((call) => {
+    const formattedCalls: Call[] = calls.map((call) => {
       const date = new Date(call.dateCreated);
       const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm');
       return {
@@ -41,7 +40,6 @@ export async function GET() {
     });
     return NextResponse.json(formattedCalls);
   } catch (error) {
-    console.error('Error fetching call logs', error);
     return NextResponse.json(
       { message: 'Error fetching call logs' },
       { status: 500 },
