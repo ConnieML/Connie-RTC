@@ -41,6 +41,7 @@ import useCalls from "@/lib/hooks/useCalls";
 import AgentStatus from "./AgentStatus";
 import ClientOnly from "../ClientOnly";
 import { useSession } from "next-auth/react";
+import IncomingCallModal from "../(dashboard)/tasks/IncomingCallModal";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
@@ -54,7 +55,16 @@ export default function Appbar({
 }: AppbarProps) {
   const { data: session, status } = useSession();
 
-  const { inCall, number, makeCall, setNumber, endCall } = useCalls({
+  const { 
+    inCall, 
+    number, 
+    makeCall, 
+    setNumber, 
+    endCall, 
+    incomingCall,
+    acceptCall,
+    rejectCall 
+  } = useCalls({
     email: session?.user?.email || '',
     workerSid: session?.employeeNumber || '',
     friendlyName: session?.user?.name || '',
@@ -150,6 +160,7 @@ export default function Appbar({
           </DropdownMenu>
         </div>
       </div>
+      {incomingCall && (<IncomingCallModal number={number} acceptCall={acceptCall} rejectCall={rejectCall} />)}
     </Menubar>
   );
 }
