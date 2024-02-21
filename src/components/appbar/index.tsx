@@ -44,7 +44,6 @@ import ClientOnly from "../ClientOnly";
 import { useSession } from "next-auth/react";
 import IncomingCallModal from "../(dashboard)/tasks/IncomingCallModal";
 
-
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
   isProgramManager: boolean; // TODO replace with proper authorization check
