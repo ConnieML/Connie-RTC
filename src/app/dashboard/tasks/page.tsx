@@ -31,6 +31,16 @@ export default function Tasks() {
     friendlyName: session?.user?.name || '',
   });
 
+  const fetchTasks = () => {
+    fetch('/api/reservations?workerSid=' + session?.employeeNumber)
+      .then(response => response.json())
+      .then(data => {
+        setTasks(data);
+        setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
+      });
+      
+  };
+
   const updateReservation = (reservation: any, status: string) => {
     try {
       console.log("Updating reservation", reservation, status)
@@ -40,19 +50,10 @@ export default function Tasks() {
     } catch (error) {
       console.error("Error updating reservation", error)
     }
+    fetchTasks()
   }
 
   useEffect(() => {
-    const fetchTasks = () => {
-      fetch('/api/reservations?workerSid=' + session?.employeeNumber)
-        .then(response => response.json())
-        .then(data => {
-          setTasks(data);
-          setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
-        });
-        
-    };
-
     // Fetch tasks immediately and then every 5 seconds
     fetchTasks();
     const intervalId = setInterval(fetchTasks, 5000);
