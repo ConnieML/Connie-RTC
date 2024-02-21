@@ -31,11 +31,19 @@ export default function Tasks() {
     friendlyName: session?.user?.name || '',
   });
 
+  const updateReservation = (reservation: any, status: string) => {
+    try {
+      console.log("Updating reservation", reservation, status)
+      fetch(`/api/reservations?taskSid=${reservation.taskSid}&status=${status}&reservationSid=${reservation.sid}`, {
+        method: 'POST'
+      })
+    } catch (error) {
+      console.error("Error updating reservation", error)
+    }
+  }
+
   useEffect(() => {
     const fetchTasks = () => {
-      // fetch('/api/tasks')
-      //   .then(response => response.json())
-      //   .then(data => setTasks(data));
       fetch('/api/reservations?workerSid=' + session?.employeeNumber)
         .then(response => response.json())
         .then(data => {
@@ -96,12 +104,12 @@ export default function Tasks() {
                 ) : null}
                 <Button
                   className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit mr-2 text-black"
-                // onClick={console.log('clicied')}
+                onClick={ () => updateReservation(task.reservation, 'rejected') }
                 >Transfer</Button>
-                <Button
+                {/* <Button
                   className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit text-black"
-                // onClick={console.log('clicied')}
-                >Dismiss</Button>
+                onClick={ () => updateReservation(task.reservation, 'canceled')}
+                >Dismiss</Button> */}
               </td>
             </tr>
           ))}
