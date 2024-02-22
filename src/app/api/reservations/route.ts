@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { twilioClient } from '@/lib/twilioClient';
+import { twilioClient } from '../../../lib/twilioClient';
 
 const workspaceSid = process.env.TWILIO_WORKSPACE_SID || "";
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
