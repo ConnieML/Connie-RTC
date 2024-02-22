@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 const client = require('twilio')(accountSid, authToken);
 
+// get all reservations assigned to a worker, and the task associated with each reservation
 export async function GET(req: NextRequest) {
     const workerSid = req.nextUrl.searchParams.get('workerSid');
 
@@ -28,6 +29,7 @@ export async function GET(req: NextRequest) {
             const task = await twilioClient.taskrouter.v1.workspaces(workspaceSid)
                 .tasks(reservation.taskSid)
                 .fetch();
+
             return { task: task, reservation: reservation }
         }));
 
@@ -37,6 +39,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
+// Update reservation status
 export async function POST(req: NextRequest) {
 
     try {

@@ -27,7 +27,6 @@ export default function useCalls({
   const [initialized, setInitialized] = useState(false);
   const device = useRef<Device | null>(null);
   const worker = useRef<Worker | null>(null);
-  const taskSid = useRef<string>("");
   const call = useRef<Call | null>(null);
   const agentActivities = useRef<Activity[] | null>(null);
   const checkEmail = useRef<string | null>(null);
@@ -36,6 +35,7 @@ export default function useCalls({
   const [incomingCall, setIncomingCall] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [activityName, setActivityName] = useState<string>("Available");
+
 
   // TODO uncomment when taskrouter implenented
   // const initializeWorkerListeners = () => {
@@ -140,16 +140,22 @@ export default function useCalls({
       });
 
       incomingCall.on("disconnect", () => {
-        // TODO uncomment when tasks implemented
-        // if (taskSid.current) {
-        //   fetch(
-        //     `/api/tasks?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${taskSid.current}`,
-        //     {
-        //       method: "PUT",
-        //       body: JSON.stringify({ assignmentStatus: "completed" }),
-        //     }
-        //   );
+      
+        // try {
+        //   fetch(`/api/reservations?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
+        //     method: 'PUT'
+        //   })
+        // } catch (error) {
+        //   console.error("Error updating reservation", error)
         // }
+        // try {
+        //   fetch(`/api/tasks?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
+        //     method: 'PUT'
+        //   })
+        // } catch (error) {
+        //   console.error("Error updating reservation", error)
+        // }
+        // setCurrentTask(null);
         setInCall(false);
         setNumber("");
       });
