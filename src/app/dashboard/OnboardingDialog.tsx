@@ -77,7 +77,7 @@ export function OnboardingDialog() {
 
   const isPastCurrentStep = (index: number) => index <= currentStep;
 
-  const isDone = currentStep >= ONBOARDING_STEPS.length;
+  const isDone = currentStep >= ONBOARDING_STEPS.length - 1;
   const currentContent = ONBOARDING_STEPS[currentStep];
 
   return (
