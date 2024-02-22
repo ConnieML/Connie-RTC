@@ -59,7 +59,7 @@ export default function Tasks() {
   useEffect(() => {
     // Fetch tasks immediately and then every 2 seconds
     fetchTasks();
-    const intervalId = setInterval(fetchTasks, 5000);
+    const intervalId = setInterval(fetchTasks, 2000);
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);

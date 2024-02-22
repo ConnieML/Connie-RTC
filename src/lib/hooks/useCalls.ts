@@ -37,53 +37,56 @@ export default function useCalls({
   const [activityName, setActivityName] = useState<string>("Available");
 
 
-  // TODO uncomment when taskrouter implenented
-  // const initializeWorkerListeners = () => {
-  //   if (!worker.current) return;
+  const initializeWorkerListeners = () => {
+    if (!worker.current) return;
 
-  //   worker.current.on("reservationCreated", (reservation: Reservation) => {
-  //     console.log(
-  //       `Reservation ${reservation.sid} has been created for ${
-  //         worker.current!.sid
-  //       }`
-  //     );
+    worker.current.on("reservationCreated", (reservation: Reservation) => {
+      console.log(
+        `Reservation ${reservation.sid} has been created for ${
+          worker.current!.sid
+        }`
+      );
 
-  //     taskSid.current = reservation.task.sid;
-  //     console.log(`Task attributes are: ${reservation.task.attributes}`);
+      // change this to something else
+      var audio = new Audio('https://assets.mixkit.co/active_storage/sfx/933/933-preview.mp3');
+      audio.play();
 
-  //     reservation.on("accepted", async (acceptedReservation: Reservation) => {
-  //       console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
+      // taskSid.current = reservation.task.sid;
+      // console.log(`Task attributes are: ${reservation.task.attributes}`);
 
-  //       try {
-  //         // Turn agent activity status to reserved to prevent agent from receiving incoming calls
-  //         const reservedActivity = agentActivities.current?.find(
-  //           (activity) => activity.friendlyName === "Reserved"
-  //         );
+      // reservation.on("accepted", async (acceptedReservation: Reservation) => {
+      //   console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
 
-  //         await fetch(
-  //           `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
-  //           {
-  //             method: "PUT",
-  //             body: JSON.stringify({
-  //               activitySid: reservedActivity?.sid,
-  //             }),
-  //           }
-  //         )
-  //           .then(async (data) => {
-  //             setActivityName(reservedActivity?.friendlyName ?? activityName);
-  //           })
-  //           .catch((e) => alert("Failed to update activity name"));
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     });
+      //   try {
+      //     // Turn agent activity status to reserved to prevent agent from receiving incoming calls
+      //     const reservedActivity = agentActivities.current?.find(
+      //       (activity) => activity.friendlyName === "Reserved"
+      //     );
 
-  //     reservation.on("canceled", (acceptedReservation: Reservation) => {
-  //       console.log(`Reservation ${acceptedReservation.sid} was canceled.`);
-  //       setIncomingCall(false);
-  //       call.current?.disconnect();
-  //     });
-  //   });
+      //     await fetch(
+      //       `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
+      //       {
+      //         method: "PUT",
+      //         body: JSON.stringify({
+      //           activitySid: reservedActivity?.sid,
+      //         }),
+      //       }
+      //     )
+      //       .then(async (data) => {
+      //         setActivityName(reservedActivity?.friendlyName ?? activityName);
+      //       })
+      //       .catch((e) => alert("Failed to update activity name"));
+      //   } catch (e) {
+      //     console.log(e);
+      //   }
+      // });
+
+      // reservation.on("canceled", (acceptedReservation: Reservation) => {
+      //   console.log(`Reservation ${acceptedReservation.sid} was canceled.`);
+      //   setIncomingCall(false);
+      //   call.current?.disconnect();
+      // });
+    });
 
   //   /**
   //    * This section handles any errors during the websocket connection
@@ -111,7 +114,7 @@ export default function useCalls({
 
   //     alert("You have been disconnected. Please refresh the page to reconnect");
   //   });
-  // };
+  };
 
   const initializeDeviceListeners = () => {
     if (!device.current) return;
@@ -183,21 +186,22 @@ export default function useCalls({
           }),
 
           // TODO uncomment when taskrotuer implemented
-          // await initializeWorker(workerSid, email, friendlyName).then(
-          //   async (newWorker) => {
-          //     worker.current = newWorker!;
-          //     initializeWorkerListeners();
+          await initializeWorker(workerSid, email, friendlyName).then(
+            async (newWorker) => {
+              worker.current = newWorker!;
+              console.log("NEWORKUS")
+              initializeWorkerListeners();
 
-          //     await fetch(
-          //       `/api/workers/?workspaceSid=${
-          //         process.env.NEXT_PUBLIC_WORKSPACE_SID
-          //       }&workerSid=${newWorker!.sid}`
-          //     ).then(async (data) => {
-          //       const worker = await data.json();
-          //       setActivityName(worker.worker.activityName);
-          //     });
-          //   }
-          // ),
+              // await fetch(
+              //   `/api/workers/?workspaceSid=${
+              //     process.env.NEXT_PUBLIC_WORKSPACE_SID
+              //   }&workerSid=${newWorker!.sid}`
+              // ).then(async (data) => {
+              //   const worker = await data.json();
+              //   setActivityName(worker.worker.activityName);
+              // });
+            }
+          ),
 
           // await fetch(
           //   `/api/activities/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`
@@ -369,33 +373,32 @@ async function initializeDevice(client: string, workerSid: string) {
  * @param friendlyName - the friendly name found in Okta and Twliio
  *
  */
-// const initializeWorker = async (
-//   workerSid: string | undefined,
-//   email: string,
-//   friendlyName: string
-// ) => {
-//   try {
-//     if (!workerSid) {
-//       throw `The user ${friendlyName} with email ${email} does not have an employeeNumber in Okta`;
-//     }
-//     const tokenResponse = await fetch(
-//       `${process.env.NEXT_PUBLIC_URL}/api/workerToken?email=${email}&workerSid=${workerSid}`
-//     );
+const initializeWorker = async (
+  workerSid: string | undefined,
+  email: string,
+  friendlyName: string
+) => {
+  try {
+    if (!workerSid) {
+      throw `The user ${friendlyName} with email ${email} does not have an employeeNumber in Okta`;
+    }
+    const tokenResponse = await fetch(
+      `/api/workerToken?email=${email}&workerSid=${workerSid}`
+    );
 
-//     if (tokenResponse.status !== 200) {
-//       throw `Failed to generate valid token for ${friendlyName} with email ${email}`;
-//     }
+    if (tokenResponse.status !== 200) {
+      throw `Failed to generate valid token for ${friendlyName} with email ${email}`;
+    }
 
-//     const token = await tokenResponse.json();
+    const token = await tokenResponse.json();
 
-//     const worker = new Worker(token);
-//     console.log("WORKER IS", worker)
-//     await timeout(1000); // For some reason, this is some much needed black magic
-//     return worker;
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };
+    const worker = new Worker(token);
+    await timeout(1000); // For some reason, this is some much needed black magic
+    return worker;
+  } catch (e) {
+    console.error(e);
+  }
+};
 
 function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
