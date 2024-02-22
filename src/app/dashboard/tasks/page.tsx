@@ -51,7 +51,7 @@ export default function Tasks() {
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchTasks]);
 
   return (
     <main>

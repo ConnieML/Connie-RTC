@@ -28,7 +28,7 @@ export default function NotificationsCard({ activeTasks, setActiveTasks }: Notif
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchTasks]);
 
   return (
 
