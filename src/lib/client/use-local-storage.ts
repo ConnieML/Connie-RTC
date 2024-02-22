@@ -11,7 +11,15 @@ export default function useLocalStorage<T extends number | string | boolean>(
   key: string,
   defaultValue: T,
 ) {
-  const [value, setValue] = useState(localStorage.getItem(key) || defaultValue);
+  const [value, setValue] = useState(() => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const storedValue = localStorage.getItem(key);
+      if (storedValue) {
+        return storedValue as T;
+      }
+    }
+    return defaultValue;
+  });
 
   const changeValue = (newValue: T) => {
     // TODO: Handle no storage edge case
@@ -27,7 +35,7 @@ export default function useLocalStorage<T extends number | string | boolean>(
   }
 
   useEffect(() => {
-    if (typeof Storage !== 'undefined') {
+    if (typeof window !== 'undefined' && window.localStorage) {
       // Define a function to check for changes in localStorage
       const checkForChanges = () => {
         for (let i = 0; i < localStorage.length; i++) {
@@ -42,13 +50,12 @@ export default function useLocalStorage<T extends number | string | boolean>(
       // Call the function initially to capture existing localStorage data
       checkForChanges();
 
-      // Add event listener for storage changes
       window.addEventListener('storage', onStorageChanged);
     }
     return () => {
       window.removeEventListener('storage', onStorageChanged);
     };
-  }, [key]);
+  }, [key, changeValue, onStorageChanged]);
 
   return { value, changeValue };
 }
