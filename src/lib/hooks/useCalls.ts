@@ -42,14 +42,25 @@ export default function useCalls({
 
     worker.current.on("reservationCreated", (reservation: Reservation) => {
       console.log(
-        `Reservation ${reservation.sid} has been created for ${
-          worker.current!.sid
+        `Reservation ${reservation.sid} has been created for ${worker.current!.sid
         }`
       );
 
       // change this to something else
       var audio = new Audio('https://assets.mixkit.co/active_storage/sfx/933/933-preview.mp3');
       audio.play();
+
+      if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+      } else if (Notification.permission === "granted") {
+        const notification = new Notification("New task from Connie!");
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            const notification = new Notification("New task from Connie!");
+          }
+        });
+      }
 
       // taskSid.current = reservation.task.sid;
       // console.log(`Task attributes are: ${reservation.task.attributes}`);
@@ -88,32 +99,32 @@ export default function useCalls({
       // });
     });
 
-  //   /**
-  //    * This section handles any errors during the websocket connection
-  //    */
-  //   worker.current.on("disconnected", (reservation: Reservation) => {
-  //     alert("You have been disconnected. Please refresh the page to reconnect");
-  //   });
+    //   /**
+    //    * This section handles any errors during the websocket connection
+    //    */
+    //   worker.current.on("disconnected", (reservation: Reservation) => {
+    //     alert("You have been disconnected. Please refresh the page to reconnect");
+    //   });
 
-  //   worker.current.on("error", (reservation: Reservation) => {
-  //     console.log(
-  //       `Reservation ${reservation.sid} has been created for ${
-  //         worker.current!.sid
-  //       }`
-  //     );
+    //   worker.current.on("error", (reservation: Reservation) => {
+    //     console.log(
+    //       `Reservation ${reservation.sid} has been created for ${
+    //         worker.current!.sid
+    //       }`
+    //     );
 
-  //     alert("You have been disconnected. Please refresh the page to reconnect");
-  //   });
+    //     alert("You have been disconnected. Please refresh the page to reconnect");
+    //   });
 
-  //   worker.current.on("tokenExpired", (reservation: Reservation) => {
-  //     console.log(
-  //       `Reservation ${reservation.sid} has been created for ${
-  //         worker.current!.sid
-  //       }`
-  //     );
+    //   worker.current.on("tokenExpired", (reservation: Reservation) => {
+    //     console.log(
+    //       `Reservation ${reservation.sid} has been created for ${
+    //         worker.current!.sid
+    //       }`
+    //     );
 
-  //     alert("You have been disconnected. Please refresh the page to reconnect");
-  //   });
+    //     alert("You have been disconnected. Please refresh the page to reconnect");
+    //   });
   };
 
   const initializeDeviceListeners = () => {
@@ -122,7 +133,7 @@ export default function useCalls({
     device.current.on("registered", function () {
       console.log("Twilio.Device Ready to make and receive calls!");
     });
-    
+
     device.current.on("error", function (error: { message: string }) {
       console.log("Twilio.Device Error: " + error.message);
     });
@@ -143,7 +154,7 @@ export default function useCalls({
       });
 
       incomingCall.on("disconnect", () => {
-      
+
         // try {
         //   fetch(`/api/reservations?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
         //     method: 'PUT'
