@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
+import React from 'react';
 
 function formatTime(seconds: number) {
   const days = Math.floor(seconds / (24 * 60 * 60));
