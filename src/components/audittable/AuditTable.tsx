@@ -1,7 +1,9 @@
 "use client";
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback, TdHTMLAttributes} from 'react';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
+import {Row} from '@tanstack/react-table'
 
 
 import {FetchedCalls, columns} from "./columns";
@@ -11,11 +13,17 @@ import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
+interface SelectionChange<TData> {
+    selectionState: Record<string, boolean>;
+    selectedRowsData: TData[];
+  }
+
 const AuditTable: React.FC = () => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showCalls, setShowCalls] = useState(false);
-
+    const [selectedRows, setSelectedRows] = useState({})
+    const [selectedContent, setSelectedContent] = useState<any[]>([])
     
 
     useEffect(() => {
@@ -35,6 +43,26 @@ const AuditTable: React.FC = () => {
         fetchCalls();
     }, [showCalls])
 
+
+
+    const handleSelectionChange = useCallback((change: Record<string, boolean>, content: any[]) => {
+        setSelectedRows(change);
+        setSelectedContent(content);
+        console.log(change)
+        console.log(content)
+      }, []); 
+
+
+    //exporting functionalities
+    const exportSelectedRowsToExcel = () => {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(selectedContent);
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'SelectedRows');
+        XLSX.writeFile(workbook, 'selected-rows.xlsx');
+      };
+    
+
+    
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -62,7 +90,7 @@ const AuditTable: React.FC = () => {
                 <Button variant="ghost">
                     Export All
                 </Button>
-                <Button  variant="default">
+                <Button  variant="default" onClick={exportSelectedRowsToExcel}>
                     Export Selected
                 </Button>
             </div>
@@ -70,7 +98,7 @@ const AuditTable: React.FC = () => {
 
         
     <div  className="container mx-auto py-10">
-      <DataTable columns={columns} data={data}></DataTable>
+      <DataTable columns={columns} data={data} onSelectionChange={handleSelectionChange}></DataTable>
       
     </div>
     </>

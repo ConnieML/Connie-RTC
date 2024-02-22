@@ -6,6 +6,8 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  Row
+  
 } from "@tanstack/react-table"
 
 import {Button} from "@/components/ui/button"
@@ -19,19 +21,30 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+
+export interface SelectionChange<TData> {
+  selectionState: Record<string, boolean>;
+  selectedRowsData: TData[];
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  //onSelectionChange?: (selectedRow: Record<string, boolean>) => void;
+  onSelectionChange?: (selectedRows: Record<string, boolean>, content: TData[]) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  // onContentSelectionChange,
+  onSelectionChange
+ 
 }: DataTableProps<TData, TValue>) {
 
   const [rowSelection, setRowSelection] = useState({})
+  const [selectedContent, setSelectedContent] = useState<TData[]>([]);
 
   const table = useReactTable({
     data,
@@ -43,7 +56,20 @@ export function DataTable<TData, TValue>({
         rowSelection
     }
   })
-  
+
+
+  useEffect(() => {
+    if (onSelectionChange) {
+      const content = table.getSelectedRowModel().rows.map(row => row.original);
+      onSelectionChange(rowSelection, content);
+    }
+  }, [rowSelection]);
+
+  const getSelectedContent = () => {
+    const content = table.getSelectedRowModel().rows.map((row) => row.original);
+    return content;
+  };
+
 
   return (
     <div>
