@@ -8,12 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { NoteData } from '@/types/noteInterface';
+import { InteractionData } from '@/types/notes';
 
 /**
  * A component that displays a case note for a client made by an agent.
  */
-export default function Note({ note }: { note: NoteData }) {
+export default function Note({ note }: { note: InteractionData }) {
   dayjs.extend(localizedFormat);
   return (
     <Card className="rounded-none border-0 border-l-2 border-primitives-blue-1 text-sm mr-2 transition-all hover:bg-accent flex flex-col justify-between">

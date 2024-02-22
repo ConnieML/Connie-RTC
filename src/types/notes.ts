@@ -1,4 +1,7 @@
-export interface NoteData {
+/**
+ * Data model for an agent-client call interaction.
+ */
+export interface InteractionData {
   id: string;
   clientId: string;
   author: string;

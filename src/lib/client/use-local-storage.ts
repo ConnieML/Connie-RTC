@@ -22,7 +22,7 @@ export default function useLocalStorage<T extends number | string | boolean>(
   function onStorageChanged(event: StorageEvent) {
     // Call the callback function with the changed key and value
     if (event.key === key) {
-      setValue(event.newValue as T || defaultValue);
+      setValue((event.newValue as T) || defaultValue);
     }
   }
 

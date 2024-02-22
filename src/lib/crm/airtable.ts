@@ -11,7 +11,7 @@ export class AirtableCRMTable implements CRMTable {
     private baseId: string,
     private tableId: string,
     private token: string,
-  ) { }
+  ) {}
 
   /**
    * Makes a call to the Airtable API.
@@ -178,7 +178,7 @@ export class AirtableCRMProvider implements ConnieCRMProvider {
   constructor(
     private baseId: string,
     private token: string,
-  ) { }
+  ) {}
   getDefaultTable(): CRMTable {
     return new AirtableCRMTable(this.baseId, 'clients', this.token);
   }
@@ -201,7 +201,7 @@ export function s3KeyForAirtableTable(oktaId: string): string {
 }
 
 type AirtableRecord = {
-  id: string,
-  fields: Record<string, string | boolean | number>,
-  createdTime: string,
+  id: string;
+  fields: Record<string, string | boolean | number>;
+  createdTime: string;
 };

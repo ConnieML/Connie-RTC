@@ -114,9 +114,8 @@ export async function GET(req: NextRequest) {
   return Response.json(test_notes.filter((note) => note.clientId === clientId));
 }
 
-export async function POST(
+export async function POST() {
   // req: NextRequest
-) {
   // const searchParams = req.nextUrl.searchParams;
   // const client: string = searchParams.get('clientId') ?? '';
 
@@ -130,17 +129,19 @@ export async function POST(
   });
 }
 
-export async function DELETE(
+export async function DELETE() {
   // req: NextRequest
-) {
   // TODO: Implement delete note
   // const searchParams = req.nextUrl.searchParams;
   // const id: string = searchParams.get('id') ?? '';
 
   // TODO delete from data source
   // const resp = await...
-  return NextResponse.json({ result: 'Success', }, {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return NextResponse.json(
+    { result: 'Success' },
+    {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
 }

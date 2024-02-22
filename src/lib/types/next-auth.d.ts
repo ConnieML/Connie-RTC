@@ -1,3 +1,5 @@
+// Import needed to extend, not overwrite, the existing types
+// eslint-disable-next-line
 import NextAuth from 'next-auth';
 
 declare module 'next-auth' {

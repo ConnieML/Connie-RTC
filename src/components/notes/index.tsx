@@ -10,16 +10,16 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
-import { NoteData } from '@/types/noteInterface';
+import { InteractionData } from '@/types/notes';
 
 import Note from './Note';
 
 export default function Notes({ clientId }: { clientId: string }) {
-  const [notes, setNotes] = useState<NoteData[]>([]);
+  const [notes, setNotes] = useState<InteractionData[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
   const [searchItem, setSearchItem] = useState('');
-  const [filteredNotes, setFilteredNotes] = useState<NoteData[]>([]);
+  const [filteredNotes, setFilteredNotes] = useState<InteractionData[]>([]);
 
   const [newNote, setNewNote] = useState('');
 
@@ -33,7 +33,7 @@ export default function Notes({ clientId }: { clientId: string }) {
           `${process.env.NEXT_PUBLIC_URL}/api/notes?clientId=${clientId}`,
         );
         const data = await response.json();
-        data.sort((a: NoteData, b: NoteData) =>
+        data.sort((a: InteractionData, b: InteractionData) =>
           dayjs(b.dateCreated).diff(dayjs(a.dateCreated)),
         );
         setNotes(data);
