@@ -97,12 +97,25 @@ export default function Sidebar({ className, isProgramManager }: SidebarProps) {
           <></>
            </ButtonLink>
 
+         <ButtonLink href="/dashboard/settings/org/org-settings">
+           Organization Settings
+         </ButtonLink>
             
         <CollapsibleContent>
           <ButtonLink href="/dashboard/settings/org/audit-log">
               
                 Audit-log
               </ButtonLink>
+
+              <ButtonLink href="/dashboard/settings/org/user-view">
+           Users & Accounts
+         </ButtonLink>
+
+
+         <ButtonLink href="/dashboard/settings/org/workflows">
+           Voice Flows
+         </ButtonLink>
+
           </CollapsibleContent>
       </Collapsible>
     </div>
