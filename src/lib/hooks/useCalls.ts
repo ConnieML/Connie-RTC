@@ -225,7 +225,7 @@ export default function useCalls({
 
       initializeCalls();
     }
-  }, [initialized, email]);
+  }, [initialized, email, friendlyName, workerSid]);
 
   /**
    * We use this function to make an outbound call
