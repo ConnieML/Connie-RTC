@@ -4,11 +4,9 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  TdHTMLAttributes,
 } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
-import { Row } from "@tanstack/react-table";
 
 import { FetchedCalls, columns } from "./columns";
 import { DataTable } from "./DataTable";
