@@ -7,7 +7,7 @@ export default function Dashboard() {
       <main>
         <h1>Dashboard</h1>
         {/* <IncomingCallModal number="1234567890" acceptCall={() => {}} rejectCall={() => {}} /> */}
-        <NotificationsCard />
+        {/* <NotificationsCard /> */}
       </main>
     );
   }

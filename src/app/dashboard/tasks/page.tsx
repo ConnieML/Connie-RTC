@@ -25,12 +25,6 @@ export default function Tasks() {
   const [activeTasks, setActiveTasks] = useState([]);
   const { data: session } = useSession();
 
-  const { inCall, number, makeCall, setNumber, endCall } = useCalls({
-    email: session?.user?.email || '',
-    workerSid: session?.employeeNumber || '',
-    friendlyName: session?.user?.name || '',
-  });
-
   const fetchTasks = () => {
     fetch('/api/reservations?workerSid=' + session?.employeeNumber)
       .then(response => response.json())
@@ -38,17 +32,27 @@ export default function Tasks() {
         setTasks(data);
         setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
       });
-      
+
   };
 
   const updateReservation = (reservation: any, status: string) => {
     try {
-      console.log("Updating reservation", reservation, status)
       fetch(`/api/reservations?taskSid=${reservation.taskSid}&status=${status}&reservationSid=${reservation.sid}`, {
         method: 'POST'
       })
     } catch (error) {
       console.error("Error updating reservation", error)
+    }
+    fetchTasks()
+  }
+
+  const dequeueTask = (reservation: any) => {
+    try {
+      fetch(`/api/tasks?taskSid=${reservation.taskSid}&client=${session?.user?.email}&reservationSid=${reservation.sid}`, {
+        method: 'POST'
+      })
+    } catch (error) {
+      console.error("Error dequeing reservation", error)
     }
     fetchTasks()
   }
@@ -91,7 +95,7 @@ export default function Tasks() {
                 {task.task.taskChannelUniqueName === 'voice' ? (
                   <Button
                     className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
-                    onClick={() => console.log(task)}
+                    onClick={() => dequeueTask(task.reservation)}
                   >
                     Call
                   </Button>
@@ -106,7 +110,7 @@ export default function Tasks() {
                 <Button
                   className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit mr-2 text-black"
                 onClick={ () => updateReservation(task.reservation, 'rejected') }
-                >Transfer</Button>
+                >Reject</Button>
                 {/* <Button
                   className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit text-black"
                 onClick={ () => updateReservation(task.reservation, 'canceled')}

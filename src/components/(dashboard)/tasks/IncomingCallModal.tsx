@@ -1,4 +1,6 @@
+import { Button } from '@/components/ui/button';
 import { formatPhoneNumber } from '@/lib/utils';
+import { CircleUser } from 'lucide-react';
 
 export default function IncomingCallModal({
     number,
@@ -11,26 +13,27 @@ export default function IncomingCallModal({
 }) {
     return (
         <div className="fixed z-10 top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-4 rounded-lg">
+            <div className="bg-white p-4 rounded-sm">
                 <section className="flex flex-col items-center justify-between p-8 gap-y-12">
                     <article className="flex flex-col gap-y-4 items-center">
-                        <div className="text-xl font-medium text-[#6B7280]">
-                            Incoming Call
-                        </div>
-                        <div className="text-4xl font-semibold">
+                        <CircleUser size="100" color="#D9D9D9" />
+                        <div className="text-2xl font-light">
                             {formatPhoneNumber(number)}
+                        </div>
+                        <div className="text-lg font-lgiht text-[#6B7280]">
+                            Incoming Call
                         </div>
                     </article>
 
                     <article className="flex flex-row gap-x-10">
-                        <button
-                            className="w-[120px] h-12 border-2 border-[#6366f1] text-[#6366f1] rounded-[10px] hover:bg-[#6366f1] hover:text-white"
+                        <Button
+                            className="rounded-md w-[120px] h-12 bg-[#22E4AC] text-white hover:bg-[#1BB88A]"
                             onClick={() => acceptCall()}
                         >
                             Accept Call
-                        </button>
+                        </Button>
                         <button
-                            className="w-[120px] h-12 rounded-[10px] hover:bg-black hover:text-white"
+                            className="rounded-md w-[120px] h-12 bg-[#F93C5C] text-white hover:bg-[#E03652]"
                             onClick={() => rejectCall()}
                         >
                             Reject Call
