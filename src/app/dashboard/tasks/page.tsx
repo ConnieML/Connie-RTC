@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from "next-auth/react";
 import { Button } from '../../../components/ui/button';
 import React from 'react';
@@ -12,15 +12,14 @@ export default function Tasks() {
   const [activeTasks, setActiveTasks] = useState([]);
   const { data: session } = useSession();
 
-  const fetchTasks = () => {
+  const fetchTasks = useCallback(() => {
     fetch('/api/reservations?workerSid=' + session?.employeeNumber)
       .then(response => response.json())
       .then(data => {
         setTasks(data);
         setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
       });
-
-  };
+  }, [session]);
 
   const updateReservation = (reservation: any, status: string) => {
     try {
@@ -69,42 +68,42 @@ export default function Tasks() {
         <tbody>
           {activeTasks && Array.isArray(activeTasks) && activeTasks
             .map((task: any) => (
-            <tr key={task.task.sid} >
-              <td>
-                {task.task.taskChannelUniqueName === 'voice' ? (
-                  <>Call {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
-                ) : task.task.taskChannelUniqueName === 'chat' ? (
-                  <>Respond to message from {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
-                ) : null}
-              </td>
-              <td>{formatTimeWithUnits(task.task.age)}</td>
-              <td>
-                {task.task.taskChannelUniqueName === 'voice' ? (
+              <tr key={task.task.sid} >
+                <td>
+                  {task.task.taskChannelUniqueName === 'voice' ? (
+                    <>Call {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
+                  ) : task.task.taskChannelUniqueName === 'chat' ? (
+                    <>Respond to message from {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
+                  ) : null}
+                </td>
+                <td>{formatTimeWithUnits(task.task.age)}</td>
+                <td>
+                  {task.task.taskChannelUniqueName === 'voice' ? (
+                    <Button
+                      className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
+                      onClick={() => dequeueTask(task, JSON.parse(task.task.attributes).from)}
+                    >
+                      Call
+                    </Button>
+                  ) : task.task.taskChannelUniqueName === 'chat' ? (
+                    <Button
+                      className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
+                      onClick={() => console.log('Chat mode')}
+                    >
+                      Chat
+                    </Button>
+                  ) : null}
                   <Button
-                    className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
-                    onClick={() => dequeueTask(task, JSON.parse(task.task.attributes).from)}
-                  >
-                    Call
-                  </Button>
-                ) : task.task.taskChannelUniqueName === 'chat' ? (
-                  <Button
-                    className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
-                    onClick={() => console.log('Chat mode')}
-                  >
-                    Chat
-                  </Button>
-                ) : null}
-                <Button
-                  className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit mr-2 text-black"
-                onClick={ () => updateReservation(task.reservation, 'rejected') }
-                >Reject</Button>
-                {/* <Button
+                    className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit mr-2 text-black"
+                    onClick={() => updateReservation(task.reservation, 'rejected')}
+                  >Reject</Button>
+                  {/* <Button
                   className="bg-[#F1F5F9] hover:bg-[#D8DCE0]/90 w-fit text-black"
                 onClick={ () => updateReservation(task.reservation, 'canceled')}
                 >Dismiss</Button> */}
-              </td>
-            </tr>
-          ))}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </main>

@@ -47,7 +47,7 @@ export default function Notes({ clientId }: { clientId: string }) {
     };
 
     fetchNotes();
-  }, []);
+  }, [clientId]);
 
   async function handleAddNote(note: string) {
     const newNote = {
