@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React, {
   useEffect,
@@ -8,12 +8,12 @@ import React, {
 import axios from "axios";
 import * as XLSX from "xlsx";
 
-import { FetchedCalls, columns } from "./columns";
-import { DataTable } from "./DataTable";
-import { Button } from "../ui/button";
-import { Switch } from "../ui/switch";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Switch } from '../ui/switch';
+import { DataTable } from './DataTable';
+import { columns } from './columns';
 
 interface SelectionChange<TData> {
   selectionState: Record<string, boolean>;
@@ -32,13 +32,13 @@ const AuditTable: React.FC = () => {
       setLoading(true);
       try {
         const endpoint = showCalls
-          ? "/api/audit-log/calls"
-          : "/api/audit-log/message";
+          ? '/api/audit-log/calls'
+          : '/api/audit-log/message';
         const response = await axios.get(endpoint);
         setData(response.data);
         setLoading(false);
       } catch (error) {
-        console.log("error fetching calls", error);
+        console.log('error fetching calls', error);
         setLoading(false);
       }
     };
@@ -77,13 +77,13 @@ const AuditTable: React.FC = () => {
         </div>
         <Button
           onClick={() => setShowCalls(true)}
-          variant={showCalls ? "default" : "outline"}
+          variant={showCalls ? 'default' : 'outline'}
         >
           Calls
         </Button>
         <Button
           onClick={() => setShowCalls(false)}
-          variant={showCalls ? "outline" : "default"}
+          variant={showCalls ? 'outline' : 'default'}
         >
           Messages
         </Button>

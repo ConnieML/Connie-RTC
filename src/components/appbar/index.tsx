@@ -1,9 +1,19 @@
-"use client";
-import Link from "next/link";
-import { useState } from "react";
-import { cn } from "../../lib/utils";
+'use client';
 
-import { Menubar } from "../../components/ui/menubar";
+import {
+  Bell,
+  BellDot,
+  LogOut,
+  MessageSquare,
+  Phone,
+  Settings,
+  UserPlus,
+  Users,
+} from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,33 +21,21 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "../../components/ui/avatar";
+} from '@/components/ui/dropdown-menu';
+import { Menubar } from '@/components/ui/menubar';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "../../components/ui/popover";
-import { Button } from "../../components/ui/button";
+} from '@/components/ui/popover';
+import useCalls from '@/lib/hooks/useCalls';
+import { cn } from '@/lib/utils';
 
-import {
-  LogOut,
-  Settings,
-  UserPlus,
-  Users,
-  Bell,
-  Phone,
-  MessageSquare,
-  BellDot,
-} from "lucide-react";
+import DialPad from './Dialpad';
+import Logo from './Logo';
+import MessagesCard from './MessagesCard';
+import NotificationsCard from './NotificationsCard';
 
-import Logo from "./Logo";
-import MessagesCard from "./MessagesCard";
-import DialPad from "./Dialpad";
-import NotificationsCard from "./NotificationsCard";
-import { signOut } from "next-auth/react";
-
-import useCalls from "@/lib/hooks/useCalls";
 // import { useSession } from "next-auth/react";
 import AgentStatus from "./AgentStatus";
 import ClientOnly from "../ClientOnly";
@@ -75,7 +73,7 @@ export default function Appbar({
 
   return (
     <Menubar
-      className={cn("flex flex-row justify-between h-16 px-4 py-2", className)}
+      className={cn('flex flex-row justify-between h-16 px-4 py-2', className)}
     >
       <Link href="/">
         <Logo />
@@ -101,7 +99,7 @@ export default function Appbar({
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Phone color={`${!inCall ? "#D3D3D3" : "#08B3E5"}`} />
+                <Phone color={`${!inCall ? '#D3D3D3' : '#08B3E5'}`} />
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end">

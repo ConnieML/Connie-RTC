@@ -1,19 +1,25 @@
+import { getServerSession } from 'next-auth/next';
+
+import { authOptions } from '@/lib/auth';
+import { getObjectString } from '@/lib/aws/s3';
+
 import {
   AirtableCRMProvider,
-  s3KeyForAirtableToken,
   s3KeyForAirtableBase,
   s3KeyForAirtableTable,
-} from "../crm/airtable";
-import { getObjectString } from "@/lib/aws/s3";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth/next";
+  s3KeyForAirtableToken,
+} from '../crm/airtable';
+
+type Session = {
+  oktaId: string;
+};
 
 // Fetch clients data from crm
 export default async function fetchClients() {
-  const session = (await getServerSession(authOptions)) as any;
+  const session = (await getServerSession(authOptions)) as Session | null;
 
   if (!session) {
-    console.error("Unauthorized");
+    console.error('Unauthorized');
     return [];
   }
 
@@ -32,7 +38,7 @@ export default async function fetchClients() {
     const allClients = await table.getAllRows();
 
     allClients.forEach((client) => {
-      client["full_name"] = `${client.first_name} ${client.last_name}`;
+      client['full_name'] = `${client.first_name} ${client.last_name}`;
     });
     return allClients;
   } catch (e) {

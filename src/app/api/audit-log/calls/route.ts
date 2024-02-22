@@ -1,44 +1,50 @@
+import { NextResponse } from 'next/server';
+import { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
 
-import {NextResponse, NextRequest} from 'next/server';
+import twilioClient from '@/lib/server/comms/twilioClient';
 import { formatDate } from '@/lib/utils';
 
+type Call = {
+  id: string;
+  direction: string;
+  from: string | null;
+  to: string | null;
+  timestamp: string;
+};
 
-interface Calls {
-    id: string;
-    direction: string;
-    from: string | null;
-    to: string | null;
-    timestamp: string;
-}
+const DEFAULT_LIMIT = 20;
 
-export async function GET(
-    request: NextRequest,
-    res: NextResponse
-) {
-   const accountSid = process.env.TWILIO_ACCOUNT_SID;
-   const authToken = process.env.TWILIO_AUTH_TOKEN;
-   const client = require('twilio')(accountSid, authToken);
-   try{
-    const calls: any[] = await client.calls.list({limit:20});
-    //if want to display all calls, can delete the limit parameter
-    const formattedCalls: Calls[] = calls.map(call => {
-        const date = new Date(call.dateCreated);
-        const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm')
-        return {
-            id: call.sid,
-            from: call.from,
-            to: call.to,
-            direction: call.direction,
-            timestamp: formattedDate // Use the formatted date string
-        };
+/**
+ * Handles GET requests to `/api/audit-log/calls`
+ *
+ * This function fetches the call logs from Twilio and returns them in a
+ * format that can be consumed by the frontend.
+ */
+export async function GET() {
+  // TODO: Add limit and page query parameters to support pagination
+  try {
+    const calls: CallInstance[] = await twilioClient.calls.list({
+      limit: DEFAULT_LIMIT,
     });
-    return NextResponse.json(formattedCalls)
-    
-   } catch (error) {
-        console.error('Error fetching call logs', error); 
-   }
-    
+    //if want to display all calls, can delete the limit parameter
+    const formattedCalls: Call[] = calls.map((call) => {
+      const date = new Date(call.dateCreated);
+      const formattedDate = formatDate(date, 'YYYY-MM-DD HH:mm');
+      return {
+        id: call.sid,
+        from: call.from,
+        to: call.to,
+        direction: call.direction,
+        timestamp: formattedDate,
+      };
+    });
+    return NextResponse.json(formattedCalls);
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Error fetching call logs' },
+      { status: 500 },
+    );
+  }
 }
 
-export const dynamic = 'force-dynamic'
-
+export const dynamic = 'force-dynamic';

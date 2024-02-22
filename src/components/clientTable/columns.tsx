@@ -1,27 +1,28 @@
-"use client";
-import Link from "next/link";
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
+import { ColumnDef } from '@tanstack/react-table';
+import { MoreVertical } from 'lucide-react';
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
-import { CRMEntry } from "@/lib/crm/types";
+} from '@/components/ui/dropdown-menu';
+import { CRMEntry } from '@/lib/crm/types';
 
 export const columns: ColumnDef<CRMEntry>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -39,26 +40,26 @@ export const columns: ColumnDef<CRMEntry>[] = [
   },
   {
     header: () => <p className="text-lg text-black">Id</p>,
-    accessorKey: "id",
+    accessorKey: 'id',
   },
   {
-    accessorKey: "full_name",
+    accessorKey: 'full_name',
     header: () => <p className="text-lg text-black">Client</p>,
   },
   {
-    accessorKey: "Phone",
+    accessorKey: 'Phone',
     header: () => <p className="text-lg text-black">Phone Number</p>,
   },
   {
-    accessorKey: "email",
+    accessorKey: 'email',
     header: () => <p className="text-lg text-black">Email</p>,
   },
   {
-    accessorKey: "lastContacted",
+    accessorKey: 'lastContacted',
     header: () => <p className="text-lg text-black">Last contacted</p>,
   },
   {
-    id: "actions",
+    id: 'actions',
     enableHiding: false,
     cell: ({ row, table }) => {
       const client = row.original;
@@ -82,7 +83,8 @@ export const columns: ColumnDef<CRMEntry>[] = [
             </DropdownMenuItem> */}
             <DropdownMenuItem
               onClick={() =>
-                (table.options.meta as any)?.onPhoneNumberCopy(client.Phone)
+                // TODO: Handle type safety
+                table.options.meta?.onPhoneNumberCopy(client.Phone)
               }
             >
               Copy phone number

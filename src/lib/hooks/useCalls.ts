@@ -1,8 +1,15 @@
-import { Call, Device } from "@twilio/voice-sdk";
+import { Call, Device } from '@twilio/voice-sdk';
+import { useEffect, useRef, useState } from 'react';
+import { Activity, Reservation, Worker } from 'twilio-taskrouter';
+import { timeout } from '../utils';
 
-import { useEffect, useRef, useState } from "react";
-import { Reservation, Worker } from "twilio-taskrouter";
-import { Activity } from "../taskrouterInterfaces";
+// import { timeout } from '../utils';
+
+type CallData = {
+  email: string;
+  workerSid: string | undefined;
+  friendlyName: string;
+};
 
 /**
  * This is a pretty big custom React hook that contains all the
@@ -19,11 +26,7 @@ export default function useCalls({
   email,
   workerSid,
   friendlyName,
-}: {
-  email: string;
-  workerSid: string | undefined;
-  friendlyName: string;
-}) {
+}: CallData) {
   const [initialized, setInitialized] = useState(false);
   const device = useRef<Device | null>(null);
   const worker = useRef<Worker | null>(null);
@@ -31,10 +34,10 @@ export default function useCalls({
   const agentActivities = useRef<Activity[] | null>(null);
   const checkEmail = useRef<string | null>(null);
 
-  const [number, setNumber] = useState("");
+  const [number, setNumber] = useState('');
   const [incomingCall, setIncomingCall] = useState(false);
   const [inCall, setInCall] = useState(false);
-  const [activityName, setActivityName] = useState<string>("Available");
+  const [activityName, setActivityName] = useState<string>('Available');
 
 
   const initializeWorkerListeners = () => {
@@ -130,8 +133,8 @@ export default function useCalls({
   const initializeDeviceListeners = () => {
     if (!device.current) return;
 
-    device.current.on("registered", function () {
-      console.log("Twilio.Device Ready to make and receive calls!");
+    device.current.on('registered', function () {
+      console.log('Twilio.Device Ready to make and receive calls!');
     });
 
     console.log("3333333")
@@ -143,29 +146,31 @@ export default function useCalls({
       console.log("Twilio.Device Error: " + error.message);
     });
 
-    device.current.on("incoming", (incomingCall: Call) => {
+    device.current.on('incoming', (incomingCall: Call) => {
       setIncomingCall(true);
       setNumber(incomingCall.parameters.From);
 
       call.current = incomingCall;
 
-      incomingCall.on("cancel", () => {
+      incomingCall.on('cancel', () => {
         setIncomingCall(false);
       });
 
-      incomingCall.on("reject", () => {
+      incomingCall.on('reject', () => {
         setIncomingCall(false);
-        setNumber("");
+        setNumber('');
       });
 
-      incomingCall.on("disconnect", () => {
-
-        // try {
-        //   fetch(`/api/reservations?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
-        //     method: 'PUT'
-        //   })
-        // } catch (error) {
-        //   console.error("Error updating reservation", error)
+      incomingCall.on('disconnect', () => {
+        // TODO uncomment when tasks implemented
+        // if (taskSid.current) {
+        //   fetch(
+        //     `/api/tasks?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&taskSid=${taskSid.current}`,
+        //     {
+        //       method: "PUT",
+        //       body: JSON.stringify({ assignmentStatus: "completed" }),
+        //     }
+        //   );
         // }
         // try {
         //   fetch(`/api/tasks?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
@@ -176,7 +181,7 @@ export default function useCalls({
         // }
         // setCurrentTask(null);
         setInCall(false);
-        setNumber("");
+        setNumber('');
       });
     });
   };
@@ -282,8 +287,8 @@ export default function useCalls({
     setInCall(true);
 
     // Check if I should use this
-    newCall.on("disconnect", () => {
-      console.log("you disconnected");
+    newCall.on('disconnect', () => {
+      console.log('you disconnected');
       setInCall(false);
       setIncomingCall(false);
     });
@@ -307,7 +312,7 @@ export default function useCalls({
     call.current.disconnect();
     setIncomingCall(false);
     setInCall(false);
-    setNumber("");
+    setNumber('');
   }
 
   /**
@@ -392,7 +397,7 @@ async function initializeDevice(client: string, workerSid: string) {
 const initializeWorker = async (
   workerSid: string | undefined,
   email: string,
-  friendlyName: string
+  friendlyName: string,
 ) => {
   try {
     if (!workerSid) {
@@ -415,7 +420,3 @@ const initializeWorker = async (
     console.error(e);
   }
 };
-
-function timeout(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}

@@ -1,17 +1,16 @@
-"use client";
+'use client';
+
 import { signIn, useSession } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import React from 'react';
-import { redirect } from 'next/navigation'
-
-
 
 export default function Login() {
-  const {data: session, status} = useSession();
+  const { data: session, status } = useSession();
   if (status === 'loading') {
     return <React.Fragment>Loading...</React.Fragment>;
   }
   if (session) {
-      redirect('/dashboard');
+    redirect('/dashboard');
   }
 
   return (

@@ -1,19 +1,20 @@
-"use client";
-import { formatPhoneNumber, formatTime } from "@/lib/utils";
-import { useEffect, useState } from "react";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Phone,
   Delete,
-  MicOff,
-  Video,
-  PauseCircle,
-  MessageSquare,
   Hash,
+  MessageSquare,
+  MicOff,
+  PauseCircle,
+  Phone,
   StickyNote,
-} from "lucide-react";
+  Video,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { formatPhoneNumber, formatTime } from '@/lib/utils';
 
 export default function DialPad({
   number,

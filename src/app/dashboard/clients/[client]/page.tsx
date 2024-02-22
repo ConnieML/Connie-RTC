@@ -1,7 +1,9 @@
-"use client";
-import { useState } from "react";
-import Notes from "@/components/notes";
-import { Button } from "@/components/ui/button";
+'use client';
+
+import { useState } from 'react';
+
+import Notes from '@/components/notes';
+import { Button } from '@/components/ui/button';
 
 // TODO check if user exists
 

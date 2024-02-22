@@ -1,10 +1,10 @@
-"use client"
+'use client';
 
-import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
+import { ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
+} from '@/components/ui/dropdown-menu';
 
 // This type is used to define the shape of our data.
 export type FetchedCalls = {
@@ -22,25 +21,25 @@ export type FetchedCalls = {
   from: string | null;
   to: string | null;
   timestamp: string;
-}
+};
 
 export const columns: ColumnDef<FetchedCalls>[] = [
   {
-    id: "select",
+    id: 'select',
     header: ({ table }) => (
       <Checkbox
         checked={
           table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
         }
-        onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
-        onCheckedChange={(value: any) => row.toggleSelected(!!value)}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -49,27 +48,27 @@ export const columns: ColumnDef<FetchedCalls>[] = [
   },
 
   {
-    accessorKey: "direction",
-    header: "Direction",
+    accessorKey: 'direction',
+    header: 'Direction',
   },
   {
-    accessorKey: "from",
-    header: "From",
+    accessorKey: 'from',
+    header: 'From',
   },
   {
-    accessorKey: "to",
-    header: "To",
-  },
-
-  {
-    accessorKey: "timestamp",
-    header: "Timestamp",
+    accessorKey: 'to',
+    header: 'To',
   },
 
   {
-    id: "actions",
+    accessorKey: 'timestamp',
+    header: 'Timestamp',
+  },
+
+  {
+    id: 'actions',
     cell: ({ row }) => {
-      const call = row.original
+      const call = row.original;
 
       return (
         <DropdownMenu>
@@ -90,8 +89,7 @@ export const columns: ColumnDef<FetchedCalls>[] = [
             <DropdownMenuItem>View details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-
-]
+];
