@@ -1,23 +1,35 @@
 import { NextRequest } from 'next/server';
 import { twilioClient } from '@/lib/twilioClient';
 
-export async function GET(req: NextRequest) {
-    const workspaceSid = process.env.TWILIO_WORKSPACE_SID || "";
-    const workerSid = req.nextUrl.searchParams.get('workerSid');
 
-    if (!workspaceSid) {
-        throw new Error('TWILIO_WORKSPACE_SID is not set');
-    }
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const workspaceSid = process.env.TWILIO_WORKSPACE_SID || '';
+const client = require('twilio')(accountSid, authToken);
 
+export async function POST(req: NextRequest) {
     try {
-        const tasks = await twilioClient.taskrouter.v1
-            .workspaces(workspaceSid)
-            .tasks
-            .list();
+        const worker = req.nextUrl.searchParams.get('client');
+        const reservation = req.nextUrl.searchParams.get('reservationSid');
+        const task = req.nextUrl.searchParams.get('taskSid');
 
-        console.log(tasks);
+        console.log(" worker:", worker);
+        console.log(" reservation:", reservation);
+        console.log(" task:", task)
 
-        return new Response(JSON.stringify(tasks), { status: 200 });
+        client.taskrouter.v1.workspaces(workspaceSid)
+            .tasks(task)
+            .reservations(reservation)
+            .update({
+                instruction: 'dequeue',
+                dequeueFrom: '+16134002002', // The phone number the call is connected from
+                // to: 'client:atsarapk@uwaterloo.ca' // The client to connect the call to
+            })
+            .then((reservation: { reservationStatus: any; }) => console.log(reservation.reservationStatus))
+            .catch((error: any) => console.error(error));
+
+            //{"contact_uri":"client:atsarapk@uwaterloo.ca"}
+        return new Response("dequeued", { status: 200 });
     } catch (error) {
         return new Response("something went wrong", { status: 500 });
     }

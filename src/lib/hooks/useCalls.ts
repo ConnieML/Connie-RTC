@@ -114,27 +114,17 @@ export default function useCalls({
   // };
 
   const initializeDeviceListeners = () => {
-    console.log("11111111")
     if (!device.current) return;
-    console.log("2222222")
+
     device.current.on("registered", function () {
-      console.log("POPOP")
       console.log("Twilio.Device Ready to make and receive calls!");
     });
-
-    console.log("3333333")
-
-    console.log("device is", device.current)
     
-
     device.current.on("error", function (error: { message: string }) {
       console.log("Twilio.Device Error: " + error.message);
     });
 
-    console.log("4444444")
-
     device.current.on("incoming", (incomingCall: Call) => {
-      console.log("55555")
       setIncomingCall(true);
       setNumber(incomingCall.parameters.From);
 
@@ -178,11 +168,10 @@ export default function useCalls({
       !initialized &&
       workerSid !== undefined
     ) {
-      console.log("USEEFFECT," ,email)
       checkEmail.current = email;
       const initializeCalls = async () => {
         await Promise.all([
-          await initializeDevice(email).then((newDevice) => {
+          await initializeDevice(email, workerSid).then((newDevice) => {
             device.current = newDevice;
             initializeDeviceListeners();
           }),
@@ -231,7 +220,6 @@ export default function useCalls({
    */
 
   const makeCall = async (number: string) => {
-    console.log("dpqpqpqppqpqpqpp ", device.current)
     if (!device.current) return;
     const params = {
       // get the phone number to call from the DOM
@@ -246,11 +234,9 @@ export default function useCalls({
 
     // TODO uncomment when taskrouter impelemnted
     // Turn agent activity status to reserved to prevent agent from receiving incoming calls
-    const reservedActivity = agentActivities.current?.find(
-      (activity) => activity.friendlyName === "Reserved"
-    );
-
-    console.log("ADASA", worker.current?.sid, reservedActivity);
+    // const reservedActivity = agentActivities.current?.find(
+    //   (activity) => activity.friendlyName === "Reserved"
+    // );
 
     // await fetch(
     //   `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
@@ -348,7 +334,7 @@ export default function useCalls({
  * this is the same value as the "client_url" in the worker's attribute
  *
  */
-async function initializeDevice(client: string) {
+async function initializeDevice(client: string, workerSid: string) {
   console.log("Initializing device", client)
   const token = await fetch(
     `http://localhost:3000/api/token?client=${client}`
@@ -356,26 +342,13 @@ async function initializeDevice(client: string) {
 
   const value = await token.json();
 
-  console.log("VALUE IS ", value)
-
   const device = new Device(value.token, {
     logLevel: 1,
     codecPreferences: [Call.Codec.Opus, Call.Codec.PCMU],
   });
 
-  console.log("REGISTERING DEVICE")
-  console.log(device)
-
-  device.on('registered', () => {
-    console.log('sdfsddsfsdATT');
-  });
-
-  device.on('incoming', (connection) => {
-    console.log("BEING CALLED")
-  })
-
   await device.register();
-  console.log("RAAAAA")
+
   return device;
 }
 
@@ -390,33 +363,33 @@ async function initializeDevice(client: string) {
  * @param friendlyName - the friendly name found in Okta and Twliio
  *
  */
-const initializeWorker = async (
-  workerSid: string | undefined,
-  email: string,
-  friendlyName: string
-) => {
-  try {
-    if (!workerSid) {
-      throw `The user ${friendlyName} with email ${email} does not have an employeeNumber in Okta`;
-    }
-    const tokenResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/workerToken?email=${email}&workerSid=${workerSid}`
-    );
+// const initializeWorker = async (
+//   workerSid: string | undefined,
+//   email: string,
+//   friendlyName: string
+// ) => {
+//   try {
+//     if (!workerSid) {
+//       throw `The user ${friendlyName} with email ${email} does not have an employeeNumber in Okta`;
+//     }
+//     const tokenResponse = await fetch(
+//       `${process.env.NEXT_PUBLIC_URL}/api/workerToken?email=${email}&workerSid=${workerSid}`
+//     );
 
-    if (tokenResponse.status !== 200) {
-      throw `Failed to generate valid token for ${friendlyName} with email ${email}`;
-    }
+//     if (tokenResponse.status !== 200) {
+//       throw `Failed to generate valid token for ${friendlyName} with email ${email}`;
+//     }
 
-    const token = await tokenResponse.json();
+//     const token = await tokenResponse.json();
 
-    const worker = new Worker(token);
-    console.log("WORKER IS", worker)
-    await timeout(1000); // For some reason, this is some much needed black magic
-    return worker;
-  } catch (e) {
-    console.error(e);
-  }
-};
+//     const worker = new Worker(token);
+//     console.log("WORKER IS", worker)
+//     await timeout(1000); // For some reason, this is some much needed black magic
+//     return worker;
+//   } catch (e) {
+//     console.error(e);
+//   }
+// };
 
 function timeout(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
