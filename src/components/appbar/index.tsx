@@ -72,7 +72,6 @@ export default function Appbar({
           <ClientOnly>
             <AgentStatus />
           </ClientOnly>
-
         </div>
         <div className="flex flex-row space-x-4">
           <Popover>
