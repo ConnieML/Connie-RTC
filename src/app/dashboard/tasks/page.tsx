@@ -4,20 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { Button } from '../../../components/ui/button';
 import React from 'react';
+import { formatPhoneNumber, formatTimeWithUnits } from '../../../lib/utils';
 
-function formatTime(seconds: number) {
-  const days = Math.floor(seconds / (24 * 60 * 60));
-  seconds -= days * 24 * 60 * 60;
-  const hrs = Math.floor(seconds / (60 * 60));
-  seconds -= hrs * 60 * 60;
-  const mnts = Math.floor(seconds / 60);
-  seconds -= mnts * 60;
-
-  if (days) return days + (days > 1 ? " days" : " day") + " ago";
-  if (hrs) return hrs + (hrs > 1 ? " hours" : " hour") + " ago";
-  if (mnts) return mnts + (mnts > 1 ? " minutes" : " minute") + " ago";
-  if (seconds) return seconds + (seconds > 1 ? " second" : " second") + " ago";
-}
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -84,12 +72,12 @@ export default function Tasks() {
             <tr key={task.task.sid} >
               <td>
                 {task.task.taskChannelUniqueName === 'voice' ? (
-                  <>Call {JSON.parse(task.task.attributes).from || "unknown"}</>
+                  <>Call {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
                 ) : task.task.taskChannelUniqueName === 'chat' ? (
-                  <>Respond to message from {JSON.parse(task.task.attributes).from || "unknown"}</>
+                  <>Respond to message from {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}</>
                 ) : null}
               </td>
-              <td>{formatTime(task.task.age)}</td>
+              <td>{formatTimeWithUnits(task.task.age)}</td>
               <td>
                 {task.task.taskChannelUniqueName === 'voice' ? (
                   <Button

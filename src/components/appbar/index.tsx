@@ -28,6 +28,7 @@ import {
   Bell,
   Phone,
   MessageSquare,
+  BellDot,
 } from "lucide-react";
 
 import Logo from "./Logo";
@@ -70,6 +71,8 @@ export default function Appbar({
     workerSid: session?.employeeNumber || '',
     friendlyName: session?.user?.name || '',
   });
+
+  const [activeTasks, setActiveTasks] = useState([]);
 
   return (
     <Menubar
@@ -115,11 +118,15 @@ export default function Appbar({
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
-                <Bell color="#D3D3D3" />
+                {activeTasks.length > 0 ? <BellDot color="#08B3E5" /> :
+                  <Bell color="#D3D3D3" />}
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
-              <NotificationsCard />
+              <NotificationsCard
+                activeTasks={activeTasks}
+                setActiveTasks={setActiveTasks}
+              />
             </PopoverContent>
           </Popover>
           <DropdownMenu>
