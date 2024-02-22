@@ -123,10 +123,11 @@ export function OnboardingDialog() {
             variant="outline"
             onClick={goBack}
             className={cn(currentStep === 0 ? 'hidden' : 'visible')}
+            tabIndex={1}
           >
             Back
           </Button>
-          <Button onClick={advanceStep} variant="default">
+          <Button onClick={advanceStep} variant="default" tabIndex={2}>
             {isDone ? 'Finish' : 'Next'}
           </Button>
         </div>
