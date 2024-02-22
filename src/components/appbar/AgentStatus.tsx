@@ -1,4 +1,4 @@
-pnpm"use client";
+"use client";
 
 import React, { useState } from "react";
 import { Chip } from "@material-tailwind/react";
