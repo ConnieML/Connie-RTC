@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth/next';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { authOptions } from '@/lib/auth';
 import { getObjectString } from '@/lib/aws/s3';
 import {
@@ -9,18 +10,16 @@ import {
   s3KeyForAirtableToken,
 } from '@/lib/crm/airtable';
 
-// ENV variables for now, pending CRM configuration feature
-
 /**
- * GET /api/crm_example?phone={phone_number_string}
+ * Handles GET requests to /api/crm_example?phone={phone_number_string}
  *
  * @param request - The incoming request object.
  * @returns A JSON response with the client info.
  */
-export async function GET() {
-  const session = (await getServerSession(authOptions));
+export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
   if (!session) {
-    return new Response('Unauthorized', { status: 401 });
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
   const oktaId = session.oktaId;
@@ -38,12 +37,24 @@ export async function GET() {
 
   const table = provider.getTable(airtable_table_id);
 
-  // TODO: Implement
-  // const url = new URL(request.url);
-  // const queryParams = new URLSearchParams(url.search);
-  // const phone: string = queryParams.get("phone") || "1234567890";
-
-  // const clientInfo = await table.getClientByPhone(phone);
+  const url = new URL(request.url);
+  const queryParams = new URLSearchParams(url.search);
+  if (queryParams.has('phone')) {
+    const phone: string = queryParams.get('phone') || '1234567890';
+    // TODO: Handle phone number validation
+    const clientInfo = await table.getClientByPhone(phone);
+    if (!clientInfo) {
+      return NextResponse.json(
+        { message: 'Client not found' },
+        { status: 404 },
+      );
+    }
+    return NextResponse.json(clientInfo, {
+      headers: {
+        'content-type': 'application/json',
+      },
+    });
+  }
 
   const allClients = await table.getAllRows();
 
