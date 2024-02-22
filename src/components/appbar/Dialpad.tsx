@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ClientProfile } from "@/components/ui/client-profile";
+
 import {
   Phone,
   Delete,
@@ -14,6 +16,7 @@ import {
   Hash,
   StickyNote,
 } from "lucide-react";
+import { CRMEntry } from "@/lib/crm/types";
 
 export default function DialPad({
   number,
@@ -29,6 +32,27 @@ export default function DialPad({
   endCall: () => void;
 }) {
   const onPress = (value: string) => setNumber(number.concat(value));
+  const [name, setName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [clientData, setClientData] = useState<CRMEntry | null>({});
+
+  const isFullNumber = number.length === 10;
+
+  // hook to fetch data associated with the number
+  useEffect(() => {
+    console.log("Number changing...")
+    if (isFullNumber) {
+      fetch(`/api/crm_example?phone=${number}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Data fetched", data);
+          setClientData(data);
+        });
+    } else {
+      setClientData(null);
+    }
+  }, [number]);
+
 
   return (
     <article className={`flex flex-col justify-between items-center h-full`}>
@@ -48,6 +72,9 @@ export default function DialPad({
               }
             />
           </div>
+          {clientData && (
+            <ClientProfile clientData={clientData} />
+          )}
           <div className="grid grid-cols-3 gap-x-8 gap-y-1 py-2">
             <DialKey keyValue="1" onPress={onPress} />
             <DialKey keyValue="2" subtext="ABC" onPress={onPress} />
@@ -78,9 +105,9 @@ export default function DialPad({
               <DialKey keyValue="" subtext="Video" onPress={onPress}>
                 <Video className="h-8 w-8" />
               </DialKey>
-              <DialKey keyValue="" subtext="Notes" onPress={onPress}>
+              {/* <DialKey keyValue="" subtext="Notes" onPress={onPress}>
                 <StickyNote className="h-8 w-8" />
-              </DialKey>
+              </DialKey> */}
               <DialKey keyValue="" subtext="Hold" onPress={onPress}>
                 <PauseCircle className="h-8 w-8" />
               </DialKey>
@@ -91,6 +118,9 @@ export default function DialPad({
                 <MessageSquare className="h-8 w-8" />
               </DialKey>
             </div>
+            {clientData && (
+              <ClientProfile clientData={clientData} />
+            )}
           </div>
           <EndCallButton endCall={() => endCall()} />
         </>

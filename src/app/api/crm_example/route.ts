@@ -20,7 +20,13 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const queryParams = new URLSearchParams(url.search);
-  const phone: string = queryParams.get("phone") || "1234567890";
+  const phone: string | null = queryParams.get("phone");
+
+  if (!phone) {
+    return new Response("Invalid phone number", {
+      status: 400,
+    });
+  }
 
   const clientInfo = await table.getClientByPhone(phone);
 
