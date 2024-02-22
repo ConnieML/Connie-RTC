@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
     const queryString = await req.text();
     const params = new URLSearchParams(queryString);
     const bodyTo = params.get("To");
+    const bodyFrom = params.get("From") || undefined;
 
     // If the request to the /voice endpoint is TO your Twilio Number,
     // then it is an incoming call towards your Twilio.Device.
@@ -18,6 +19,8 @@ export async function POST(req: NextRequest) {
       // Incoming call
       resp.say("Please hold");
       resp.enqueue({ workflowSid: workflowSid });
+      // const dial = resp.dial({ callerId: bodyFrom });
+      // dial.client('atsarapk@uwaterloo.ca');
       
     } else if (bodyTo) {
       // Outgoing call
