@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
-import {Checkbox} from "@/components/ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,36 +17,36 @@ import {
 
 // This type is used to define the shape of our data.
 export type FetchedCalls = {
-    id: string;
-    direction: string;
-    from: string | null;
-    to: string | null;
-    timestamp: string;  
+  id: string;
+  direction: string;
+  from: string | null;
+  to: string | null;
+  timestamp: string;
 }
 
 export const columns: ColumnDef<FetchedCalls>[] = [
-    {
-        id: "select",
-        header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value: any) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-      },
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value: any) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value: any) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
 
   {
     accessorKey: "direction",
@@ -70,7 +70,7 @@ export const columns: ColumnDef<FetchedCalls>[] = [
     id: "actions",
     cell: ({ row }) => {
       const call = row.original
- 
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
