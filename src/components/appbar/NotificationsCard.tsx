@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useCallback, useEffect } from "react";
 import { formatPhoneNumber, formatTimeWithUnits } from "../../lib/utils";
 import { useSession } from "next-auth/react";
 import { MessageSquare, PhoneIncoming } from "lucide-react";
@@ -12,14 +12,13 @@ interface NotificationsCardProps {
 export default function NotificationsCard({ activeTasks, setActiveTasks }: NotificationsCardProps) {
   const { data: session } = useSession();
 
-  const fetchTasks = () => {
+  const fetchTasks = useCallback(() => {
     fetch('/api/reservations?workerSid=' + session?.employeeNumber)
       .then(response => response.json())
       .then(data => {
         setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
       });
-
-  };
+  }, [session, setActiveTasks]);
 
   useEffect(() => {
     // Fetch tasks immediately and then every 2 seconds
@@ -48,7 +47,7 @@ export default function NotificationsCard({ activeTasks, setActiveTasks }: Notif
                   </>
                 ) : task.task.taskChannelUniqueName === 'chat' ? (
                   <>
-                    Respond to message from {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}"
+                    Respond to message from {formatPhoneNumber(JSON.parse(task.task.attributes).from) || "unknown"}
                   </>
                 ) : null}
               </h2>

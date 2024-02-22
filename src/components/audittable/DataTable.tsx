@@ -64,7 +64,7 @@ export function DataTable<TData, TValue>({
         .rows.map((row) => row.original);
       onSelectionChange(rowSelection, content);
     }
-  }, [rowSelection]);
+  }, [rowSelection, onSelectionChange, table]);
 
   const getSelectedContent = () => {
     const content = table.getSelectedRowModel().rows.map((row) => row.original);
@@ -84,9 +84,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}
