@@ -52,7 +52,12 @@ export const authOptions: NextAuthOptions = {
 
                 client.taskrouter.v1.workspaces(process.env.TWILIO_WORKSPACE_SID)
                                     .workers
-                                    .create({friendlyName:  tokenParsed.email})
+                                    .create({
+                                        friendlyName:  tokenParsed.email,
+                                        attributes: JSON.stringify({
+                                            contact_uri: `client:${token.email}` // this will be used to associate Twilio device with worker
+                                        })
+                                    })
                                     .then(async (worker: { sid: any; }) => {
                                         token.employeeNumber = worker.sid;
                                         const profile = {'profile':{"employeeNumber": worker.sid}};

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { Button } from '@/components/ui/button';
-import useCalls from '@/lib/hooks/useCalls';
 
 function formatTime(seconds: number) {
   const days = Math.floor(seconds / (24 * 60 * 60));
@@ -17,7 +16,6 @@ function formatTime(seconds: number) {
   if (hrs) return hrs + (hrs > 1 ? " hours" : " hour") + " ago";
   if (mnts) return mnts + (mnts > 1 ? " minutes" : " minute") + " ago";
   if (seconds) return seconds + (seconds > 1 ? " second" : " second") + " ago";
-
 }
 
 export default function Tasks() {
@@ -46,9 +44,9 @@ export default function Tasks() {
     fetchTasks()
   }
 
-  const dequeueTask = (reservation: any) => {
+  const dequeueTask = (task: any, number: string) => {
     try {
-      fetch(`/api/tasks?taskSid=${reservation.taskSid}&client=${session?.user?.email}&reservationSid=${reservation.sid}`, {
+      fetch(`/api/tasks?taskSid=${task.reservation.taskSid}&reservationSid=${task.reservation.sid}&number=${number}`, {
         method: 'POST'
       })
     } catch (error) {
@@ -58,7 +56,7 @@ export default function Tasks() {
   }
 
   useEffect(() => {
-    // Fetch tasks immediately and then every 5 seconds
+    // Fetch tasks immediately and then every 2 seconds
     fetchTasks();
     const intervalId = setInterval(fetchTasks, 5000);
 
@@ -95,7 +93,7 @@ export default function Tasks() {
                 {task.task.taskChannelUniqueName === 'voice' ? (
                   <Button
                     className="bg-[#334155] hover:bg-[#2D3A4C]/90 w-fit mr-2"
-                    onClick={() => dequeueTask(task.reservation)}
+                    onClick={() => dequeueTask(task, JSON.parse(task.task.attributes).from)}
                   >
                     Call
                   </Button>
