@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { MessageInstance } from 'twilio/lib/rest/api/v2010/account/message';
 
-import { formatDate } from '@/lib/utils';
 import twilioClient from '@/lib/server/comms/twilioClient';
+import { formatDate } from '@/lib/utils';
 
 type Message = {
   id: string;
@@ -16,7 +16,7 @@ const DEFAULT_LIMIT = 20;
 
 /**
  * Handles GET requests to `/api/audit-log/messages`
- * 
+ *
  * This function fetches the message logs from Twilio and returns them in a
  * format that can be consumed by the frontend.
  */

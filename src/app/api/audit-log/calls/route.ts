@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { CallInstance } from 'twilio/lib/rest/api/v2010/account/call';
 
-import { formatDate } from '@/lib/utils';
 import twilioClient from '@/lib/server/comms/twilioClient';
+import { formatDate } from '@/lib/utils';
 
 type Call = {
   id: string;
@@ -16,7 +16,7 @@ const DEFAULT_LIMIT = 20;
 
 /**
  * Handles GET requests to `/api/audit-log/calls`
- * 
+ *
  * This function fetches the call logs from Twilio and returns them in a
  * format that can be consumed by the frontend.
  */
