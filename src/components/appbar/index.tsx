@@ -87,7 +87,7 @@ export default function Appbar({
             <AgentStatus />
           </ClientOnly>
         </div>
-        <div className="flex flex-row space-x-4">
+        <div className="flex flex-row space-x-4 items-center">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
