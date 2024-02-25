@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { cn } from "../../lib/utils";
 
 import { Menubar } from "../../components/ui/menubar";
@@ -43,6 +43,7 @@ import AgentStatus from "./AgentStatus";
 import ClientOnly from "../ClientOnly";
 import { useSession } from "next-auth/react";
 import IncomingCallModal from "../(dashboard)/tasks/IncomingCallModal";
+import CallsContext from "@/contexts/CallsContext";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
@@ -65,12 +66,9 @@ export default function Appbar({
     incomingCall,
     acceptCall,
     rejectCall
-  } = useCalls({
-    email: session?.user?.email || '',
-    workerSid: session?.employeeNumber || '',
-    friendlyName: session?.user?.name || '',
-  });
+  } = useContext(CallsContext);
 
+  // TODO: move this to useCalls hook
   const [activeTasks, setActiveTasks] = useState([]);
 
   return (
