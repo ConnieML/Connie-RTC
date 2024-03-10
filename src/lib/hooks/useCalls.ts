@@ -35,7 +35,45 @@ export default function useCalls({
   const [incomingCall, setIncomingCall] = useState(false);
   const [inCall, setInCall] = useState(false);
   const [activityName, setActivityName] = useState<string>("Available");
+  const [activeTasks, setActiveTasks] = useState([]);
 
+  const fetchActiveTasks = async () => {
+     try {
+      fetch('/api/reservations?workerSid=' + worker.current?.sid)
+      .then(response => response.json())
+      .then(data => {
+        setActiveTasks(data.filter((task: any) => 
+        // task.reservation.reservationStatus === 'accepted' || 
+        task.reservation.reservationStatus === 'pending'));
+      });
+     } catch (e) {
+       console.error("Failed to update active tasks, ", e);
+     }
+    
+  }
+
+  const updateReservation = (reservation: any, status: string) => {
+    console.log("UPDATE IS HIT 1")
+    try {
+      fetch(`/api/reservations?taskSid=${reservation.taskSid}&status=${status}&reservationSid=${reservation.sid}`, {
+        method: 'POST'
+      })
+    } catch (error) {
+      console.error("Error updating reservation", error)
+    }
+
+  }
+
+  const dequeueTask = (task: any, number: string) => {
+    console.log("DEQUEUE IS HIT")
+    try {
+      fetch(`/api/tasks?taskSid=${task.reservation.taskSid}&reservationSid=${task.reservation.sid}&number=${number}`, {
+        method: 'POST'
+      })
+    } catch (error) {
+      console.error("Error dequeing reservation", error)
+    }
+  }
 
   const initializeWorkerListeners = () => {
     if (!worker.current) return;
@@ -46,10 +84,13 @@ export default function useCalls({
         }`
       );
 
-      // change this to something else
+      fetchActiveTasks();
+
+      // TODO: Give option to change music
       var audio = new Audio('https://assets.mixkit.co/active_storage/sfx/933/933-preview.mp3');
       audio.play();
 
+      // TODO: Give option to change notification message
       if (!("Notification" in window)) {
         alert("This browser does not support desktop notification");
       } else if (Notification.permission === "granted") {
@@ -62,69 +103,42 @@ export default function useCalls({
         });
       }
 
-      // taskSid.current = reservation.task.sid;
-      // console.log(`Task attributes are: ${reservation.task.attributes}`);
+      reservation.on("accepted", async (acceptedReservation: Reservation) => {
+        console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
+        fetchActiveTasks();
 
-      // reservation.on("accepted", async (acceptedReservation: Reservation) => {
-      //   console.log(`Reservation ${acceptedReservation.sid} was accepted.`);
+        // try {
+        //   // Turn agent activity status to reserved to prevent agent from receiving incoming calls
+        //   const reservedActivity = agentActivities.current?.find(
+        //     (activity) => activity.friendlyName === "Reserved"
+        //   );
 
-      //   try {
-      //     // Turn agent activity status to reserved to prevent agent from receiving incoming calls
-      //     const reservedActivity = agentActivities.current?.find(
-      //       (activity) => activity.friendlyName === "Reserved"
-      //     );
+        //   await fetch(
+        //     `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
+        //     {
+        //       method: "PUT",
+        //       body: JSON.stringify({
+        //         activitySid: reservedActivity?.sid,
+        //       }),
+        //     }
+        //   )
+        //     .then(async (data) => {
+        //       setActivityName(reservedActivity?.friendlyName ?? activityName);
+        //     })
+        //     .catch((e) => alert("Failed to update activity name"));
+        // } catch (e) {
+        //   console.log(e);
+        // }
+      });
 
-      //     await fetch(
-      //       `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
-      //       {
-      //         method: "PUT",
-      //         body: JSON.stringify({
-      //           activitySid: reservedActivity?.sid,
-      //         }),
-      //       }
-      //     )
-      //       .then(async (data) => {
-      //         setActivityName(reservedActivity?.friendlyName ?? activityName);
-      //       })
-      //       .catch((e) => alert("Failed to update activity name"));
-      //   } catch (e) {
-      //     console.log(e);
-      //   }
-      // });
+      reservation.on("canceled", (acceptedReservation: Reservation) => {
+        fetchActiveTasks();
+        console.log(`Reservation ${acceptedReservation.sid} was canceled.`);
+        setIncomingCall(false);
+        call.current?.disconnect();
+      });
 
-      // reservation.on("canceled", (acceptedReservation: Reservation) => {
-      //   console.log(`Reservation ${acceptedReservation.sid} was canceled.`);
-      //   setIncomingCall(false);
-      //   call.current?.disconnect();
-      // });
     });
-
-    //   /**
-    //    * This section handles any errors during the websocket connection
-    //    */
-    //   worker.current.on("disconnected", (reservation: Reservation) => {
-    //     alert("You have been disconnected. Please refresh the page to reconnect");
-    //   });
-
-    //   worker.current.on("error", (reservation: Reservation) => {
-    //     console.log(
-    //       `Reservation ${reservation.sid} has been created for ${
-    //         worker.current!.sid
-    //       }`
-    //     );
-
-    //     alert("You have been disconnected. Please refresh the page to reconnect");
-    //   });
-
-    //   worker.current.on("tokenExpired", (reservation: Reservation) => {
-    //     console.log(
-    //       `Reservation ${reservation.sid} has been created for ${
-    //         worker.current!.sid
-    //       }`
-    //     );
-
-    //     alert("You have been disconnected. Please refresh the page to reconnect");
-    //   });
   };
 
   const initializeDeviceListeners = () => {
@@ -133,11 +147,6 @@ export default function useCalls({
     device.current.on("registered", function () {
       console.log("Twilio.Device Ready to make and receive calls!");
     });
-
-    console.log("3333333")
-
-    console.log("device is", device.current)
-
 
     device.current.on("error", function (error: { message: string }) {
       console.log("Twilio.Device Error: " + error.message);
@@ -159,22 +168,6 @@ export default function useCalls({
       });
 
       incomingCall.on("disconnect", () => {
-
-        // try {
-        //   fetch(`/api/reservations?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
-        //     method: 'PUT'
-        //   })
-        // } catch (error) {
-        //   console.error("Error updating reservation", error)
-        // }
-        // try {
-        //   fetch(`/api/tasks?taskSid=${currentTask?.reservation?.taskSid}&status=completed&reservationSid=${currentTask?.reservation.sid}`, {
-        //     method: 'PUT'
-        //   })
-        // } catch (error) {
-        //   console.error("Error updating reservation", error)
-        // }
-        // setCurrentTask(null);
         setInCall(false);
         setNumber("");
       });
@@ -193,7 +186,6 @@ export default function useCalls({
       !initialized &&
       workerSid !== undefined
     ) {
-      console.log("USEEFFECT,", email)
       checkEmail.current = email;
       const initializeCalls = async () => {
         await Promise.all([
@@ -206,26 +198,10 @@ export default function useCalls({
           await initializeWorker(workerSid, email, friendlyName).then(
             async (newWorker) => {
               worker.current = newWorker!;
-              console.log("NEWORKUS")
               initializeWorkerListeners();
-
-              // await fetch(
-              //   `/api/workers/?workspaceSid=${
-              //     process.env.NEXT_PUBLIC_WORKSPACE_SID
-              //   }&workerSid=${newWorker!.sid}`
-              // ).then(async (data) => {
-              //   const worker = await data.json();
-              //   setActivityName(worker.worker.activityName);
-              // });
             }
           ),
 
-          // await fetch(
-          //   `/api/activities/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}`
-          // ).then(async (data) => {
-          //   const activities = await data.json();
-          //   agentActivities.current = activities.activities;
-          // }),
         ]).then(() => setInitialized(true));
       };
 
@@ -258,27 +234,6 @@ export default function useCalls({
     const newCall = await device.current.connect({ params });
 
     call.current = newCall;
-
-    // TODO uncomment when taskrouter impelemnted
-    // Turn agent activity status to reserved to prevent agent from receiving incoming calls
-    // const reservedActivity = agentActivities.current?.find(
-    //   (activity) => activity.friendlyName === "Reserved"
-    // );
-
-    // await fetch(
-    //   `/api/workers/?workspaceSid=${process.env.NEXT_PUBLIC_WORKSPACE_SID}&workerSid=${worker.current?.sid}`,
-    //   {
-    //     method: "PUT",
-    //     body: JSON.stringify({
-    //       activitySid: reservedActivity?.sid,
-    //     }),
-    //   }
-    // )
-    //   .then(async (data) => {
-    //     setActivityName(reservedActivity?.friendlyName ?? activityName);
-    //   })
-    //   .catch((e) => alert("Failed to update activity name"));
-
     setInCall(true);
 
     // Check if I should use this
@@ -349,6 +304,9 @@ export default function useCalls({
     endCall,
     rejectCall,
     disconnectEverything,
+    activeTasks,
+    updateReservation,
+    dequeueTask
   };
 }
 

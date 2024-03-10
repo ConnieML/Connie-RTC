@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { cn } from "../../lib/utils";
 
 import { Menubar } from "../../components/ui/menubar";
@@ -43,6 +43,7 @@ import AgentStatus from "./AgentStatus";
 import ClientOnly from "../ClientOnly";
 import { useSession } from "next-auth/react";
 import IncomingCallModal from "../(dashboard)/tasks/IncomingCallModal";
+import CallsContext from "@/contexts/CallsContext";
 
 interface AppbarProps extends React.HTMLAttributes<HTMLDivElement> {
   initials: string;
@@ -64,14 +65,11 @@ export default function Appbar({
     endCall,
     incomingCall,
     acceptCall,
-    rejectCall
-  } = useCalls({
-    email: session?.user?.email || '',
-    workerSid: session?.employeeNumber || '',
-    friendlyName: session?.user?.name || '',
-  });
+    rejectCall,
+    activeTasks
+  } = useContext(CallsContext);
 
-  const [activeTasks, setActiveTasks] = useState([]);
+  // TODO: move this to useCalls hook
 
   return (
     <Menubar
@@ -81,13 +79,13 @@ export default function Appbar({
         <Logo />
       </Link>
       <div className="flex space-x-8">
-        {/* TODO replace with Availability status toggle component */}
+        {/* TODO : Link status component? I dont think it was linked */}
         <div className="self-center">
           <ClientOnly>
             <AgentStatus />
           </ClientOnly>
         </div>
-        <div className="flex flex-row space-x-4">
+        <div className="flex flex-row space-x-4 items-center">
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -117,14 +115,13 @@ export default function Appbar({
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
-                {activeTasks.length > 0 ? <BellDot color="#08B3E5" /> :
+                {activeTasks?.length > 0 ? <BellDot color="#08B3E5" /> :
                   <Bell color="#D3D3D3" />}
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
               <NotificationsCard
                 activeTasks={activeTasks}
-                setActiveTasks={setActiveTasks}
               />
             </PopoverContent>
           </Popover>
