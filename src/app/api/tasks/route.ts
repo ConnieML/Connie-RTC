@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const workspaceSid = process.env.TWILIO_WORKSPACE_SID || '';
 const client = require('twilio')(accountSid, authToken);
 
+// TODO: Update to follow proper REST api standards.
 // Dequeue a reservation to connect the call
 export async function POST(req: NextRequest) {
     try {

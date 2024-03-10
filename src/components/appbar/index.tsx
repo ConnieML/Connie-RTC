@@ -65,11 +65,11 @@ export default function Appbar({
     endCall,
     incomingCall,
     acceptCall,
-    rejectCall
+    rejectCall,
+    activeTasks
   } = useContext(CallsContext);
 
   // TODO: move this to useCalls hook
-  const [activeTasks, setActiveTasks] = useState([]);
 
   return (
     <Menubar
@@ -79,7 +79,7 @@ export default function Appbar({
         <Logo />
       </Link>
       <div className="flex space-x-8">
-        {/* TODO replace with Availability status toggle component */}
+        {/* TODO : Link status component? I dont think it was linked */}
         <div className="self-center">
           <ClientOnly>
             <AgentStatus />
@@ -115,14 +115,13 @@ export default function Appbar({
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="ghost" size="icon">
-                {activeTasks.length > 0 ? <BellDot color="#08B3E5" /> :
+                {activeTasks?.length > 0 ? <BellDot color="#08B3E5" /> :
                   <Bell color="#D3D3D3" />}
               </Button>
             </PopoverTrigger>
             <PopoverContent align="end">
               <NotificationsCard
                 activeTasks={activeTasks}
-                setActiveTasks={setActiveTasks}
               />
             </PopoverContent>
           </Popover>

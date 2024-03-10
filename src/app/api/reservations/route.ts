@@ -7,6 +7,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 
 const client = require('twilio')(accountSid, authToken);
 
+// TODO: Update to follow proper REST api standards.
 // get all reservations assigned to a worker, and the task associated with each reservation
 export async function GET(req: NextRequest) {
     const workerSid = req.nextUrl.searchParams.get('workerSid');
@@ -39,9 +40,9 @@ export async function GET(req: NextRequest) {
     }
 }
 
+// TODO: Update to follow proper REST api standards.
 // Update reservation status
 export async function POST(req: NextRequest) {
-
     try {
         const task = req.nextUrl.searchParams.get('taskSid');
         const status = req.nextUrl.searchParams.get('status');

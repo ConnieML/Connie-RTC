@@ -9,9 +9,11 @@ export type CallsContextType = {
     incomingCall: boolean;
     acceptCall: () => void;
     rejectCall: () => void;
+    updateReservation: (reservation: any, status: string) => void;
+    activeTasks: any[];
+    dequeueTask: (task: any, number: string) => void;
   };
   
-// const CallsContext = React.createContext<Partial<CallsContextType>>({});
 
 const CallsContext = React.createContext<CallsContextType>({
   inCall: false,
@@ -22,6 +24,9 @@ const CallsContext = React.createContext<CallsContextType>({
   incomingCall: false,
   acceptCall: () => {},
   rejectCall: () => {},
+  updateReservation: () => {},
+  activeTasks: [],
+  dequeueTask: () => {}
 });
 
 export default CallsContext;

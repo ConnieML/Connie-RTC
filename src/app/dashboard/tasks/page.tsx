@@ -1,56 +1,27 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { useSession } from "next-auth/react";
 import { Button } from '../../../components/ui/button';
 import React from 'react';
 import { formatPhoneNumber, formatTimeWithUnits } from '../../../lib/utils';
-
+import CallsContext from '@/contexts/CallsContext';
 
 export default function Tasks() {
-  const [tasks, setTasks] = useState([]);
-  const [activeTasks, setActiveTasks] = useState([]);
-  const { data: session } = useSession();
 
-  const fetchTasks = useCallback(() => {
-    fetch('/api/reservations?workerSid=' + session?.employeeNumber)
-      .then(response => response.json())
-      .then(data => {
-        setTasks(data);
-        setActiveTasks(data.filter((task: any) => task.reservation.reservationStatus === 'accepted' || task.reservation.reservationStatus === 'pending'));
-      });
-  }, [session]);
-
-  const updateReservation = (reservation: any, status: string) => {
-    try {
-      fetch(`/api/reservations?taskSid=${reservation.taskSid}&status=${status}&reservationSid=${reservation.sid}`, {
-        method: 'POST'
-      })
-    } catch (error) {
-      console.error("Error updating reservation", error)
-    }
-    fetchTasks()
-  }
-
-  const dequeueTask = (task: any, number: string) => {
-    try {
-      fetch(`/api/tasks?taskSid=${task.reservation.taskSid}&reservationSid=${task.reservation.sid}&number=${number}`, {
-        method: 'POST'
-      })
-    } catch (error) {
-      console.error("Error dequeing reservation", error)
-    }
-    fetchTasks()
-  }
-
-  useEffect(() => {
-    // Fetch tasks immediately and then every 2 seconds
-    fetchTasks();
-    const intervalId = setInterval(fetchTasks, 2000);
-
-    // Clear interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [fetchTasks]);
+  const {
+    inCall,
+    number,
+    makeCall,
+    setNumber,
+    endCall,
+    incomingCall,
+    acceptCall,
+    rejectCall,
+    activeTasks,
+    updateReservation,
+    dequeueTask
+  } = useContext(CallsContext);
 
   return (
     <main>
